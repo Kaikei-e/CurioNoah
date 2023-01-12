@@ -1,1 +1,1 @@
-# This is the storage of these application set.
+# This is the document storage of these application set.
