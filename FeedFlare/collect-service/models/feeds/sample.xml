@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>...</title>
+        <link>...</link>
+        <description>...</description>
+
+        <language>...</language>
+        <rating>...</rating>
+        <copyright>...</copyright>
+
+        <pubDate>...</pubDate>
+        <lastBuildDate>...</lastBuildDate>
+        <generator>....</generator>
+
+        <docs>...</docs>
+        <cloud>...</cloud>
+        <ttl>...</ttl>
+
+        <managingEditor>...</managingEditor>
+        <webMaster>...</webMaster>
+
+        <skipHours>
+            <hour>...</hour>
+        </skipHours>
+
+        <skipDays>
+            <day>...</day>
+        </skipDays>
+
+        <image>
+            <title>...</title>
+            <url>...</url>
+            <link>...</link>
+
+            <width>...</width>
+            <height>...</height>
+            <description>...</description>
+        </image>
+
+        <item>
+            <title>...</title>
+            <link>...</link>
+            <description>...</description>
+
+            <author>....</author>
+            <category>....</category>
+            <comments>....</comments>
+
+            <enclosure>......</enclosure>
+            <guid>....</guid>
+            <pubDate>....</pubDate>
+
+            <source>....</source>
+        </item>
+
+        <textInput>
+            <title>...</title>
+            <description>...</description>
+            <name>...</name>
+
+            <link>...</link>
+        </textInput>
+    </channel>
+</rss>
