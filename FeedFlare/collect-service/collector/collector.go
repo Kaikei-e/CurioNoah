@@ -1,25 +1,25 @@
 package collector
 
 import (
+	"errors"
 	"fmt"
 	"github.com/mmcdole/gofeed"
 	"io"
 	"os"
 )
 
-func Collector() {
-	const targetFilePath = "./models/feeds/sample.xml"
+func Collector(targetFilePath string) (*gofeed.Feed, error) {
 
 	f, err := os.OpenFile(targetFilePath, os.O_RDWR, 0644)
 	if err != nil {
 		//TODO fix error handling
-		panic(err)
+		return nil, errors.New(fmt.Sprintf("open %s: %v", targetFilePath, err))
 	}
 
 	redByte, err := io.ReadAll(f)
 	if err != nil {
 		//TODO fix error handling
-		panic(err)
+		return nil, err
 	}
 
 	fp := gofeed.NewParser()
@@ -31,4 +31,6 @@ func Collector() {
 	for _, author := range feed.Authors {
 		fmt.Println(author.Name)
 	}
+
+	return feed, nil
 }
