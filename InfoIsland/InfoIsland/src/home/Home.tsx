@@ -72,10 +72,36 @@ const Home = () => {
                     </Flex>
                 </Flex>
             </Flex>
-
+            <Flex flexDirection={"column"} w={"50%"} h={"100%"}>
+                <Text fontFamily="Jost"
+                      fontWeight="regular"
+                      fontSize={{base: "xl", md: "2xl", lg: "4xl"}}
+                      color="#000"
+                      m={"2%"}
+                      textAlign={"center"}>
+                    InsightStream
+                </Text>
+                <Flex flexDirection={"column"}
+                      bgColor={"#A9D0F5"}
+                      w={"100%"} h={"95%"}
+                      rounded={"xl"} p={"2%"}
+                >
+                    <Text>
+                        Feeds
+                    </Text>
+                    <Text>
+                        Feeds
+                    </Text>
+                    <Text>
+                        Feeds
+                    </Text>
+                    <Text>
+                        Feeds
+                    </Text>
+                </Flex>
+            </Flex>
         </Flex>
-
-    )
+    );
 };
 
 export default Home;
