@@ -19,14 +19,15 @@ func Collector(targetFilePath string) (*gofeed.Feed, error) {
 	redByte, err := io.ReadAll(f)
 	if err != nil {
 		//TODO fix error handling
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("read %s: %v", targetFilePath, err))
 	}
 
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseString(string(redByte))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("parse %s: %v", targetFilePath, err))
+	}
 	//feed, _ := fp.ParseURL("http://feeds.twit.tv/twit.xml")
-	fmt.Println(feed.Title)
-	fmt.Println(feed.Items[0].Title)
 
 	for _, author := range feed.Authors {
 		fmt.Println(author.Name)

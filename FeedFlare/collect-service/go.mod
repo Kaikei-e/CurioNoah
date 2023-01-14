@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/mmcdole/gofeed v1.1.3 // indirect
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
