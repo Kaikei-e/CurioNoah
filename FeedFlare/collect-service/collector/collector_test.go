@@ -7,7 +7,8 @@ import (
 )
 
 func TestCollector(t *testing.T) {
-	const testXMLPath = "./testdata/sample.xml"
+	//const testXMLPath = "./testdata/sample.xml"
+	const testGuardianURL = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
 
 	cases := map[string]struct {
 		input    string
@@ -15,16 +16,17 @@ func TestCollector(t *testing.T) {
 		wantErr  bool
 	}{
 		"success": {
-			input: testXMLPath,
+			//input: testXMLPath,
+			input: testGuardianURL,
 			expected: &gofeed.Feed{
-				Title: "...",
+				Link: "https://www.nytimes.com/section/world",
 			},
 			wantErr: false,
 		},
 		"failure": {
 			input: "invalid path",
 			expected: &gofeed.Feed{
-				Title: "",
+				Link: "",
 			},
 			wantErr: true,
 		},
@@ -42,7 +44,7 @@ func TestCollector(t *testing.T) {
 				return
 			}
 
-			if !cmp.Equal(got.Title, tt.expected.Title) {
+			if !cmp.Equal(got.Link, tt.expected.Link) {
 				t.Errorf("Collector() got = %v, want %v", got, tt.expected)
 			}
 			//if !reflect.DeepEqual(got, tt.expected) {
