@@ -47,7 +47,7 @@ const Home = () => {
                                     fontWeight="regular"
                                     fontSize={{base: "xl", md: "2xl", lg: "2xl"}}
                                     color="#000">
-                                    FeedFlare: Feed timeline
+                                    FeedFlare: Feed Collector
                                 </Text>
                             </Flex>
                         </Flex>
