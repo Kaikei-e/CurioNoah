@@ -1,4 +1,4 @@
-import {Box, Center, Container, Flex, Text} from "@chakra-ui/react";
+import {Box, Flex, Text} from "@chakra-ui/react";
 
 const Home = () => {
     return (
@@ -20,7 +20,7 @@ const Home = () => {
                 <Flex w={"100%"} h={"40%"}
                       m={"2%"} justifyContent={"center"}
                 >
-                    <Flex w={"90%"} h={"100%"} bgColor={"#CDFFD7"} rounded={"xl"}
+                    <Flex w={"90%"} h={"100%"} bgColor={"#9DA993"} rounded={"xl"}
                           justifyContent={"center"} alignItems={"center"}>
                         <Flex justifyContent={"start"} w={"100%"} h={"100%"} p={"1%"}>
                             <Box>
@@ -38,7 +38,7 @@ const Home = () => {
                       m={"2%"} justifyContent={"center"}
                 >
                     <Flex justifyContent={"start"} w={"90%"} h={"100%"} flexDirection={"row"}>
-                        <Flex bgColor={"#FFE4C3"}
+                        <Flex bgColor={"#D6C862"}
                               w={"48%"} h={"100%"}
                               p={"1%"} mr={"2%"} rounded={"xl"}
                         >
@@ -52,7 +52,7 @@ const Home = () => {
                             </Flex>
                         </Flex>
                         <Flex flexDirection={"column"}
-                              bgColor={"#FFE4C3"}
+                              bgColor={"#D6C862"}
                               w={"48%"} h={"100%"}
                               p={"1%"} ml={"2%"} rounded={"xl"}
                               justifyContent={"center"} alignItems={"center"}>
@@ -82,7 +82,7 @@ const Home = () => {
                     InsightStream
                 </Text>
                 <Flex flexDirection={"column"}
-                      bgColor={"#A9D0F5"}
+                      bgColor={"#88A6B1"}
                       w={"100%"} h={"95%"}
                       rounded={"xl"} p={"2%"}
                 >
