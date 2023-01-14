@@ -1,6 +1,6 @@
 import './App.css'
 // /images/explore_with_ship.jpg
-import {Stack, Text, Box, Button, Spacer, Flex} from '@chakra-ui/react'
+import {Stack, Text, Box, Button, Spacer, Flex, Link} from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 
 export const App = () => (
@@ -40,20 +40,33 @@ export const App = () => (
             </Stack>
             <Spacer/>
             <Flex flexDir={'column'} justifyContent={'flex-end'} p='4%'>
-                <Button size={{base: "lg", sm: "sm", md: "md", lg: "lg"}}
-                        variant='outline'
-                        rightIcon={<ArrowForwardIcon
-                            color={'#FFF'}
-                            boxSize={{base: "xl", md: "2xl", lg: "20px"}}
-                        />}
-                >
+                <Link href='/home'>
+                    <Button size={{base: "lg", sm: "sm", md: "md", lg: "lg"}}
+                            variant='outline'
+                            textColor={'#FFF'}
+                            _hover={{color: '#000000', bg: '#FFFFFF'}}
+                            rightIcon={<ArrowForwardIcon
+                                boxSize={{base: "xl", md: "2xl", lg: "20px"}}
+                            />}
+                        // onPointerEnter={(e) => {
+                        //     e.currentTarget.setAttribute('style', 'background-color: #FFF;');
+                        //     e.currentTarget.setAttribute('style', 'color: #000;');
+                        // }}
+                        //
+                        // onPointerLeave={(e) => {
+                        //     e.currentTarget.setAttribute('style', 'background-color: #000;');
+                        //     e.currentTarget.setAttribute('style', 'color: #FFF;');
+                        // }}
 
-                    <Text textColor={'#FFF'}
-                          fontFamily="Jost"
-                          fontSize={{base: "md", md: "2md", lg: "2xl"}}>
-                        Explore
-                    </Text>
-                </Button>
+                    >
+
+                        <Text
+                            fontFamily="Jost"
+                            fontSize={{base: "md", md: "2md", lg: "2xl"}}>
+                            Explore
+                        </Text>
+                    </Button>
+                </Link>
             </Flex>
         </Flex>
     </Box>
