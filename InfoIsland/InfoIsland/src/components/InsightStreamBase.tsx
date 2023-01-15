@@ -10,7 +10,8 @@ const InsightStreamBase = () => {
 
     useEffect(() => {
         const feeds = async () => {
-            await fetch('http://localhost:9000/api/v1/fetch-feeds',
+            const response = await fetch(
+                'http://localhost:9000/api/v1/fetch-feeds',
                 {
                     method: 'GET',
                     headers: {
@@ -20,20 +21,17 @@ const InsightStreamBase = () => {
                         'Origin': 'http://localhost:5173'
                     },
                 },
-            )
-                .then(response => response.json())
-                .then(data => {
-                    setData(data);
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    setError(error);
-                    setIsLoading(false);
-                });
+            );
+            const feeds = await response.json();
+            setData(feeds);
+            setIsLoading(false);
         };
 
-        feeds();
-    }, [data]);
+        feeds().catch((error) => {
+            setError(error);
+            setIsLoading(false);
+        });
+    }, []);
 
     let displayData;
 
@@ -62,25 +60,40 @@ function TimeLine(props) {
                 return (
                     <Flex flexDirection={"row"} key={index} m={"1%"}>
                         <Flex flexDirection={"row"} w={"100%"} h={"100%"}>
-                            <Container maxW={"100%"} h={"100%"}>
+                            <Container maxW={"100%"} h={"100%"}
+                                       color={"#000"} p={"1%"}>
                                 <Text fontSize={{
                                     base: "xl",
                                     md: "2xl",
                                     lg: "2xl"
                                 }}>
-                                    {feed.name}
+                                    {feed.title}
                                 </Text>
                                 <Text>
-                                    {feed.description}
+                                    {feed.published}
                                 </Text>
                                 <Text>
-                                    {feed.url}
+                                    {feed.link}
                                 </Text>
+                                <Flex>
+                                    {feed.items.map((item, index: number) => {
+
+                                        if (index > 5) {
+                                            return;
+                                        }
+                                        return (
+                                            <Flex flexDirection={"column"} key={index}>
+                                                <Text>
+                                                    {item.title}
+                                                </Text>
+                                            </Flex>
+                                        )
+                                    })}
+                                </Flex>
                             </Container>
                         </Flex>
                     </Flex>
                 )
-
             })}
         </Flex>
     );
@@ -99,69 +112,7 @@ function FetchingFeeds() {
             />
         </Flex>
     );
-}
-
-const dummyFeeds = [
-    {
-        name: "Dummy feed Curiosity",
-        description: "Curiosity is a personal feed aggregator that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://curiosity.feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-    {
-        name: "Dummy feed Curiosity",
-        description: "Curiosity is a personal feed aggregator that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://curiosity.feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    }, {
-        name: "Dummy feed Curiosity",
-        description: "Curiosity is a personal feed aggregator that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://curiosity.feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-    {
-        name: "Dummy feed FeedFlare: Feed Collector",
-        description: "FeedFlare is a feed collector that allows you to collect and organize your favorite feeds in one place.",
-        url: "https://feedflare.com",
-    },
-]
+};
 
 
 export default InsightStreamBase;
