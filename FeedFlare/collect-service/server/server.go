@@ -49,6 +49,8 @@ func Server() {
 			c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
 			c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
 
+			// TODO: should log the request
+
 			return c.JSON(200, feedsFormatted)
 		})
 		if err != nil {
