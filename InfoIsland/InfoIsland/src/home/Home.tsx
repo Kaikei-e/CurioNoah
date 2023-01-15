@@ -1,4 +1,5 @@
 import {Box, Flex, Text} from "@chakra-ui/react";
+import InsightStreamBase from "../components/InsightStreamBase";
 
 const Home = () => {
     return (
@@ -86,18 +87,7 @@ const Home = () => {
                       w={"100%"} h={"95%"}
                       rounded={"xl"} p={"2%"}
                 >
-                    <Text>
-                        Feeds
-                    </Text>
-                    <Text>
-                        Feeds
-                    </Text>
-                    <Text>
-                        Feeds
-                    </Text>
-                    <Text>
-                        Feeds
-                    </Text>
+                    <InsightStreamBase/>
                 </Flex>
             </Flex>
         </Flex>
