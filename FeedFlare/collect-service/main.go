@@ -2,13 +2,15 @@ package main
 
 import (
 	"feedflare/collector"
+	"feedflare/server"
 	"fmt"
 )
 
 func main() {
-	const targetFilePath = "./models/feeds/sample.xml"
+	//const targetFilePath = "./models/feeds/sample.xml"
+	const testGuardianURL = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
 
-	feed, err := collector.Collector(targetFilePath)
+	feed, err := collector.Collector(testGuardianURL)
 	if err != nil {
 		// TODO fix error handling
 		panic(err)
@@ -16,4 +18,7 @@ func main() {
 	}
 
 	fmt.Println(feed)
+
+	server.Server()
+
 }
