@@ -2,7 +2,7 @@ import React from 'react';
 import {Flex, Text, Container, Spinner} from "@chakra-ui/react";
 
 // make this function to return boolean
-const InsightStreamBase = async () => {
+const InsightStreamBase = () => {
 
     const [data, setData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -43,7 +43,9 @@ const InsightStreamBase = async () => {
 
 
     return (
-        <Flex flexDirection={"column"} w={"50%"} h={"100%"}>
+        <Flex flexDirection={"column"} w={"100%"} h={"100%"}
+              bgColor={"#EAF2F8"} rounded={"xl"}
+              overflow={"scroll"} overflowX={"hidden"}>
             {displayData}
         </Flex>
     );
@@ -52,8 +54,7 @@ const InsightStreamBase = async () => {
 function TimeLine(props) {
     return (
         <Flex flexDirection={"column"} h={"100%"} w={"100%"}
-              bgColor={"#EAF2F8"} rounded={"xl"}
-              overflow={"scroll"} overflowX={"hidden"}>
+        >
             {props.data.map((feed, index: number) => {
                 return (
                     <Flex flexDirection={"row"} key={index} m={"1%"}>
@@ -85,10 +86,7 @@ function TimeLine(props) {
 function FetchingFeeds() {
     return (
         <Flex flexDirection={"column"}
-              w={"100%"} h={"100%"}
-              bgColor={"#EAF2F8"} rounded={"xl"}
-
-        >
+              w={"100%"} h={"100%"}>
             <Spinner
                 thickness='4px'
                 speed='0.65s'

@@ -87,11 +87,7 @@ const Home = () => {
                       w={"100%"} h={"95%"}
                       rounded={"xl"} p={"2%"}
                 >
-                    {() => {
-                        if (isLoaded) {
-                            return <InsightStreamBase/>
-                        }
-                    }}
+                    <InsightStreamBase/>
                 </Flex>
             </Flex>
         </Flex>
