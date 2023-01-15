@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Flex, Text, Container, Spinner} from "@chakra-ui/react";
 
 // make this function to return boolean
@@ -8,28 +8,32 @@ const InsightStreamBase = () => {
     const [isLoading, setIsLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
 
-    React.useEffect(() => {
-        setIsLoading(true);
-        fetch('http://localhost:9000/api/v1/fetch-feeds',
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
+    useEffect(() => {
+        const feeds = async () => {
+            await fetch('http://localhost:9000/api/v1/fetch-feeds',
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        // 'Access-Control-Allow-Origin': '*',
+                        'Origin': 'http://localhost:5173'
+                    },
                 },
-            },
-        )
-            .then(response => response.json())
-            .then(data => {
-                setData(data);
-                setIsLoading(false);
-            })
-            .catch(error => {
-                setError(error);
-                setIsLoading(false);
-            });
+            )
+                .then(response => response.json())
+                .then(data => {
+                    setData(data);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    setError(error);
+                    setIsLoading(false);
+                });
+        };
 
-    }, []);
+        feeds();
+    }, [data]);
 
     let displayData;
 
@@ -40,7 +44,6 @@ const InsightStreamBase = () => {
     } else {
         displayData = <FetchingFeeds/>
     }
-
 
     return (
         <Flex flexDirection={"column"} w={"100%"} h={"100%"}
