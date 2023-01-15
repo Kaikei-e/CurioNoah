@@ -26,13 +26,13 @@ func Server() {
 				return err
 			}
 
-			var feedsFromatted []gofeed.Feed
+			var feedsFormatted []gofeed.Feed
 			for _, feed := range feeds {
 				feedFormatted := *feed
-				feedsFromatted = append(feedsFromatted, feedFormatted)
+				feedsFormatted = append(feedsFormatted, feedFormatted)
 			}
 
-			return c.JSON(200, feedsFromatted)
+			return c.JSON(200, feedsFormatted)
 		})
 		if err != nil {
 			e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
