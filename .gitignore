@@ -2,6 +2,8 @@
 # basic
 .idea
 .env
-
+.DS_Store
+*.log
+.vscode
 
 *.xml
