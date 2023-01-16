@@ -5,5 +5,5 @@
 .DS_Store
 *.log
 .vscode
-
+/mysql
 *.xml

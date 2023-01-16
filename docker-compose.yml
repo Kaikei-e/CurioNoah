@@ -31,7 +31,7 @@ services:
       - core_database
     networks:
       app-network:
-        ipv4_address: 192.168.100.1
+        ipv4_address: 192.168.100.15
 
   curiosity:
     # Explorer by Curiosity
