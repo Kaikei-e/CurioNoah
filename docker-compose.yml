@@ -1,53 +1,146 @@
 version: '3.9'
 services:
-  coreManager:
-    build: ./CoreManager
+
+  lb:
+    build:
+      context: ./load_balancer
+      dockerfile: Dockerfile
+    tty: true
     ports:
-      - "5000:5000"
+      - '80:80'
+      - '443:443'
+    volumes:
+      - './load_balancer:/usr/share/nginx/html'
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.20
+
+  coreManager:
+    # Curation Manager
+    build:
+      context: ./coreManager
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    environment:
+      timezone: 'Asia/Tokyo'
+    tty: true
+    volumes:
+      - './coreManager:/app'
     depends_on:
       - coreDatabase
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.1
 
     curiosity:
-      build: ./Curiosity
+      # Explorer by Curiosity
+      build:
+        context: ./Curiosity
+        dockerfile: Dockerfile
       ports:
-        - "37936:37936"
+        - '37936:37936'
+      environment:
+        timezone: 'Asia/Tokyo'
+      tty: true
+      volumes:
+        - './curiosity:/app'
       depends_on:
         - coreDatabase
+      networks:
+        app-network:
+          ipv4_address: 192.168.100.2
 
     feedFlare:
-      build: ./FeedFlare
+      # Feed collector
+      build:
+        context: ./FeedFlare
+        dockerfile: Dockerfile
       ports:
-        - "9000:9000"
+        - '9000:9000'
+      environment:
+        timezone: 'Asia/Tokyo'
+      tty: true
+      volumes:
+        - './feedFlare:/app'
       depends_on:
         - coreDatabase
+      networks:
+        app-network:
+          ipv4_address: 192.168.100.3
 
     infoIsland:
-      build: ./InfoIsland
+      # Web Frontend
+      build:
+        context: ./InfoIsland
+        dockerfile: Dockerfile
       ports:
-        - "5173:5173"
+        - '5173:5173'
+      environment:
+        timezone: 'Asia/Tokyo'
+      tty: true
+      volumes:
+        - './infoIsland:/app'
       depends_on:
         - coreDatabase
+      networks:
+        app-network:
+          ipv4_address: 192.168.100.4
 
     insightStream:
-      build: ./InsightStream
+      # Feed Stream
+      build:
+        context: ./InsightStream
+        dockerfile: Dockerfile
       ports:
-        - "3000:3000"
+        - '3000:3000'
+      tty: true
+      volumes:
+        - './insightStream:/app'
       depends_on:
         - coreDatabase
+      networks:
+        app-network:
+          ipv4_address: 192.168.100.5
 
     slateFlex:
-      build: ./SlateFlex
+      # Note taking
+      build:
+        context: ./SlateFlex
+        dockerfile: Dockerfile
       ports:
-        - "6000:6000"
+        - '6000:6000'
+      tty: true
+      volumes:
+        - ./slateFlex:/app
       depends_on:
         - coreDatabase
+      networks:
+        app-network:
+          ipv4_address: 192.168.100.6
 
     coreDatabase:
-      build: ./CoreDatabase
+      # Database
+      build:
+        context: ./coreDatabase
+        dockerfile: Dockerfile
       ports:
-        - "3306:3306"
+        - '3306:3306'
+      tty: true
+      volumes:
+        - './mysql/data:/var/lib/mysql'
       environment:
         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         MYSQL_DATABASE: ${MYSQL_DATABASE}
         MYSQL_USER: ${MYSQL_USER}
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      restart: always
+      networks:
+      app-network:
+        ipv4_address: 192.168.100.10
+
+networks:
+  curio-net:
+    driver: bridge
+    config:
+      - subnet: 192.168.100.0/24
