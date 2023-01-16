@@ -1,0 +1,53 @@
+version: '3.9'
+services:
+  coreManager:
+    build: ./CoreManager
+    ports:
+      - "5000:5000"
+    depends_on:
+      - coreDatabase
+
+    curiosity:
+      build: ./Curiosity
+      ports:
+        - "37936:37936"
+      depends_on:
+        - coreDatabase
+
+    feedFlare:
+      build: ./FeedFlare
+      ports:
+        - "9000:9000"
+      depends_on:
+        - coreDatabase
+
+    infoIsland:
+      build: ./InfoIsland
+      ports:
+        - "5173:5173"
+      depends_on:
+        - coreDatabase
+
+    insightStream:
+      build: ./InsightStream
+      ports:
+        - "3000:3000"
+      depends_on:
+        - coreDatabase
+
+    slateFlex:
+      build: ./SlateFlex
+      ports:
+        - "6000:6000"
+      depends_on:
+        - coreDatabase
+
+    coreDatabase:
+      build: ./CoreDatabase
+      ports:
+        - "3306:3306"
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
