@@ -44,33 +44,6 @@ func Initialize() error {
 
 		return errors.New("failed to open .env")
 	}
-	//
-	//f, err := os.OpenFile(projectRootEnv, os.O_RDWR, 0644)
-	//if err != nil {
-	//	_, err := os.Stderr.WriteString(fmt.Sprintf("open .env: %v", err))
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	return errors.New("failed to open .env")
-	//}
-	//defer func(f *os.File) {
-	//	err := f.Close()
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//}(f)
-	//
-	//by, err := io.ReadAll(f)
-	//if err != nil {
-	//	_, err := os.Stderr.WriteString(fmt.Sprintf("failed to read .env: %v", err))
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	return errors.New("failed to read .env")
-	//}
-	//
-	//fileBody := string(by)
-	//envs := strings.Split(fileBody, "\n")
 
 	var myEnv map[string]string
 	myEnv, err = godotenv.Read()
