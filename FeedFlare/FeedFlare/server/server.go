@@ -1,7 +1,6 @@
 package server
 
 import (
-	"feedflare/collector/fetchFeeds"
 	"feedflare/collector/testdata"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -34,33 +33,53 @@ func Server() {
 	apiV1 := e.Group("/api/v1")
 	apiV1.Use()
 	{
-		err := apiV1.GET("/fetch-feeds", func(c echo.Context) error {
-			e.Logger.Info("fetch-feeds api is called")
 
-			feeds, err := fetchFeeds.MultiFeed(testdata.FeedList)
+		fetchFeed := apiV1.Group("/fetch-feed")
+		fetchFeed.Use()
+		{
+			err := apiV1.GET("/stored-all", func(c echo.Context) error {
+				e.Logger.Info("stored-all api is called")
+
+				feeds, err := fetchFeed.MultiFeed(testdata.FeedList)
+				if err != nil {
+					e.Logger.Errorf("error: %v. maybe serer is down", err)
+					return err
+				}
+
+				e.Logger.Infof("feeds were fetched: feed number is %v", len(feeds))
+
+				var feedsFormatted []gofeed.Feed
+				for _, feed := range feeds {
+					feedFormatted := *feed
+					feedsFormatted = append(feedsFormatted, feedFormatted)
+				}
+
+				c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+				c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
+				c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
+
+				e.Logger.Info("response header is set")
+
+				return c.JSON(200, feedsFormatted)
+			})
 			if err != nil {
-				e.Logger.Errorf("error: %v. maybe serer is down", err)
-				return err
+				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
 			}
+		}
 
-			e.Logger.Infof("feeds were fetched: feed number is %v", len(feeds))
+		registerFeed := apiV1.Group("/registerFeed-feed")
+		registerFeed.Use()
+		{
+			err := apiV1.POST("/registerFeed", func(c echo.Context) error {
+				e.Logger.Info("registerFeed api is called")
 
-			var feedsFormatted []gofeed.Feed
-			for _, feed := range feeds {
-				feedFormatted := *feed
-				feedsFormatted = append(feedsFormatted, feedFormatted)
+				return c.String(200, "registerFeed api is called")
+
+			})
+			if err != nil {
+				e.Logger.Errorf("failed to registerFeed feed. error: %v.", err)
+
 			}
-
-			c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
-			c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
-			c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
-
-			e.Logger.Info("response header is set")
-
-			return c.JSON(200, feedsFormatted)
-		})
-		if err != nil {
-			e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
 		}
 	}
 
