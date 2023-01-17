@@ -10,6 +10,8 @@ import (
 
 func Server() {
 	e := echo.New()
+	e.Use(middleware.Logger())
+
 	err := e.GET("/", func(c echo.Context) error {
 		return c.String(200, "Hello, World!")
 	})
@@ -33,11 +35,15 @@ func Server() {
 	apiV1.Use()
 	{
 		err := apiV1.GET("/fetch-feeds", func(c echo.Context) error {
+			e.Logger.Info("fetch-feeds api is called")
+
 			feeds, err := fetchFeeds.MultiFeed(testdata.FeedList)
 			if err != nil {
 				e.Logger.Errorf("error: %v. maybe serer is down", err)
 				return err
 			}
+
+			e.Logger.Infof("feeds were fetched: feed number is %v", len(feeds))
 
 			var feedsFormatted []gofeed.Feed
 			for _, feed := range feeds {
@@ -49,7 +55,7 @@ func Server() {
 			c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
 			c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
 
-			// TODO: should log the request
+			e.Logger.Info("response header is set")
 
 			return c.JSON(200, feedsFormatted)
 		})
