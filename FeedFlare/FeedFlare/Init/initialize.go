@@ -60,7 +60,7 @@ func Initialize() error {
 
 	fileBody := string(by)
 	envs := strings.Split(fileBody, "\n")
-	err = envRequirement(envs, getSlice())
+	err = envRequired(envs, getSlice())
 	if err != nil {
 		_, err := os.Stderr.WriteString(fmt.Sprintf("failed to parse .env: %v", err))
 		if err != nil {
@@ -74,7 +74,7 @@ func Initialize() error {
 	return nil
 }
 
-func envRequirement(envs []string, want []string) error {
+func envRequired(envs []string, want []string) error {
 	for i, env := range envs {
 		if !cmp.Equal(env, want[i]) {
 			return errors.New(fmt.Sprintf("failed to parse .env: %v is required", want))
