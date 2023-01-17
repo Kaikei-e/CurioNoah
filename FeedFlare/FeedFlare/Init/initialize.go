@@ -3,8 +3,8 @@ package Init
 import (
 	"errors"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
-	"io"
+	"github.com/joho/godotenv"
+	"golang.org/x/exp/slices"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,6 +21,7 @@ func getSlice() []string {
 }
 
 func Initialize() error {
+
 	wd, err := os.Getwd()
 	if err != nil {
 		_, err := os.Stderr.WriteString(fmt.Sprintf("failed to get working directory: %v", err))
@@ -34,50 +35,75 @@ func Initialize() error {
 
 	projectRootEnv := filepath.Join(projectRoot, ".env")
 
-	f, err := os.OpenFile(projectRootEnv, os.O_RDWR, 0644)
+	err = godotenv.Load(projectRootEnv)
 	if err != nil {
-		_, err := os.Stderr.WriteString(fmt.Sprintf("open .env: %v", err))
+		_, err := os.Stderr.WriteString(fmt.Sprintf("failed to open .env: %v", err))
 		if err != nil {
 			panic(err)
 		}
+
 		return errors.New("failed to open .env")
 	}
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(f)
+	//
+	//f, err := os.OpenFile(projectRootEnv, os.O_RDWR, 0644)
+	//if err != nil {
+	//	_, err := os.Stderr.WriteString(fmt.Sprintf("open .env: %v", err))
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	return errors.New("failed to open .env")
+	//}
+	//defer func(f *os.File) {
+	//	err := f.Close()
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//}(f)
+	//
+	//by, err := io.ReadAll(f)
+	//if err != nil {
+	//	_, err := os.Stderr.WriteString(fmt.Sprintf("failed to read .env: %v", err))
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	return errors.New("failed to read .env")
+	//}
+	//
+	//fileBody := string(by)
+	//envs := strings.Split(fileBody, "\n")
 
-	by, err := io.ReadAll(f)
+	var myEnv map[string]string
+	myEnv, err = godotenv.Read()
 	if err != nil {
-		_, err := os.Stderr.WriteString(fmt.Sprintf("failed to read .env: %v", err))
-		if err != nil {
-			panic(err)
-		}
-		return errors.New("failed to read .env")
+		return errors.New("failed to open .env")
 	}
 
-	fileBody := string(by)
-	envs := strings.Split(fileBody, "\n")
+	var envs []string
+	for k := range myEnv {
+		envs = append(envs, k)
+	}
+
 	err = envRequired(envs, getSlice())
 	if err != nil {
-		_, err := os.Stderr.WriteString(fmt.Sprintf("failed to parse .env: %v", err))
+		_, err := os.Stderr.WriteString(fmt.Sprintf("%v", err))
 		if err != nil {
 			panic(err)
 		}
 		return errors.New("required env is not set")
 	}
 
-	fmt.Println(fileBody)
-
 	return nil
 }
 
 func envRequired(envs []string, want []string) error {
+	slices.Sort(envs)
+	slices.Sort(want)
+
 	for i, env := range envs {
-		if !cmp.Equal(env, want[i]) {
-			return errors.New(fmt.Sprintf("failed to parse .env: %v is required", want))
+		if strings.Compare(env, want[i]) == 0 {
+			continue
+		} else {
+			return errors.New(fmt.Sprintf("failed to parse .env: %v is required", want[i]))
 		}
 	}
 	return nil

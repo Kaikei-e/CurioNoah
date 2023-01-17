@@ -38,7 +38,6 @@ func TestInitialize(t *testing.T) {
 			if err != tt.want && tt.wantErr {
 				t.Errorf("got %v, want %v", err, tt.want)
 			}
-
 		})
 	}
 }
