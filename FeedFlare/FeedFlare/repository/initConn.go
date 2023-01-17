@@ -11,7 +11,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func InitConnection() {
+func InitConnection() *ent.Client {
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
@@ -33,10 +33,11 @@ func InitConnection() {
 		log.Fatalf("failed opening connection to mysql database: %v", err)
 	}
 
-	defer client.Close()
+	//defer client.Close()
 
 	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
+	return client
 }
