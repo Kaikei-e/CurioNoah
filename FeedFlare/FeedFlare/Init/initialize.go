@@ -3,10 +3,22 @@ package Init
 import (
 	"errors"
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
+
+func getSlice() []string {
+	return []string{
+		"MYSQL_USER",
+		"MYSQL_PASSWORD",
+		"MYSQL_DATABASE",
+		"MYSQL_ADDR",
+		"NET_TYPE",
+	}
+}
 
 func Initialize() error {
 	wd, err := os.Getwd()
@@ -47,7 +59,26 @@ func Initialize() error {
 	}
 
 	fileBody := string(by)
+	envs := strings.Split(fileBody, "\n")
+	err = envRequirement(envs, getSlice())
+	if err != nil {
+		_, err := os.Stderr.WriteString(fmt.Sprintf("failed to parse .env: %v", err))
+		if err != nil {
+			panic(err)
+		}
+		return errors.New("required env is not set")
+	}
+
 	fmt.Println(fileBody)
 
+	return nil
+}
+
+func envRequirement(envs []string, want []string) error {
+	for i, env := range envs {
+		if !cmp.Equal(env, want[i]) {
+			return errors.New(fmt.Sprintf("failed to parse .env: %v is required", want))
+		}
+	}
 	return nil
 }
