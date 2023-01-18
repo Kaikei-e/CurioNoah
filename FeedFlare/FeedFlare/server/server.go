@@ -1,6 +1,7 @@
 package server
 
 import (
+	"feedflare/collector/fetchFeeds"
 	"feedflare/collector/testdata"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -40,7 +41,7 @@ func Server() {
 			err := apiV1.GET("/stored-all", func(c echo.Context) error {
 				e.Logger.Info("stored-all api is called")
 
-				feeds, err := fetchFeed.MultiFeed(testdata.FeedList)
+				feeds, err := fetchFeeds.MultiFeed(testdata.FeedList)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe serer is down", err)
 					return err
