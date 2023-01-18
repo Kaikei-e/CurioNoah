@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react';
-import {Flex, Text, Container, Spinner} from "@chakra-ui/react";
+import {Flex, Spinner} from "@chakra-ui/react";
+import Timeline from "./timeline/Timeline";
+import {Feed} from "../lib/models/feedModel";
 
 // make this function to return boolean
 const InsightStreamBase = () => {
 
-    const [data, setData] = React.useState<>([]);
+    const [data, setData] = React.useState<Feed[]>([]);
     const [isLoading, setIsLoading] = React.useState<Boolean>(true);
     const [error, setError] = React.useState<Error>();
 
@@ -36,7 +38,7 @@ const InsightStreamBase = () => {
     let displayData;
 
     if (!isLoading) {
-        displayData = <TimeLine data={data}/>
+        displayData = <Timeline data={data}/>
     } else if (error) {
         displayData = <div>Something went wrong ...</div>
     } else {
@@ -52,55 +54,6 @@ const InsightStreamBase = () => {
     );
 };
 
-function TimeLine(props: { data: any[]; }) {
-
-    console.log(props.data);
-
-    return (
-        <Flex flexDirection={"column"} h={"100%"} w={"100%"}
-        >
-            {props.data.map((feed, index: number) => {
-                return (
-                    <Flex flexDirection={"row"} key={index} m={"1%"}>
-                        <Flex flexDirection={"row"} w={"100%"} h={"100%"}>
-                            <Container maxW={"100%"} h={"100%"}
-                                       color={"#000"} p={"1%"}>
-                                <Text fontSize={{
-                                    base: "xl",
-                                    md: "2xl",
-                                    lg: "2xl"
-                                }}>
-                                    {feed.title}
-                                </Text>
-                                <Text>
-                                    {feed.published}
-                                </Text>
-                                <Text>
-                                    {feed.link}
-                                </Text>
-                                <Flex>
-                                    {feed.items.map((item, index: number) => {
-
-                                        if (index > 5) {
-                                            return;
-                                        }
-                                        return (
-                                            <Flex flexDirection={"column"} key={index}>
-                                                <Text>
-                                                    {item.title}
-                                                </Text>
-                                            </Flex>
-                                        )
-                                    })}
-                                </Flex>
-                            </Container>
-                        </Flex>
-                    </Flex>
-                )
-            })}
-        </Flex>
-    );
-}
 
 function FetchingFeeds() {
     return (
@@ -115,7 +68,7 @@ function FetchingFeeds() {
             />
         </Flex>
     );
-};
+}
 
 
 export default InsightStreamBase;
