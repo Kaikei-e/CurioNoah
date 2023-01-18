@@ -1,4 +1,4 @@
-package fetchFeeds
+package fetchFeed
 
 import (
 	"errors"
