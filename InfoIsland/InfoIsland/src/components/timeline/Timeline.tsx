@@ -21,10 +21,10 @@ function Timeline(props: { data: Feed[]; }) {
                                           overflowWrap={"break-word"} isExternal>
                                         <Text fontSize={{
                                             base: "xl",
-                                            md: "2xl",
-                                            lg: "2xl"
+                                            md: "xl",
+                                            lg: "xl"
                                         }}>
-                                            {feed.title}
+                                            &#x1F4DC; {feed.title}
                                             <ExternalLinkIcon mx={"2px"}/>
                                         </Text>
                                     </Link>
@@ -33,11 +33,14 @@ function Timeline(props: { data: Feed[]; }) {
                                     {/*        <ImageRenderer url={feed.image.url}/>*/}
                                     {/*    </Suspense>*/}
                                     {/*</Flex>*/}
+
+                                    <Text w={"30%"} h={"100%"}>
+                                        {feed.published}
+                                    </Text>
                                 </Flex>
-                                <Text>
-                                    {feed.published}
-                                </Text>
-                                <Flex flexDirection={"column"}>
+                                <Flex flexDirection={"column"} p={"1%"}
+                                      border={"1px"} borderRadius={"md"}
+                                      bgColor={"#fffbfb"}>
                                     {feed.items.map((item: Item, index: number) => {
                                         if (index > 5) {
                                             return;
@@ -46,7 +49,7 @@ function Timeline(props: { data: Feed[]; }) {
                                             <Flex flexDirection={"column"} key={index}>
                                                 <Link href={item.link} isExternal>
                                                     <Text>
-                                                        {item.title}
+                                                        &#x1F4CC;: {item.title}
                                                         <ExternalLinkIcon mx={"2px"}/>
                                                         / {item.description!.slice(0, 40)} ...
                                                     </Text>
