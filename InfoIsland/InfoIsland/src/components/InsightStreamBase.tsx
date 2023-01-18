@@ -4,14 +4,14 @@ import {Flex, Text, Container, Spinner} from "@chakra-ui/react";
 // make this function to return boolean
 const InsightStreamBase = () => {
 
-    const [data, setData] = React.useState([]);
-    const [isLoading, setIsLoading] = React.useState(true);
-    const [error, setError] = React.useState(null);
+    const [data, setData] = React.useState<>([]);
+    const [isLoading, setIsLoading] = React.useState<Boolean>(true);
+    const [error, setError] = React.useState<Error>();
 
     useEffect(() => {
         const feeds = async () => {
             const response = await fetch(
-                'http://localhost:9000/api/v1/fetch-feeds',
+                'http://localhost:9000/api/v1/fetch-feed/stored-all',
                 {
                     method: 'GET',
                     headers: {
@@ -52,7 +52,10 @@ const InsightStreamBase = () => {
     );
 };
 
-function TimeLine(props) {
+function TimeLine(props: { data: any[]; }) {
+
+    console.log(props.data);
+
     return (
         <Flex flexDirection={"column"} h={"100%"} w={"100%"}
         >

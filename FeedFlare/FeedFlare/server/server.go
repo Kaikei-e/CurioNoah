@@ -38,12 +38,14 @@ func Server() {
 		fetchFeed := apiV1.Group("/fetch-feed")
 		fetchFeed.Use()
 		{
-			err := apiV1.GET("/stored-all", func(c echo.Context) error {
+			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				e.Logger.Info("stored-all api is called")
 
 				feeds, err := fetchFeeds.MultiFeed(testdata.FeedList)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe serer is down", err)
+					// TODO FIX: return error
+					c.JSON(500, err)
 					return err
 				}
 
@@ -65,13 +67,14 @@ func Server() {
 			})
 			if err != nil {
 				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
+
 			}
 		}
 
-		registerFeed := apiV1.Group("/registerFeed-feed")
+		registerFeed := apiV1.Group("/register-feed")
 		registerFeed.Use()
 		{
-			err := apiV1.POST("/registerFeed", func(c echo.Context) error {
+			err := apiV1.POST("/feeds", func(c echo.Context) error {
 				e.Logger.Info("registerFeed api is called")
 
 				return c.String(200, "registerFeed api is called")
