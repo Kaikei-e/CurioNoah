@@ -8,7 +8,18 @@ function Timeline(props: { data: Feed[]; }) {
     return (
 
         <Flex flexDirection={"column"} h={"100%"} w={"100%"}
-        >
+              fontFamily="Jost">
+            <Flex p={"2%"}>
+                <Text fontSize={{
+                    base: "2xl",
+                    md: "xl",
+                    lg: "2xl"
+                }}>
+                    You can find the latest feeds that you have collected here.
+                    Read more at <Text as='u'><Link
+                    href={"/insight-stream"}>InsightStream</Link></Text> page.
+                </Text>
+            </Flex>
             {props.data.map((feed: Feed, index: number) => {
                 return (
                     <Flex flexDirection={"row"} key={index} m={"1%"}>
