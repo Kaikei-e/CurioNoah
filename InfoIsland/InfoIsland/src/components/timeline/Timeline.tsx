@@ -1,5 +1,6 @@
-import {Container, Flex, Text} from "@chakra-ui/react";
-import React from "react";
+import {Container, Flex, Image, Link, Spinner, Text} from "@chakra-ui/react";
+import {ExternalLinkIcon} from '@chakra-ui/icons'
+import React, {Suspense} from "react";
 import {Feed, Item} from "../../lib/models/feedModel";
 
 function Timeline(props: { data: Feed[]; }) {
@@ -14,30 +15,42 @@ function Timeline(props: { data: Feed[]; }) {
                         <Flex flexDirection={"row"} w={"100%"} h={"100%"}>
                             <Container maxW={"100%"} h={"100%"}
                                        color={"#000"} p={"1%"}>
-                                <Text fontSize={{
-                                    base: "xl",
-                                    md: "2xl",
-                                    lg: "2xl"
-                                }}>
-                                    {feed.title}
-                                </Text>
+                                <Flex h={"20%"} w={"80%"}
+                                      flexDirection={"row"}>
+                                    <Link href={feed.link} w={"70%"} h={"100%"}
+                                          overflowWrap={"break-word"}>
+                                        <Text fontSize={{
+                                            base: "xl",
+                                            md: "2xl",
+                                            lg: "2xl"
+                                        }}>
+                                            {feed.title}
+                                            <ExternalLinkIcon mx={"2px"}/>
+                                        </Text>
+                                    </Link>
+                                    <Flex w={"100%"} h={"100%"}>
+                                        <Suspense fallback={<Spinner/>}>
+                                            <ImageRenderer url={feed.image.url}/>
+                                        </Suspense>
+                                    </Flex>
+                                </Flex>
                                 <Text>
                                     {feed.published}
                                 </Text>
-                                <Text>
-                                    {feed.link}
-                                </Text>
                                 <Flex flexDirection={"column"}>
                                     {feed.items.map((item: Item, index: number) => {
-
                                         if (index > 5) {
                                             return;
                                         }
                                         return (
                                             <Flex flexDirection={"column"} key={index}>
-                                                <Text>
-                                                    {item.link}
-                                                </Text>
+                                                <Link href={item.link}>
+                                                    <Text>
+                                                        {item.title}
+                                                        <ExternalLinkIcon mx={"2px"}/>
+                                                        / {item.description!.slice(0, 40)} ...
+                                                    </Text>
+                                                </Link>
                                             </Flex>
                                         )
                                     })}
@@ -51,4 +64,12 @@ function Timeline(props: { data: Feed[]; }) {
     );
 }
 
+const ImageRenderer = (props: {
+    url: string
+}) => {
+    return (
+        // <Image src={base64Img} boxSize='30%' rounded={"xl"}/>
+        <Image src={props.url} boxSize='40%' rounded={"xl"}/>
+    )
+}
 export default Timeline;
