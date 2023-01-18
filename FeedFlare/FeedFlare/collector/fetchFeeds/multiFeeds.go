@@ -16,6 +16,10 @@ func MultiFeed(storedList []string) ([]*gofeed.Feed, error) {
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("fetch %s: %v", url, err))
 		}
+
+		// TODO will have functionally to check if the feed is updated or not
+		feed.Items = feed.Items[:5]
+
 		feeds = append(feeds, feed)
 	}
 
