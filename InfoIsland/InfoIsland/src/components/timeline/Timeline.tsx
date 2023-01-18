@@ -15,16 +15,17 @@ function Timeline(props: { data: Feed[]; }) {
                         <Flex flexDirection={"row"} w={"100%"} h={"100%"}>
                             <Container maxW={"100%"} h={"100%"}
                                        color={"#000"} p={"1%"}>
-                                <Flex h={"20%"} w={"80%"}
+                                <Flex h={"20%"} w={"100%"}
                                       flexDirection={"row"}>
-                                    <Link href={feed.link} w={"70%"} h={"100%"}
+                                    <Link href={feed.link} w={"50%"} h={"100%"}
                                           overflowWrap={"break-word"} isExternal>
                                         <Text fontSize={{
                                             base: "xl",
                                             md: "xl",
                                             lg: "xl"
                                         }}>
-                                            &#x1F4DC; {feed.title}
+                                            {/*&#x1F4DC; {feed.title}*/}
+                                            &#x1F58B; {feed.title}
                                             <ExternalLinkIcon mx={"2px"}/>
                                         </Text>
                                     </Link>
@@ -37,6 +38,8 @@ function Timeline(props: { data: Feed[]; }) {
                                     <Text w={"30%"} h={"100%"}>
                                         {feed.published}
                                     </Text>
+                                    {/*<Link w={"20%"} h={"100%"} href={"/insight-stream"}>More*/}
+                                    {/*    feeds ={">"}</Link>*/}
                                 </Flex>
                                 <Flex flexDirection={"column"} p={"1%"}
                                       border={"1px"} borderRadius={"md"}
@@ -49,7 +52,8 @@ function Timeline(props: { data: Feed[]; }) {
                                             <Flex flexDirection={"column"} key={index}>
                                                 <Link href={item.link} isExternal>
                                                     <Text>
-                                                        &#x1F4CC;: {item.title}
+                                                        {/*&#x1F4CC;: {item.title}*/}
+                                                        &#x1F587;: {item.title}
                                                         <ExternalLinkIcon mx={"2px"}/>
                                                         / {item.description!.slice(0, 40)} ...
                                                     </Text>
