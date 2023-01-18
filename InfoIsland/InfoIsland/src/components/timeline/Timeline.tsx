@@ -18,7 +18,7 @@ function Timeline(props: { data: Feed[]; }) {
                                 <Flex h={"20%"} w={"80%"}
                                       flexDirection={"row"}>
                                     <Link href={feed.link} w={"70%"} h={"100%"}
-                                          overflowWrap={"break-word"}>
+                                          overflowWrap={"break-word"} isExternal>
                                         <Text fontSize={{
                                             base: "xl",
                                             md: "2xl",
@@ -44,7 +44,7 @@ function Timeline(props: { data: Feed[]; }) {
                                         }
                                         return (
                                             <Flex flexDirection={"column"} key={index}>
-                                                <Link href={item.link}>
+                                                <Link href={item.link} isExternal>
                                                     <Text>
                                                         {item.title}
                                                         <ExternalLinkIcon mx={"2px"}/>
