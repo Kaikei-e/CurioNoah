@@ -2,8 +2,10 @@ package registerFeed
 
 import (
 	"context"
+	"errors"
 	"feedflare/ent"
 	"feedflare/repository"
+	"fmt"
 	"github.com/mmcdole/gofeed"
 )
 
@@ -23,10 +25,13 @@ func Register(feeds []*gofeed.Feed) error {
 			SetIsFavorite(false).
 			SetIsRead(false).
 			SetIsUpdated(false).
-			SetLink(feed.Link).
-			SetLinks(feed.Links).
+			SetLink(feed.Link)
+		//SetLinks(feed.Links)
 
+	}
 
+	if _, err := client.FollowList.CreateBulk(bulk...).Save(ctx); err != nil {
+		return errors.New(fmt.Sprintf("failed to register feed: %v", err))
 	}
 
 	return nil
