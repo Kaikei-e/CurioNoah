@@ -1,6 +1,6 @@
-import {Container, Flex, Image, Link, Spinner, Text} from "@chakra-ui/react";
+import {Container, Flex, Link, Text} from "@chakra-ui/react";
 import {ExternalLinkIcon} from '@chakra-ui/icons'
-import React, {Suspense} from "react";
+import React from "react";
 import {Feed, Item} from "../../lib/models/feedModel";
 
 function Timeline(props: { data: Feed[]; }) {
@@ -28,11 +28,11 @@ function Timeline(props: { data: Feed[]; }) {
                                             <ExternalLinkIcon mx={"2px"}/>
                                         </Text>
                                     </Link>
-                                    <Flex w={"100%"} h={"100%"}>
-                                        <Suspense fallback={<Spinner/>}>
-                                            <ImageRenderer url={feed.image.url}/>
-                                        </Suspense>
-                                    </Flex>
+                                    {/*<Flex w={"100%"} h={"100%"}>*/}
+                                    {/*    <Suspense fallback={<Spinner/>}>*/}
+                                    {/*        <ImageRenderer url={feed.image.url}/>*/}
+                                    {/*    </Suspense>*/}
+                                    {/*</Flex>*/}
                                 </Flex>
                                 <Text>
                                     {feed.published}
@@ -64,12 +64,12 @@ function Timeline(props: { data: Feed[]; }) {
     );
 }
 
-const ImageRenderer = (props: {
-    url: string
-}) => {
-    return (
-        // <Image src={base64Img} boxSize='30%' rounded={"xl"}/>
-        <Image src={props.url} boxSize='40%' rounded={"xl"}/>
-    )
-}
+// const ImageRenderer = (props: {
+//     url: string
+// }) => {
+//     return (
+//         // <Image src={base64Img} boxSize='30%' rounded={"xl"}/>
+//         <Image src={props.url} boxSize='40%' rounded={"xl"}/>
+//     )
+// }
 export default Timeline;
