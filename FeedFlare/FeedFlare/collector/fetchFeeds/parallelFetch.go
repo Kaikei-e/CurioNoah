@@ -36,6 +36,7 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 		for _, list := range separatedList {
 			paralyzedFeeds, err := paralyzingFetch(list)
 			if err != nil {
+				// TODO have to consider error handling in this go routine
 				fmt.Println(err)
 				errors.New(fmt.Sprintf("failed to parallelize list: %v", err))
 			}
