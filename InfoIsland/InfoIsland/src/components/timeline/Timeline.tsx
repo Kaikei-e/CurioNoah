@@ -54,13 +54,14 @@ function Timeline(props: { data: Feed[]; }) {
                                 </Flex>
                                 <Flex flexDirection={"column"} p={"1%"}
                                       border={"1px"} borderRadius={"md"}
-                                      bgColor={"#fffbfb"}>
+                                      bgColor={"#fffbfb"} mb={"1%"}>
                                     {feed.items.map((item: Item, index: number) => {
-                                        if (index > 5) {
+                                        if (index > 3) {
                                             return;
                                         }
                                         return (
-                                            <Flex flexDirection={"column"} key={index}>
+                                            <Flex flexDirection={"column"} key={index}
+                                                  mb={"1%"}>
                                                 <Link href={item.link} isExternal>
                                                     <Text>
                                                         {/*&#x1F4CC;: {item.title}*/}
