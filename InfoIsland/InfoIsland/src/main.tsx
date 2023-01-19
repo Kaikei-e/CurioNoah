@@ -8,6 +8,7 @@ import {
     RouterProvider,
 } from "react-router-dom";
 import Home from "./home/Home";
+import InsightStreamMain from "./components/InshitStream/InsightStreamMain";
 
 
 const router = createBrowserRouter([
@@ -18,7 +19,12 @@ const router = createBrowserRouter([
     {
         path: "/home",
         element: <Home/>,
+    },
+    {
+        path: "/insight-stream",
+        element: <InsightStreamMain/>,
     }
+
 ]);
 
 const rootElement = document.getElementById('root')
