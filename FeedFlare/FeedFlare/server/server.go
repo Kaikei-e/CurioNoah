@@ -42,7 +42,8 @@ func Server() {
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				e.Logger.Info("stored-all api is called")
 
-				feeds, err := fetchFeeds.MultiFeed(testdata.FeedList)
+				feeds, err := fetchFeeds.ParallelizeFetch(testdata.FeedList)
+				//feeds, err := fetchFeeds.MultiFeed(testdata.FeedList)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe serer is down", err)
 					// TODO FIX: return error
