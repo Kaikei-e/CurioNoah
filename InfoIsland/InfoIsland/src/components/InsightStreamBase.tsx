@@ -7,6 +7,7 @@ import { Feed } from "../lib/models/feedModel";
 const InsightStreamBase = () => {
 
     const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
+    const origin = import.meta.env.VITE_ORIGIN;
 
     const [data, setData] = React.useState<Feed[]>([]);
     const [isLoading, setIsLoading] = React.useState<Boolean>(true);
@@ -15,14 +16,14 @@ const InsightStreamBase = () => {
     useEffect(() => {
         const feeds = async () => {
             const response = await fetch(
-                apiURL + ':9000/api/v1/fetch-feed/stored-all',
+                apiURL + '/fetch-feed/stored-all',
                 {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         // 'Access-Control-Allow-Origin': '*',
-                        'Origin': 'http://localhost:5173'
+                        'Origin': origin
                     },
                 },
             );
