@@ -48,16 +48,6 @@ export const App = () => (
                             rightIcon={<ArrowForwardIcon
                                 boxSize={{base: "xl", md: "2xl", lg: "20px"}}
                             />}
-                        // onPointerEnter={(e) => {
-                        //     e.currentTarget.setAttribute('style', 'background-color: #FFF;');
-                        //     e.currentTarget.setAttribute('style', 'color: #000;');
-                        // }}
-                        //
-                        // onPointerLeave={(e) => {
-                        //     e.currentTarget.setAttribute('style', 'background-color: #000;');
-                        //     e.currentTarget.setAttribute('style', 'color: #FFF;');
-                        // }}
-
                     >
 
                         <Text
