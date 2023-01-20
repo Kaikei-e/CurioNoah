@@ -59,12 +59,12 @@ services:
       context: ./FeedFlare
       dockerfile: Dockerfile
     ports:
-      - '9000:9000'
+      - '9100:9100'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true
     volumes:
-      - './FeedFlare/FeedFlare:/app'
+      - './FeedFlare/FeedFlare:/usr/src/app'
     depends_on:
       - core_database
     networks:
@@ -82,7 +82,7 @@ services:
       timezone: 'Asia/Tokyo'
     tty: true
     volumes:
-      - './InfoIsland/InfoIsland:/app'
+      - './InfoIsland/InfoIsland:/usr/src/app'
     depends_on:
       - core_database
     networks:
@@ -94,11 +94,11 @@ services:
     build:
       context: ./InsightStream
       dockerfile: Dockerfile
-    # ports:
-    #   - '3000:3000'
+    ports:
+      - '9000:9000'
     tty: true
     volumes:
-      - './InsightStream/InsightStream:/app'
+      - './InsightStream/InsightStream:/usr/src/app'
     depends_on:
       - core_database
     networks:
