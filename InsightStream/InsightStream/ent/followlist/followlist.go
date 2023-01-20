@@ -29,6 +29,8 @@ const (
 	FieldLink = "link"
 	// FieldLinks holds the string denoting the links field in the database.
 	FieldLinks = "links"
+	// FieldItemDescription holds the string denoting the item_description field in the database.
+	FieldItemDescription = "item_description"
 	// FieldLanguage holds the string denoting the language field in the database.
 	FieldLanguage = "language"
 	// FieldDtCreated holds the string denoting the dt_created field in the database.
@@ -60,6 +62,7 @@ var Columns = []string{
 	FieldDescription,
 	FieldLink,
 	FieldLinks,
+	FieldItemDescription,
 	FieldLanguage,
 	FieldDtCreated,
 	FieldDtUpdated,

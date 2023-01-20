@@ -3,8 +3,10 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"insightstream/ent/followlist"
+	"insightstream/models/feeds"
 	"strings"
 	"time"
 
@@ -33,6 +35,8 @@ type FollowList struct {
 	Link string `json:"link,omitempty"`
 	// Links holds the value of the "links" field.
 	Links string `json:"links,omitempty"`
+	// ItemDescription holds the value of the "item_description" field.
+	ItemDescription []feeds.FeedItem `json:"item_description,omitempty"`
 	// Language holds the value of the "language" field.
 	Language string `json:"language,omitempty"`
 	// DtCreated holds the value of the "dt_created" field.
@@ -56,6 +60,8 @@ func (*FollowList) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case followlist.FieldItemDescription:
+			values[i] = new([]byte)
 		case followlist.FieldIsActive, followlist.FieldIsFavorite, followlist.FieldIsRead, followlist.FieldIsUpdated:
 			values[i] = new(sql.NullBool)
 		case followlist.FieldID, followlist.FieldXMLVersion, followlist.FieldRssVersion, followlist.FieldFeedCategory:
@@ -134,6 +140,14 @@ func (fl *FollowList) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field links", values[i])
 			} else if value.Valid {
 				fl.Links = value.String
+			}
+		case followlist.FieldItemDescription:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field item_description", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &fl.ItemDescription); err != nil {
+					return fmt.Errorf("unmarshal field item_description: %w", err)
+				}
 			}
 		case followlist.FieldLanguage:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -234,6 +248,9 @@ func (fl *FollowList) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("links=")
 	builder.WriteString(fl.Links)
+	builder.WriteString(", ")
+	builder.WriteString("item_description=")
+	builder.WriteString(fmt.Sprintf("%v", fl.ItemDescription))
 	builder.WriteString(", ")
 	builder.WriteString("language=")
 	builder.WriteString(fl.Language)

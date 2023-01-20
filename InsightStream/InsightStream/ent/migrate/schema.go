@@ -19,6 +19,7 @@ var (
 		{Name: "description", Type: field.TypeString},
 		{Name: "link", Type: field.TypeString},
 		{Name: "links", Type: field.TypeString},
+		{Name: "item_description", Type: field.TypeJSON},
 		{Name: "language", Type: field.TypeString},
 		{Name: "dt_created", Type: field.TypeTime},
 		{Name: "dt_updated", Type: field.TypeTime},

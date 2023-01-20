@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"insightstream/ent/followlist"
 	"insightstream/ent/predicate"
+	"insightstream/models/feeds"
 	"sync"
 	"time"
 
@@ -33,32 +34,34 @@ const (
 // FollowListMutation represents an operation that mutates the FollowList nodes in the graph.
 type FollowListMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *int
-	uuid             *uuid.UUID
-	xml_version      *int8
-	addxml_version   *int8
-	rss_version      *int8
-	addrss_version   *int8
-	url              *string
-	title            *string
-	description      *string
-	link             *string
-	links            *string
-	language         *string
-	dt_created       *time.Time
-	dt_updated       *time.Time
-	feed_category    *int
-	addfeed_category *int
-	is_active        *bool
-	is_favorite      *bool
-	is_read          *bool
-	is_updated       *bool
-	clearedFields    map[string]struct{}
-	done             bool
-	oldValue         func(context.Context) (*FollowList, error)
-	predicates       []predicate.FollowList
+	op                     Op
+	typ                    string
+	id                     *int
+	uuid                   *uuid.UUID
+	xml_version            *int8
+	addxml_version         *int8
+	rss_version            *int8
+	addrss_version         *int8
+	url                    *string
+	title                  *string
+	description            *string
+	link                   *string
+	links                  *string
+	item_description       *[]feeds.FeedItem
+	appenditem_description []feeds.FeedItem
+	language               *string
+	dt_created             *time.Time
+	dt_updated             *time.Time
+	feed_category          *int
+	addfeed_category       *int
+	is_active              *bool
+	is_favorite            *bool
+	is_read                *bool
+	is_updated             *bool
+	clearedFields          map[string]struct{}
+	done                   bool
+	oldValue               func(context.Context) (*FollowList, error)
+	predicates             []predicate.FollowList
 }
 
 var _ ent.Mutation = (*FollowListMutation)(nil)
@@ -487,6 +490,57 @@ func (m *FollowListMutation) ResetLinks() {
 	m.links = nil
 }
 
+// SetItemDescription sets the "item_description" field.
+func (m *FollowListMutation) SetItemDescription(fi []feeds.FeedItem) {
+	m.item_description = &fi
+	m.appenditem_description = nil
+}
+
+// ItemDescription returns the value of the "item_description" field in the mutation.
+func (m *FollowListMutation) ItemDescription() (r []feeds.FeedItem, exists bool) {
+	v := m.item_description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldItemDescription returns the old "item_description" field's value of the FollowList entity.
+// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []feeds.FeedItem, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldItemDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldItemDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldItemDescription: %w", err)
+	}
+	return oldValue.ItemDescription, nil
+}
+
+// AppendItemDescription adds fi to the "item_description" field.
+func (m *FollowListMutation) AppendItemDescription(fi []feeds.FeedItem) {
+	m.appenditem_description = append(m.appenditem_description, fi...)
+}
+
+// AppendedItemDescription returns the list of values that were appended to the "item_description" field in this mutation.
+func (m *FollowListMutation) AppendedItemDescription() ([]feeds.FeedItem, bool) {
+	if len(m.appenditem_description) == 0 {
+		return nil, false
+	}
+	return m.appenditem_description, true
+}
+
+// ResetItemDescription resets all changes to the "item_description" field.
+func (m *FollowListMutation) ResetItemDescription() {
+	m.item_description = nil
+	m.appenditem_description = nil
+}
+
 // SetLanguage sets the "language" field.
 func (m *FollowListMutation) SetLanguage(s string) {
 	m.language = &s
@@ -829,7 +883,7 @@ func (m *FollowListMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FollowListMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 17)
 	if m.uuid != nil {
 		fields = append(fields, followlist.FieldUUID)
 	}
@@ -853,6 +907,9 @@ func (m *FollowListMutation) Fields() []string {
 	}
 	if m.links != nil {
 		fields = append(fields, followlist.FieldLinks)
+	}
+	if m.item_description != nil {
+		fields = append(fields, followlist.FieldItemDescription)
 	}
 	if m.language != nil {
 		fields = append(fields, followlist.FieldLanguage)
@@ -902,6 +959,8 @@ func (m *FollowListMutation) Field(name string) (ent.Value, bool) {
 		return m.Link()
 	case followlist.FieldLinks:
 		return m.Links()
+	case followlist.FieldItemDescription:
+		return m.ItemDescription()
 	case followlist.FieldLanguage:
 		return m.Language()
 	case followlist.FieldDtCreated:
@@ -943,6 +1002,8 @@ func (m *FollowListMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldLink(ctx)
 	case followlist.FieldLinks:
 		return m.OldLinks(ctx)
+	case followlist.FieldItemDescription:
+		return m.OldItemDescription(ctx)
 	case followlist.FieldLanguage:
 		return m.OldLanguage(ctx)
 	case followlist.FieldDtCreated:
@@ -1023,6 +1084,13 @@ func (m *FollowListMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLinks(v)
+		return nil
+	case followlist.FieldItemDescription:
+		v, ok := value.([]feeds.FeedItem)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetItemDescription(v)
 		return nil
 	case followlist.FieldLanguage:
 		v, ok := value.(string)
@@ -1191,6 +1259,9 @@ func (m *FollowListMutation) ResetField(name string) error {
 		return nil
 	case followlist.FieldLinks:
 		m.ResetLinks()
+		return nil
+	case followlist.FieldItemDescription:
+		m.ResetItemDescription()
 		return nil
 	case followlist.FieldLanguage:
 		m.ResetLanguage()

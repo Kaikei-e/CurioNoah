@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"insightstream/ent/followlist"
+	"insightstream/models/feeds"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -90,6 +91,12 @@ func (flc *FollowListCreate) SetLink(s string) *FollowListCreate {
 // SetLinks sets the "links" field.
 func (flc *FollowListCreate) SetLinks(s string) *FollowListCreate {
 	flc.mutation.SetLinks(s)
+	return flc
+}
+
+// SetItemDescription sets the "item_description" field.
+func (flc *FollowListCreate) SetItemDescription(fi []feeds.FeedItem) *FollowListCreate {
+	flc.mutation.SetItemDescription(fi)
 	return flc
 }
 
@@ -300,6 +307,9 @@ func (flc *FollowListCreate) check() error {
 	if _, ok := flc.mutation.Links(); !ok {
 		return &ValidationError{Name: "links", err: errors.New(`ent: missing required field "FollowList.links"`)}
 	}
+	if _, ok := flc.mutation.ItemDescription(); !ok {
+		return &ValidationError{Name: "item_description", err: errors.New(`ent: missing required field "FollowList.item_description"`)}
+	}
 	if _, ok := flc.mutation.Language(); !ok {
 		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "FollowList.language"`)}
 	}
@@ -387,6 +397,10 @@ func (flc *FollowListCreate) createSpec() (*FollowList, *sqlgraph.CreateSpec) {
 	if value, ok := flc.mutation.Links(); ok {
 		_spec.SetField(followlist.FieldLinks, field.TypeString, value)
 		_node.Links = value
+	}
+	if value, ok := flc.mutation.ItemDescription(); ok {
+		_spec.SetField(followlist.FieldItemDescription, field.TypeJSON, value)
+		_node.ItemDescription = value
 	}
 	if value, ok := flc.mutation.Language(); ok {
 		_spec.SetField(followlist.FieldLanguage, field.TypeString, value)

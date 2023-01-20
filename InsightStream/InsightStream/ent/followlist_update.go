@@ -8,10 +8,12 @@ import (
 	"fmt"
 	"insightstream/ent/followlist"
 	"insightstream/ent/predicate"
+	"insightstream/models/feeds"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 )
@@ -112,6 +114,18 @@ func (flu *FollowListUpdate) SetLink(s string) *FollowListUpdate {
 // SetLinks sets the "links" field.
 func (flu *FollowListUpdate) SetLinks(s string) *FollowListUpdate {
 	flu.mutation.SetLinks(s)
+	return flu
+}
+
+// SetItemDescription sets the "item_description" field.
+func (flu *FollowListUpdate) SetItemDescription(fi []feeds.FeedItem) *FollowListUpdate {
+	flu.mutation.SetItemDescription(fi)
+	return flu
+}
+
+// AppendItemDescription appends fi to the "item_description" field.
+func (flu *FollowListUpdate) AppendItemDescription(fi []feeds.FeedItem) *FollowListUpdate {
+	flu.mutation.AppendItemDescription(fi)
 	return flu
 }
 
@@ -306,6 +320,14 @@ func (flu *FollowListUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := flu.mutation.Links(); ok {
 		_spec.SetField(followlist.FieldLinks, field.TypeString, value)
 	}
+	if value, ok := flu.mutation.ItemDescription(); ok {
+		_spec.SetField(followlist.FieldItemDescription, field.TypeJSON, value)
+	}
+	if value, ok := flu.mutation.AppendedItemDescription(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, followlist.FieldItemDescription, value)
+		})
+	}
 	if value, ok := flu.mutation.Language(); ok {
 		_spec.SetField(followlist.FieldLanguage, field.TypeString, value)
 	}
@@ -436,6 +458,18 @@ func (fluo *FollowListUpdateOne) SetLink(s string) *FollowListUpdateOne {
 // SetLinks sets the "links" field.
 func (fluo *FollowListUpdateOne) SetLinks(s string) *FollowListUpdateOne {
 	fluo.mutation.SetLinks(s)
+	return fluo
+}
+
+// SetItemDescription sets the "item_description" field.
+func (fluo *FollowListUpdateOne) SetItemDescription(fi []feeds.FeedItem) *FollowListUpdateOne {
+	fluo.mutation.SetItemDescription(fi)
+	return fluo
+}
+
+// AppendItemDescription appends fi to the "item_description" field.
+func (fluo *FollowListUpdateOne) AppendItemDescription(fi []feeds.FeedItem) *FollowListUpdateOne {
+	fluo.mutation.AppendItemDescription(fi)
 	return fluo
 }
 
@@ -653,6 +687,14 @@ func (fluo *FollowListUpdateOne) sqlSave(ctx context.Context) (_node *FollowList
 	}
 	if value, ok := fluo.mutation.Links(); ok {
 		_spec.SetField(followlist.FieldLinks, field.TypeString, value)
+	}
+	if value, ok := fluo.mutation.ItemDescription(); ok {
+		_spec.SetField(followlist.FieldItemDescription, field.TypeJSON, value)
+	}
+	if value, ok := fluo.mutation.AppendedItemDescription(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, followlist.FieldItemDescription, value)
+		})
 	}
 	if value, ok := fluo.mutation.Language(); ok {
 		_spec.SetField(followlist.FieldLanguage, field.TypeString, value)

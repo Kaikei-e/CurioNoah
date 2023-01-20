@@ -4,10 +4,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mmcdole/gofeed"
-	"insightstream/collector/fetchFeeds"
 	register "insightstream/collector/registerFeed"
-	"insightstream/collector/testdata"
 	"insightstream/ent"
+	"insightstream/repository/readfeed"
+	"insightstream/restorerss"
 )
 
 func Server(cl *ent.Client) {
@@ -46,14 +46,25 @@ func Server(cl *ent.Client) {
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				e.Logger.Info("stored-all api is called")
 
-				feeds, err := fetchFeeds.ParallelizeFetch(testdata.FeedList)
-				//feeds, err := fetchFeeds.MultiFeed(testdata.FeedList)
+				//feeds, err := fetchFeeds.ParallelizeFetch(testdata.FeedList)
+				feedEnt, err := readfeed.QueryByTen(cl)
 				if err != nil {
-					e.Logger.Errorf("error: %v. maybe serer is down", err)
+					e.Logger.Errorf("error: %v. maybe sever is down", err)
 					// TODO FIX: return error
 					err := c.JSON(500, err)
 					if err != nil {
-						e.Logger.Errorf("error: %v. maybe serer is down", err)
+						e.Logger.Errorf("error: %v. maybe sever is down", err)
+
+					}
+				}
+
+				feeds, err := restorerss.FeedExchange(feedEnt)
+				if err != nil {
+					e.Logger.Errorf("error: %v. maybe sever is down", err)
+					// TODO FIX: return error
+					err := c.JSON(500, err)
+					if err != nil {
+						e.Logger.Errorf("error: %v. maybe sever is down", err)
 
 					}
 				}

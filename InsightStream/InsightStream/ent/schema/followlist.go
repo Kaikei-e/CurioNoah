@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
+	"insightstream/models/feeds"
 	"time"
 )
 
@@ -23,6 +24,7 @@ func (FollowList) Fields() []ent.Field {
 		field.String("description"),
 		field.String("link"),
 		field.String("links"),
+		field.JSON("item_description", []feeds.FeedItem{}),
 		field.String("language"),
 		field.Time("dt_created").Default(time.Now()),
 		field.Time("dt_updated").Default(time.Now()),

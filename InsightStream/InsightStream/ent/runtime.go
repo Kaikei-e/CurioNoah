@@ -29,31 +29,31 @@ func init() {
 	// followlist.DefaultRssVersion holds the default value on creation for the rss_version field.
 	followlist.DefaultRssVersion = followlistDescRssVersion.Default.(int8)
 	// followlistDescDtCreated is the schema descriptor for dt_created field.
-	followlistDescDtCreated := followlistFields[9].Descriptor()
+	followlistDescDtCreated := followlistFields[10].Descriptor()
 	// followlist.DefaultDtCreated holds the default value on creation for the dt_created field.
 	followlist.DefaultDtCreated = followlistDescDtCreated.Default.(time.Time)
 	// followlistDescDtUpdated is the schema descriptor for dt_updated field.
-	followlistDescDtUpdated := followlistFields[10].Descriptor()
+	followlistDescDtUpdated := followlistFields[11].Descriptor()
 	// followlist.DefaultDtUpdated holds the default value on creation for the dt_updated field.
 	followlist.DefaultDtUpdated = followlistDescDtUpdated.Default.(time.Time)
 	// followlistDescFeedCategory is the schema descriptor for feed_category field.
-	followlistDescFeedCategory := followlistFields[11].Descriptor()
+	followlistDescFeedCategory := followlistFields[12].Descriptor()
 	// followlist.DefaultFeedCategory holds the default value on creation for the feed_category field.
 	followlist.DefaultFeedCategory = followlistDescFeedCategory.Default.(int)
 	// followlistDescIsActive is the schema descriptor for is_active field.
-	followlistDescIsActive := followlistFields[12].Descriptor()
+	followlistDescIsActive := followlistFields[13].Descriptor()
 	// followlist.DefaultIsActive holds the default value on creation for the is_active field.
 	followlist.DefaultIsActive = followlistDescIsActive.Default.(bool)
 	// followlistDescIsFavorite is the schema descriptor for is_favorite field.
-	followlistDescIsFavorite := followlistFields[13].Descriptor()
+	followlistDescIsFavorite := followlistFields[14].Descriptor()
 	// followlist.DefaultIsFavorite holds the default value on creation for the is_favorite field.
 	followlist.DefaultIsFavorite = followlistDescIsFavorite.Default.(bool)
 	// followlistDescIsRead is the schema descriptor for is_read field.
-	followlistDescIsRead := followlistFields[14].Descriptor()
+	followlistDescIsRead := followlistFields[15].Descriptor()
 	// followlist.DefaultIsRead holds the default value on creation for the is_read field.
 	followlist.DefaultIsRead = followlistDescIsRead.Default.(bool)
 	// followlistDescIsUpdated is the schema descriptor for is_updated field.
-	followlistDescIsUpdated := followlistFields[15].Descriptor()
+	followlistDescIsUpdated := followlistFields[16].Descriptor()
 	// followlist.DefaultIsUpdated holds the default value on creation for the is_updated field.
 	followlist.DefaultIsUpdated = followlistDescIsUpdated.Default.(bool)
 }

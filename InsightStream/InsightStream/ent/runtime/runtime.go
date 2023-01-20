@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in feedflare/ent/runtime.go
+// The schema-stitching logic is generated in insightstream/ent/runtime.go
 
 const (
 	Version = "v0.11.5"                                         // Version of ent codegen.
