@@ -2,6 +2,7 @@ package registerFeed
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/mmcdole/gofeed"
@@ -9,12 +10,25 @@ import (
 	"insightstream/repository"
 )
 
-func RegisterSingle(feed *gofeed.Feed) error {
-	client := repository.InitConnection()
+// TODO will implement unit tests
+func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
+	//client := repository.InitConnection()
+
+	var links []string
+	for _, item := range feed.Items {
+		for _, link := range item.Links {
+			links = append(links, link)
+		}
+	}
+
+	flattenLinks, err := json.Marshal(links)
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to marshal links: %v", err))
+	}
 
 	ctx := context.Background()
 
-	_, err := client.FollowList.Create().
+	_, err = cl.FollowList.Create().
 		SetTitle(feed.Title).
 		SetURL(feed.Link).
 		SetDescription(feed.Description).
@@ -23,7 +37,9 @@ func RegisterSingle(feed *gofeed.Feed) error {
 		SetIsFavorite(false).
 		SetIsRead(false).
 		SetIsUpdated(false).
-		SetLink(feed.Link).Save(ctx)
+		SetLink(feed.Link).
+		SetLinks(string(flattenLinks)).
+		Save(ctx)
 
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to register feed: %v", err))
@@ -32,7 +48,8 @@ func RegisterSingle(feed *gofeed.Feed) error {
 	return nil
 }
 
-func RegisterMulti(feeds []*gofeed.Feed) error {
+// TODO will implement unit tests
+func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error {
 	client := repository.InitConnection()
 
 	ctx := context.Background()

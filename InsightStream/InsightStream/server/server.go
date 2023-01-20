@@ -7,9 +7,10 @@ import (
 	"insightstream/collector/fetchFeeds"
 	register "insightstream/collector/registerFeed"
 	"insightstream/collector/testdata"
+	"insightstream/ent"
 )
 
-func Server() {
+func Server(cl *ent.Client) {
 	e := echo.New()
 	e.Use(middleware.Logger())
 
@@ -82,7 +83,7 @@ func Server() {
 		registerFeed := apiV1.Group("/register-feed")
 		registerFeed.Use()
 		{
-			register.RegisterHandler(registerFeed)
+			register.RegisterHandler(registerFeed, cl)
 
 		}
 	}

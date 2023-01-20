@@ -5,17 +5,19 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"insightstream/collector/fetchFeeds"
-	"insightstream/models/request"
+	"insightstream/ent"
+	"insightstream/models/apiexcahnge"
 )
 
-func RegisterHandler(g *echo.Group) {
+// TODO will implement unit tests
+func RegisterHandler(g *echo.Group, cl *ent.Client) {
 	register := g.Group("/store")
 	register.Use()
 	{
 		register.POST("/single", func(c echo.Context) error {
 			c.Logger().Info("single api is called")
 
-			sf := new(request.SingleFeed)
+			sf := new(apiexcahnge.FeedRegister)
 
 			if err := c.Bind(sf); err != nil {
 				c.Logger().Errorf("error in bind: %v", err)
@@ -30,7 +32,7 @@ func RegisterHandler(g *echo.Group) {
 				return errors.New(fmt.Sprintf("fetch %s: %v", sf.URL, err))
 			}
 
-			err = RegisterSingle(feeds[0])
+			err = RegisterSingle(feeds[0], cl)
 			if err != nil {
 				c.Logger().Errorf("error in register feed: %v", err)
 				return errors.New(fmt.Sprintf("register %s: %v", sf.URL, err))

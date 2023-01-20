@@ -9,6 +9,8 @@ import (
 )
 
 func MultiFeed(storedList []string) ([]*gofeed.Feed, error) {
+	fmt.Printf("storedList: %v \n", storedList)
+
 	var feeds []*gofeed.Feed
 
 	for _, url := range storedList {
