@@ -10,7 +10,11 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - './load_balancer:/usr/share/nginx/html'
+      - ./load_balancer:/usr/share/nginx/html
+      - ./load_balancer/config/nginx.conf:/etc/nginx.conf
+      - ./load_balancer/nginx:/var/www/html
+    environment:
+      - NGINX_HOST=curionoah.com
     networks:
       app-network:
         ipv4_address: 192.168.100.20
@@ -130,7 +134,7 @@ services:
       - '3306:3306'
     tty: true
     volumes:
-      - './mysql/data:/var/lib/mysql'
+      - './CoreDatabase/mysql/data:/var/lib/mysql'
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
