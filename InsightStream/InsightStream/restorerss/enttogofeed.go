@@ -20,12 +20,42 @@ func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
 			return nil, errors.New(fmt.Sprintf("failed to unmarshal links: %v", err))
 		}
 
+		var items []*gofeed.Item
+		var authors []*gofeed.Person
+		for _, item := range feed.ItemDescription {
+
+			if len(item.Authors) > 0 {
+				for _, author := range item.Authors {
+					a := &gofeed.Person{
+						Name:  author,
+						Email: "",
+					}
+
+					authors = append(authors, a)
+				}
+			}
+
+			items = append(items, &gofeed.Item{
+				Title:           item.ItemTitle,
+				Link:            item.ItemLink,
+				Description:     item.ItemDescription,
+				Updated:         item.Updated,
+				UpdatedParsed:   item.UpdatedParsed,
+				Published:       item.Published,
+				PublishedParsed: item.PublishedParsed,
+				Authors:         authors,
+				GUID:            item.GUID,
+				Categories:      item.Categories,
+			})
+		}
+
 		feedList = append(feedList, &gofeed.Feed{
 			Title:       feed.Title,
 			Description: feed.Description,
 			Link:        feed.Link,
 			Language:    feed.Language,
 			Links:       links,
+			Items:       items,
 		})
 	}
 

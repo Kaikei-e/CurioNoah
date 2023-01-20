@@ -43,6 +43,7 @@ func Server(cl *ent.Client) {
 		fetchFeed := apiV1.Group("/fetch-feed")
 		fetchFeed.Use()
 		{
+			// TODO will rotate the logics to small functions
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				e.Logger.Info("stored-all api is called")
 
