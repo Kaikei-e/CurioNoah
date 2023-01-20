@@ -13,6 +13,7 @@ services:
       - ./load_balancer:/usr/share/nginx/html
       - ./load_balancer/config/nginx.conf:/etc/nginx.conf
       - ./load_balancer/nginx:/var/www/html
+      - ./load_balancer/app:/var/www/app
     environment:
       NGINX_HOST: 'curionoah.com'
     networks:
@@ -36,8 +37,7 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.15
-    expose:
-      - "5173:5173"
+    
 
   curiosity:
     # Explorer by Curiosity
@@ -82,6 +82,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - '5173:5173'
+      - '4173:4173'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true

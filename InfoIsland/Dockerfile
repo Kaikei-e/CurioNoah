@@ -7,4 +7,4 @@ RUN yarn set version stable && \
   yarn install && \
   yarn build
 
-EXPOSE 5173
+EXPOSE 5173 4173
