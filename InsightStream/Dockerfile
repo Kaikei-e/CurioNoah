@@ -1,7 +1,6 @@
-FROM openjdk:20
-COPY ./InsightStream /usr/src/myapp
-# WORKDIR /usr/src/myapp
-# RUN javac Main.java
-# CMD ["java", "Main"]
+FROM golang:1.19.5-bullseye
 
-EXPOSE 3000
+ADD ./InsightStream /usr/src/app
+
+
+EXPOSE 9000
