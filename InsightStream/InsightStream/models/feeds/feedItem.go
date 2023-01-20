@@ -14,7 +14,6 @@ type FeedItem struct {
 	UpdatedParsed   *time.Time `json:"updated_parsed,omitempty"`
 	Published       string     `json:"published,omitempty"`
 	PublishedParsed *time.Time `json:"published_parsed,omitempty"`
-	Author          string     `json:"author,omitempty"`
 	Authors         []string   `json:"authors,omitempty"`
 	GUID            string     `json:"guid,omitempty"`
 	Categories      []string   `json:"categories,omitempty"`

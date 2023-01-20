@@ -44,7 +44,6 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 			UpdatedParsed:   item.UpdatedParsed,
 			Published:       item.Published,
 			PublishedParsed: item.PublishedParsed,
-			Author:          item.Author.Name,
 			Authors:         authors,
 			GUID:            item.GUID,
 			Categories:      item.Categories,
