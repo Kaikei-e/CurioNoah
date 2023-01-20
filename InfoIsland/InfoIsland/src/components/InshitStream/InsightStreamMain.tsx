@@ -6,6 +6,7 @@ import {
     TableContainer,
 } from "@chakra-ui/react";
 import React from "react";
+import AddFeed from "./AddFeed";
 
 const InsightStreamMain = () => {
     return (
@@ -73,14 +74,20 @@ const InsightStreamMain = () => {
                     </Flex>
                 </Flex>
             </Flex>
-            <Flex flexDirection={"column"}
-                  w={"80%"} h={"100%"}
+            <Flex flexDirection={"row"}
+                  w={"100%"} h={"100%"}
                   bgColor={"#88A6B1"} p={"2%"}>
                 <Flex flexDirection={"column"}
                       w={"70%"} h={"100%"}
                       bgColor={"#EAF2F8"}
                       rounded={"xl"} p={"2%"}
                 >
+                </Flex>
+                <Flex w={"25%"} h={"40%"}
+                      rounded={"xl"} p={"2%"} ml={"5%"}
+                      border={"1px solid #000"} shadow={"md"}
+                >
+                    <AddFeed/>
                 </Flex>
             </Flex>
 
