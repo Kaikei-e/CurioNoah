@@ -1,10 +1,12 @@
-import React, {useEffect} from 'react';
-import {Flex, Spinner} from "@chakra-ui/react";
+import React, { useEffect } from 'react';
+import { Flex, Spinner } from "@chakra-ui/react";
 import Timeline from "./timeline/Timeline";
-import {Feed} from "../lib/models/feedModel";
+import { Feed } from "../lib/models/feedModel";
 
-// make this function to return boolean
+
 const InsightStreamBase = () => {
+
+    const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
 
     const [data, setData] = React.useState<Feed[]>([]);
     const [isLoading, setIsLoading] = React.useState<Boolean>(true);
@@ -13,7 +15,7 @@ const InsightStreamBase = () => {
     useEffect(() => {
         const feeds = async () => {
             const response = await fetch(
-                'http://localhost:9000/api/v1/fetch-feed/stored-all',
+                apiURL + ':9000/api/v1/fetch-feed/stored-all',
                 {
                     method: 'GET',
                     headers: {
@@ -38,17 +40,17 @@ const InsightStreamBase = () => {
     let displayData;
 
     if (!isLoading) {
-        displayData = <Timeline data={data}/>
+        displayData = <Timeline data={data} />
     } else if (error) {
         displayData = <div>Something went wrong ...</div>
     } else {
-        displayData = <FetchingFeeds/>
+        displayData = <FetchingFeeds />
     }
 
     return (
         <Flex flexDirection={"column"} w={"100%"} h={"100%"}
-              bgColor={"#EAF2F8"} rounded={"xl"}
-              overflow={"scroll"} overflowX={"hidden"}>
+            bgColor={"#EAF2F8"} rounded={"xl"}
+            overflow={"scroll"} overflowX={"hidden"}>
             {displayData}
         </Flex>
     );
@@ -58,7 +60,7 @@ const InsightStreamBase = () => {
 function FetchingFeeds() {
     return (
         <Flex flexDirection={"column"}
-              w={"100%"} h={"100%"}>
+            w={"100%"} h={"100%"}>
             <Spinner
                 thickness='4px'
                 speed='0.65s'
