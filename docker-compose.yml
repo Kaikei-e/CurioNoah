@@ -32,6 +32,8 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.15
+    expose:
+      - "5173:5173"
 
   curiosity:
     # Explorer by Curiosity
@@ -62,7 +64,7 @@ services:
       timezone: 'Asia/Tokyo'
     tty: true
     volumes:
-      - './feedFlare:/app'
+      - './FeedFlare/FeedFlare:/app'
     depends_on:
       - core_database
     networks:
@@ -80,7 +82,7 @@ services:
       timezone: 'Asia/Tokyo'
     tty: true
     volumes:
-      - './infoIsland:/app'
+      - './InfoIsland/InfoIsland:/app'
     depends_on:
       - core_database
     networks:
