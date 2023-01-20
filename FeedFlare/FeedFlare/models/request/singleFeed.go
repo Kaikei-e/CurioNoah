@@ -1,5 +1,6 @@
 package request
 
 type SingleFeed struct {
-	URL string `json:"url" ,validate:"required,url"`
+	URL    string `json:"url" ,validate:"required,url"`
+	UserID string `json:"user_id"`
 }

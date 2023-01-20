@@ -4,9 +4,9 @@ package ent
 
 import (
 	"context"
-	"feedflare/ent/followlist"
-	"feedflare/ent/predicate"
 	"fmt"
+	"insightstream/ent/followlist"
+	"insightstream/ent/predicate"
 	"math"
 
 	"entgo.io/ent/dialect/sql"

@@ -3,7 +3,7 @@
 package user
 
 import (
-	"feedflare/ent/predicate"
+	"insightstream/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
 )

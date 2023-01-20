@@ -3,8 +3,8 @@
 package ent
 
 import (
-	"feedflare/ent/followlist"
-	"feedflare/ent/schema"
+	"insightstream/ent/followlist"
+	"insightstream/ent/schema"
 	"time"
 
 	"github.com/google/uuid"

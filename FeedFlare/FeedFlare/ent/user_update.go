@@ -5,9 +5,9 @@ package ent
 import (
 	"context"
 	"errors"
-	"feedflare/ent/predicate"
-	"feedflare/ent/user"
 	"fmt"
+	"insightstream/ent/predicate"
+	"insightstream/ent/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"

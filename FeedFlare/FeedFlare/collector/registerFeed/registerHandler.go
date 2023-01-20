@@ -2,10 +2,10 @@ package registerFeed
 
 import (
 	"errors"
-	"feedflare/collector/fetchFeeds"
-	"feedflare/models/request"
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"insightstream/collector/fetchFeeds"
+	"insightstream/models/request"
 )
 
 func RegisterHandler(g *echo.Group) {
@@ -13,6 +13,7 @@ func RegisterHandler(g *echo.Group) {
 	register.Use()
 	{
 		register.POST("/single", func(c echo.Context) error {
+			c.Logger().Info("single api is called")
 
 			sf := new(request.SingleFeed)
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"feedflare/server"
+	"insightstream/server"
 )
 
 func main() {

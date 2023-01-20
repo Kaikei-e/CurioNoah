@@ -4,11 +4,11 @@ package enttest
 
 import (
 	"context"
-	"feedflare/ent"
+	"insightstream/ent"
 	// required by schema hooks.
-	_ "feedflare/ent/runtime"
+	_ "insightstream/ent/runtime"
 
-	"feedflare/ent/migrate"
+	"insightstream/ent/migrate"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

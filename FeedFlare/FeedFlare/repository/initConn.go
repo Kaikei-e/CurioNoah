@@ -2,9 +2,10 @@ package repository
 
 import (
 	"context"
-	"feedflare/ent"
+	"fmt"
 	"github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+	"insightstream/ent"
 	"log"
 	"os"
 	"time"
@@ -56,7 +57,7 @@ func InitConnection() *ent.Client {
 
 	//defer client.Close()
 
-	log.Println("connected to mysql database")
+	fmt.Println("connected to mysql database")
 
 	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)

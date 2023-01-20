@@ -1,12 +1,12 @@
 package server
 
 import (
-	"feedflare/collector/fetchFeeds"
-	register "feedflare/collector/registerFeed"
-	"feedflare/collector/testdata"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mmcdole/gofeed"
+	"insightstream/collector/fetchFeeds"
+	register "insightstream/collector/registerFeed"
+	"insightstream/collector/testdata"
 )
 
 func Server() {
@@ -22,7 +22,9 @@ func Server() {
 
 	corsConfig := middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:5173", "http://127.0.0.1:5173",
-			"http://localhost:4173", "http://127.0.0.1:4173"},
+			"http://localhost:4173", "http://127.0.0.1:4173",
+			"http://192.168.100.4:5173", "http://192.168.100.4:4173",
+		},
 		AllowHeaders: []string{
 			echo.HeaderOrigin,
 			echo.HeaderContentType,

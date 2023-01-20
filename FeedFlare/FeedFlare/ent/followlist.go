@@ -3,8 +3,8 @@
 package ent
 
 import (
-	"feedflare/ent/followlist"
 	"fmt"
+	"insightstream/ent/followlist"
 	"strings"
 	"time"
 

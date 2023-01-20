@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 
-	"feedflare/ent/migrate"
+	"insightstream/ent/migrate"
 
-	"feedflare/ent/followlist"
-	"feedflare/ent/user"
+	"insightstream/ent/followlist"
+	"insightstream/ent/user"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

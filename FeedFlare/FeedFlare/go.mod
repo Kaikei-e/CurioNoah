@@ -1,4 +1,4 @@
-module feedflare
+module insightstream
 
 go 1.19
 

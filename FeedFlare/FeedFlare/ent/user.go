@@ -3,8 +3,8 @@
 package ent
 
 import (
-	"feedflare/ent/user"
 	"fmt"
+	"insightstream/ent/user"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"

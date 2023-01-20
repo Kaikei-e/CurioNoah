@@ -3,10 +3,10 @@ package registerFeed
 import (
 	"context"
 	"errors"
-	"feedflare/ent"
-	"feedflare/repository"
 	"fmt"
 	"github.com/mmcdole/gofeed"
+	"insightstream/ent"
+	"insightstream/repository"
 )
 
 func RegisterSingle(feed *gofeed.Feed) error {

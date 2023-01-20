@@ -3,7 +3,7 @@
 package followlist
 
 import (
-	"feedflare/ent/predicate"
+	"insightstream/ent/predicate"
 	"time"
 
 	"entgo.io/ent/dialect/sql"

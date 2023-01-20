@@ -5,9 +5,9 @@ package ent
 import (
 	"context"
 	"errors"
-	"feedflare/ent/followlist"
-	"feedflare/ent/predicate"
 	"fmt"
+	"insightstream/ent/followlist"
+	"insightstream/ent/predicate"
 	"sync"
 	"time"
 

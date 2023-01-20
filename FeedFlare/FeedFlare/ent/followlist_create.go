@@ -5,8 +5,8 @@ package ent
 import (
 	"context"
 	"errors"
-	"feedflare/ent/followlist"
 	"fmt"
+	"insightstream/ent/followlist"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"

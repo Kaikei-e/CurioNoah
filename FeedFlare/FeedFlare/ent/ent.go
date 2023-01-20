@@ -5,9 +5,9 @@ package ent
 import (
 	"context"
 	"errors"
-	"feedflare/ent/followlist"
-	"feedflare/ent/user"
 	"fmt"
+	"insightstream/ent/followlist"
+	"insightstream/ent/user"
 	"reflect"
 
 	"entgo.io/ent"

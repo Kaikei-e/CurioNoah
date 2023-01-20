@@ -2,8 +2,8 @@ package fetchFeeds
 
 import (
 	"errors"
-	"feedflare/collector"
 	"fmt"
+	"insightstream/collector"
 
 	"github.com/mmcdole/gofeed"
 )

@@ -4,8 +4,8 @@ package hook
 
 import (
 	"context"
-	"feedflare/ent"
 	"fmt"
+	"insightstream/ent"
 )
 
 // The FollowListFunc type is an adapter to allow the use of ordinary

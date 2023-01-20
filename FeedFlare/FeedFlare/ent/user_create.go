@@ -4,8 +4,8 @@ package ent
 
 import (
 	"context"
-	"feedflare/ent/user"
 	"fmt"
+	"insightstream/ent/user"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
