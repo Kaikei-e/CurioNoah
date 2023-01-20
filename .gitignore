@@ -5,6 +5,8 @@
 .DS_Store
 *.log
 .vscode
-/mysql
+/CoreDatabase/mysql
 *.xml
 InfoIsland/InfoIsland/.yarn/install-state.gz
+
+/load_balancer/nginx/
