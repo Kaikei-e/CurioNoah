@@ -2,6 +2,7 @@ package server
 
 import (
 	"feedflare/collector/fetchFeeds"
+	register "feedflare/collector/registerFeed"
 	"feedflare/collector/testdata"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -47,8 +48,11 @@ func Server() {
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe serer is down", err)
 					// TODO FIX: return error
-					c.JSON(500, err)
-					return err
+					err := c.JSON(500, err)
+					if err != nil {
+						e.Logger.Errorf("error: %v. maybe serer is down", err)
+
+					}
 				}
 
 				e.Logger.Infof("feeds were fetched: feed number is %v", len(feeds))
@@ -76,16 +80,8 @@ func Server() {
 		registerFeed := apiV1.Group("/register-feed")
 		registerFeed.Use()
 		{
-			err := apiV1.POST("/feeds", func(c echo.Context) error {
-				e.Logger.Info("registerFeed api is called")
+			register.RegisterHandler(registerFeed)
 
-				return c.String(200, "registerFeed api is called")
-
-			})
-			if err != nil {
-				e.Logger.Errorf("failed to registerFeed feed. error: %v.", err)
-
-			}
 		}
 	}
 

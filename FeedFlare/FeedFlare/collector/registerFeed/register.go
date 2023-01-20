@@ -9,7 +9,30 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
-func Register(feeds []*gofeed.Feed) error {
+func RegisterSingle(feed *gofeed.Feed) error {
+	client := repository.InitConnection()
+
+	ctx := context.Background()
+
+	_, err := client.FollowList.Create().
+		SetTitle(feed.Title).
+		SetURL(feed.Link).
+		SetDescription(feed.Description).
+		SetLanguage(feed.Language).
+		SetIsActive(true).
+		SetIsFavorite(false).
+		SetIsRead(false).
+		SetIsUpdated(false).
+		SetLink(feed.Link).Save(ctx)
+
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to register feed: %v", err))
+	}
+
+	return nil
+}
+
+func RegisterMulti(feeds []*gofeed.Feed) error {
 	client := repository.InitConnection()
 
 	ctx := context.Background()
