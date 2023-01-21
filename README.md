@@ -3,6 +3,47 @@ CurioNoah is a set of applications that arouse curiosity and help you explore th
 
 ***Cloning and building the environment from scratch is too much work, so it will be improved.***
 
+## Setting up
+
+First, place the three .env files.
+The variables are example. So you can configure it.
+
+/.env
+
+```
+MYSQL_ROOT_PASSWORD="testthisisatest"
+MYSQL_DATABASE="curio_noah"
+MYSQL_USER="userhogehoge"
+MYSQL_PASSWORD="testthisisatesttestestest"
+```
+
+
+<br/>
+
+/InfoIsland/InfoIsland/.env
+
+```
+VITE_INSIGHT_STREAM="http://curionoah.com:9000/api/v1"
+# VITE_ORIGIN="http://curionoah.com:5173"
+VITE_ORIGIN="http://curionoah.com:4173"
+```
+
+<br/>
+
+/InsightStream/InsightStream/.env
+
+
+```
+MYSQL_USER="userhogehoge"
+MYSQL_PASSWORD="testthisisatest"
+MYSQL_DATABASE="curio_noah"
+MYSQL_ADDR="192.168.100.10:3306"
+NET_TYPE="tcp"
+```
+
+
+<br/>
+
 
 ## Why am I working on this project?
 
