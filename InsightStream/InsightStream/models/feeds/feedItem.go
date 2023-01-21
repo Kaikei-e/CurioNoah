@@ -1,8 +1,9 @@
 package feeds
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type FeedItem struct {
@@ -17,4 +18,8 @@ type FeedItem struct {
 	Authors         []string   `json:"authors,omitempty"`
 	GUID            string     `json:"guid,omitempty"`
 	Categories      []string   `json:"categories,omitempty"`
+}
+
+type FeedLink struct {
+	Link []string `json:"links"`
 }

@@ -2,7 +2,6 @@ package registerFeed
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -23,10 +22,13 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 		}
 	}
 
-	flattenLinks, err := json.Marshal(links)
-	if err != nil {
-		return errors.New(fmt.Sprintf("failed to marshal links: %v", err))
-	}
+	var linksJson feeds.FeedLink
+	linksJson.Link = links
+
+	//flattenLinks, err := json.Marshal(links)
+	//if err != nil {
+	//	return errors.New(fmt.Sprintf("failed to marshal links: %v", err))
+	//}
 
 	var fis []feeds.FeedItem
 	for _, item := range feed.Items {
@@ -52,7 +54,7 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 
 	ctx := context.Background()
 
-	_, err = cl.FollowList.Create().
+	_, err := cl.FollowList.Create().
 		SetTitle(feed.Title).
 		SetURL(feed.Link).
 		SetDescription(feed.Description).
@@ -63,7 +65,7 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 		SetIsRead(false).
 		SetIsUpdated(false).
 		SetLink(feed.Link).
-		SetLinks(string(flattenLinks)).
+		SetLinks(linksJson).
 		Save(ctx)
 
 	if err != nil {

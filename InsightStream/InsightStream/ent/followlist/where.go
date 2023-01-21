@@ -90,11 +90,6 @@ func Link(v string) predicate.FollowList {
 	return predicate.FollowList(sql.FieldEQ(FieldLink, v))
 }
 
-// Links applies equality check predicate on the "links" field. It's identical to LinksEQ.
-func Links(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldEQ(FieldLinks, v))
-}
-
 // Language applies equality check predicate on the "language" field. It's identical to LanguageEQ.
 func Language(v string) predicate.FollowList {
 	return predicate.FollowList(sql.FieldEQ(FieldLanguage, v))
@@ -513,71 +508,6 @@ func LinkEqualFold(v string) predicate.FollowList {
 // LinkContainsFold applies the ContainsFold predicate on the "link" field.
 func LinkContainsFold(v string) predicate.FollowList {
 	return predicate.FollowList(sql.FieldContainsFold(FieldLink, v))
-}
-
-// LinksEQ applies the EQ predicate on the "links" field.
-func LinksEQ(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldEQ(FieldLinks, v))
-}
-
-// LinksNEQ applies the NEQ predicate on the "links" field.
-func LinksNEQ(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldNEQ(FieldLinks, v))
-}
-
-// LinksIn applies the In predicate on the "links" field.
-func LinksIn(vs ...string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldIn(FieldLinks, vs...))
-}
-
-// LinksNotIn applies the NotIn predicate on the "links" field.
-func LinksNotIn(vs ...string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldNotIn(FieldLinks, vs...))
-}
-
-// LinksGT applies the GT predicate on the "links" field.
-func LinksGT(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldGT(FieldLinks, v))
-}
-
-// LinksGTE applies the GTE predicate on the "links" field.
-func LinksGTE(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldGTE(FieldLinks, v))
-}
-
-// LinksLT applies the LT predicate on the "links" field.
-func LinksLT(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldLT(FieldLinks, v))
-}
-
-// LinksLTE applies the LTE predicate on the "links" field.
-func LinksLTE(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldLTE(FieldLinks, v))
-}
-
-// LinksContains applies the Contains predicate on the "links" field.
-func LinksContains(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldContains(FieldLinks, v))
-}
-
-// LinksHasPrefix applies the HasPrefix predicate on the "links" field.
-func LinksHasPrefix(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldHasPrefix(FieldLinks, v))
-}
-
-// LinksHasSuffix applies the HasSuffix predicate on the "links" field.
-func LinksHasSuffix(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldHasSuffix(FieldLinks, v))
-}
-
-// LinksEqualFold applies the EqualFold predicate on the "links" field.
-func LinksEqualFold(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldEqualFold(FieldLinks, v))
-}
-
-// LinksContainsFold applies the ContainsFold predicate on the "links" field.
-func LinksContainsFold(v string) predicate.FollowList {
-	return predicate.FollowList(sql.FieldContainsFold(FieldLinks, v))
 }
 
 // LanguageEQ applies the EQ predicate on the "language" field.

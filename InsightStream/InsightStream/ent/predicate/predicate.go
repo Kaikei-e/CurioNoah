@@ -9,5 +9,5 @@ import (
 // FollowList is the predicate function for followlist builders.
 type FollowList func(*sql.Selector)
 
-// User is the predicate function for user builders.
-type User func(*sql.Selector)
+// Users is the predicate function for users builders.
+type Users func(*sql.Selector)

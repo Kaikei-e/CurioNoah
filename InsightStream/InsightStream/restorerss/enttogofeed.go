@@ -1,9 +1,6 @@
 package restorerss
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
 	"github.com/mmcdole/gofeed"
 	"insightstream/ent"
 )
@@ -13,12 +10,6 @@ func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
 
 	var feedList []*gofeed.Feed
 	for _, feed := range feedsEnt {
-		var links []string
-
-		err := json.Unmarshal([]byte(feed.Links), &links)
-		if err != nil {
-			return nil, errors.New(fmt.Sprintf("failed to unmarshal links: %v", err))
-		}
 
 		var items []*gofeed.Item
 		var authors []*gofeed.Person
@@ -54,7 +45,7 @@ func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
 			Description: feed.Description,
 			Link:        feed.Link,
 			Language:    feed.Language,
-			Links:       links,
+			Links:       feed.Links.Link,
 			Items:       items,
 		})
 	}

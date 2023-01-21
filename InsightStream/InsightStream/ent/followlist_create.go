@@ -89,8 +89,8 @@ func (flc *FollowListCreate) SetLink(s string) *FollowListCreate {
 }
 
 // SetLinks sets the "links" field.
-func (flc *FollowListCreate) SetLinks(s string) *FollowListCreate {
-	flc.mutation.SetLinks(s)
+func (flc *FollowListCreate) SetLinks(fl feeds.FeedLink) *FollowListCreate {
+	flc.mutation.SetLinks(fl)
 	return flc
 }
 
@@ -395,7 +395,7 @@ func (flc *FollowListCreate) createSpec() (*FollowList, *sqlgraph.CreateSpec) {
 		_node.Link = value
 	}
 	if value, ok := flc.mutation.Links(); ok {
-		_spec.SetField(followlist.FieldLinks, field.TypeString, value)
+		_spec.SetField(followlist.FieldLinks, field.TypeJSON, value)
 		_node.Links = value
 	}
 	if value, ok := flc.mutation.ItemDescription(); ok {

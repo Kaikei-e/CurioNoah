@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"insightstream/ent/predicate"
-	"insightstream/ent/user"
+	"insightstream/ent/users"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
@@ -14,8 +14,8 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// UserQuery is the builder for querying User entities.
-type UserQuery struct {
+// UsersQuery is the builder for querying Users entities.
+type UsersQuery struct {
 	config
 	limit      *int
 	offset     *int
@@ -23,58 +23,58 @@ type UserQuery struct {
 	order      []OrderFunc
 	fields     []string
 	inters     []Interceptor
-	predicates []predicate.User
+	predicates []predicate.Users
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the UserQuery builder.
-func (uq *UserQuery) Where(ps ...predicate.User) *UserQuery {
+// Where adds a new predicate for the UsersQuery builder.
+func (uq *UsersQuery) Where(ps ...predicate.Users) *UsersQuery {
 	uq.predicates = append(uq.predicates, ps...)
 	return uq
 }
 
 // Limit the number of records to be returned by this query.
-func (uq *UserQuery) Limit(limit int) *UserQuery {
+func (uq *UsersQuery) Limit(limit int) *UsersQuery {
 	uq.limit = &limit
 	return uq
 }
 
 // Offset to start from.
-func (uq *UserQuery) Offset(offset int) *UserQuery {
+func (uq *UsersQuery) Offset(offset int) *UsersQuery {
 	uq.offset = &offset
 	return uq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (uq *UserQuery) Unique(unique bool) *UserQuery {
+func (uq *UsersQuery) Unique(unique bool) *UsersQuery {
 	uq.unique = &unique
 	return uq
 }
 
 // Order specifies how the records should be ordered.
-func (uq *UserQuery) Order(o ...OrderFunc) *UserQuery {
+func (uq *UsersQuery) Order(o ...OrderFunc) *UsersQuery {
 	uq.order = append(uq.order, o...)
 	return uq
 }
 
-// First returns the first User entity from the query.
-// Returns a *NotFoundError when no User was found.
-func (uq *UserQuery) First(ctx context.Context) (*User, error) {
-	nodes, err := uq.Limit(1).All(newQueryContext(ctx, TypeUser, "First"))
+// First returns the first Users entity from the query.
+// Returns a *NotFoundError when no Users was found.
+func (uq *UsersQuery) First(ctx context.Context) (*Users, error) {
+	nodes, err := uq.Limit(1).All(newQueryContext(ctx, TypeUsers, "First"))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{user.Label}
+		return nil, &NotFoundError{users.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (uq *UserQuery) FirstX(ctx context.Context) *User {
+func (uq *UsersQuery) FirstX(ctx context.Context) *Users {
 	node, err := uq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -82,22 +82,22 @@ func (uq *UserQuery) FirstX(ctx context.Context) *User {
 	return node
 }
 
-// FirstID returns the first User ID from the query.
-// Returns a *NotFoundError when no User ID was found.
-func (uq *UserQuery) FirstID(ctx context.Context) (id int, err error) {
+// FirstID returns the first Users ID from the query.
+// Returns a *NotFoundError when no Users ID was found.
+func (uq *UsersQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = uq.Limit(1).IDs(newQueryContext(ctx, TypeUser, "FirstID")); err != nil {
+	if ids, err = uq.Limit(1).IDs(newQueryContext(ctx, TypeUsers, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{user.Label}
+		err = &NotFoundError{users.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (uq *UserQuery) FirstIDX(ctx context.Context) int {
+func (uq *UsersQuery) FirstIDX(ctx context.Context) int {
 	id, err := uq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -105,11 +105,11 @@ func (uq *UserQuery) FirstIDX(ctx context.Context) int {
 	return id
 }
 
-// Only returns a single User entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one User entity is found.
-// Returns a *NotFoundError when no User entities are found.
-func (uq *UserQuery) Only(ctx context.Context) (*User, error) {
-	nodes, err := uq.Limit(2).All(newQueryContext(ctx, TypeUser, "Only"))
+// Only returns a single Users entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Users entity is found.
+// Returns a *NotFoundError when no Users entities are found.
+func (uq *UsersQuery) Only(ctx context.Context) (*Users, error) {
+	nodes, err := uq.Limit(2).All(newQueryContext(ctx, TypeUsers, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -117,14 +117,14 @@ func (uq *UserQuery) Only(ctx context.Context) (*User, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{user.Label}
+		return nil, &NotFoundError{users.Label}
 	default:
-		return nil, &NotSingularError{user.Label}
+		return nil, &NotSingularError{users.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (uq *UserQuery) OnlyX(ctx context.Context) *User {
+func (uq *UsersQuery) OnlyX(ctx context.Context) *Users {
 	node, err := uq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -132,27 +132,27 @@ func (uq *UserQuery) OnlyX(ctx context.Context) *User {
 	return node
 }
 
-// OnlyID is like Only, but returns the only User ID in the query.
-// Returns a *NotSingularError when more than one User ID is found.
+// OnlyID is like Only, but returns the only Users ID in the query.
+// Returns a *NotSingularError when more than one Users ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (uq *UserQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (uq *UsersQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = uq.Limit(2).IDs(newQueryContext(ctx, TypeUser, "OnlyID")); err != nil {
+	if ids, err = uq.Limit(2).IDs(newQueryContext(ctx, TypeUsers, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{user.Label}
+		err = &NotFoundError{users.Label}
 	default:
-		err = &NotSingularError{user.Label}
+		err = &NotSingularError{users.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (uq *UserQuery) OnlyIDX(ctx context.Context) int {
+func (uq *UsersQuery) OnlyIDX(ctx context.Context) int {
 	id, err := uq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -160,18 +160,18 @@ func (uq *UserQuery) OnlyIDX(ctx context.Context) int {
 	return id
 }
 
-// All executes the query and returns a list of Users.
-func (uq *UserQuery) All(ctx context.Context) ([]*User, error) {
-	ctx = newQueryContext(ctx, TypeUser, "All")
+// All executes the query and returns a list of UsersSlice.
+func (uq *UsersQuery) All(ctx context.Context) ([]*Users, error) {
+	ctx = newQueryContext(ctx, TypeUsers, "All")
 	if err := uq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*User, *UserQuery]()
-	return withInterceptors[[]*User](ctx, uq, qr, uq.inters)
+	qr := querierAll[[]*Users, *UsersQuery]()
+	return withInterceptors[[]*Users](ctx, uq, qr, uq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (uq *UserQuery) AllX(ctx context.Context) []*User {
+func (uq *UsersQuery) AllX(ctx context.Context) []*Users {
 	nodes, err := uq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -179,18 +179,18 @@ func (uq *UserQuery) AllX(ctx context.Context) []*User {
 	return nodes
 }
 
-// IDs executes the query and returns a list of User IDs.
-func (uq *UserQuery) IDs(ctx context.Context) ([]int, error) {
+// IDs executes the query and returns a list of Users IDs.
+func (uq *UsersQuery) IDs(ctx context.Context) ([]int, error) {
 	var ids []int
-	ctx = newQueryContext(ctx, TypeUser, "IDs")
-	if err := uq.Select(user.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = newQueryContext(ctx, TypeUsers, "IDs")
+	if err := uq.Select(users.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (uq *UserQuery) IDsX(ctx context.Context) []int {
+func (uq *UsersQuery) IDsX(ctx context.Context) []int {
 	ids, err := uq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -199,16 +199,16 @@ func (uq *UserQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (uq *UserQuery) Count(ctx context.Context) (int, error) {
-	ctx = newQueryContext(ctx, TypeUser, "Count")
+func (uq *UsersQuery) Count(ctx context.Context) (int, error) {
+	ctx = newQueryContext(ctx, TypeUsers, "Count")
 	if err := uq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, uq, querierCount[*UserQuery](), uq.inters)
+	return withInterceptors[int](ctx, uq, querierCount[*UsersQuery](), uq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (uq *UserQuery) CountX(ctx context.Context) int {
+func (uq *UsersQuery) CountX(ctx context.Context) int {
 	count, err := uq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -217,8 +217,8 @@ func (uq *UserQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (uq *UserQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = newQueryContext(ctx, TypeUser, "Exist")
+func (uq *UsersQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = newQueryContext(ctx, TypeUsers, "Exist")
 	switch _, err := uq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -230,7 +230,7 @@ func (uq *UserQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (uq *UserQuery) ExistX(ctx context.Context) bool {
+func (uq *UsersQuery) ExistX(ctx context.Context) bool {
 	exist, err := uq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -238,19 +238,19 @@ func (uq *UserQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the UserQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the UsersQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (uq *UserQuery) Clone() *UserQuery {
+func (uq *UsersQuery) Clone() *UsersQuery {
 	if uq == nil {
 		return nil
 	}
-	return &UserQuery{
+	return &UsersQuery{
 		config:     uq.config,
 		limit:      uq.limit,
 		offset:     uq.offset,
 		order:      append([]OrderFunc{}, uq.order...),
 		inters:     append([]Interceptor{}, uq.inters...),
-		predicates: append([]predicate.User{}, uq.predicates...),
+		predicates: append([]predicate.Users{}, uq.predicates...),
 		// clone intermediate query.
 		sql:    uq.sql.Clone(),
 		path:   uq.path,
@@ -260,31 +260,31 @@ func (uq *UserQuery) Clone() *UserQuery {
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
-func (uq *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
+func (uq *UsersQuery) GroupBy(field string, fields ...string) *UsersGroupBy {
 	uq.fields = append([]string{field}, fields...)
-	grbuild := &UserGroupBy{build: uq}
+	grbuild := &UsersGroupBy{build: uq}
 	grbuild.flds = &uq.fields
-	grbuild.label = user.Label
+	grbuild.label = users.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
-func (uq *UserQuery) Select(fields ...string) *UserSelect {
+func (uq *UsersQuery) Select(fields ...string) *UsersSelect {
 	uq.fields = append(uq.fields, fields...)
-	sbuild := &UserSelect{UserQuery: uq}
-	sbuild.label = user.Label
+	sbuild := &UsersSelect{UsersQuery: uq}
+	sbuild.label = users.Label
 	sbuild.flds, sbuild.scan = &uq.fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a UserSelect configured with the given aggregations.
-func (uq *UserQuery) Aggregate(fns ...AggregateFunc) *UserSelect {
+// Aggregate returns a UsersSelect configured with the given aggregations.
+func (uq *UsersQuery) Aggregate(fns ...AggregateFunc) *UsersSelect {
 	return uq.Select().Aggregate(fns...)
 }
 
-func (uq *UserQuery) prepareQuery(ctx context.Context) error {
+func (uq *UsersQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range uq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -296,7 +296,7 @@ func (uq *UserQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range uq.fields {
-		if !user.ValidColumn(f) {
+		if !users.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -310,16 +310,16 @@ func (uq *UserQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, error) {
+func (uq *UsersQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Users, error) {
 	var (
-		nodes = []*User{}
+		nodes = []*Users{}
 		_spec = uq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*User).scanValues(nil, columns)
+		return (*Users).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &User{config: uq.config}
+		node := &Users{config: uq.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -335,7 +335,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	return nodes, nil
 }
 
-func (uq *UserQuery) sqlCount(ctx context.Context) (int, error) {
+func (uq *UsersQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := uq.querySpec()
 	_spec.Node.Columns = uq.fields
 	if len(uq.fields) > 0 {
@@ -344,14 +344,14 @@ func (uq *UserQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, uq.driver, _spec)
 }
 
-func (uq *UserQuery) querySpec() *sqlgraph.QuerySpec {
+func (uq *UsersQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := &sqlgraph.QuerySpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   user.Table,
-			Columns: user.Columns,
+			Table:   users.Table,
+			Columns: users.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: user.FieldID,
+				Column: users.FieldID,
 			},
 		},
 		From:   uq.sql,
@@ -362,9 +362,9 @@ func (uq *UserQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := uq.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, user.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, users.FieldID)
 		for i := range fields {
-			if fields[i] != user.FieldID {
+			if fields[i] != users.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -392,12 +392,12 @@ func (uq *UserQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (uq *UserQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (uq *UsersQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(uq.driver.Dialect())
-	t1 := builder.Table(user.Table)
+	t1 := builder.Table(users.Table)
 	columns := uq.fields
 	if len(columns) == 0 {
-		columns = user.Columns
+		columns = users.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if uq.sql != nil {
@@ -424,28 +424,28 @@ func (uq *UserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// UserGroupBy is the group-by builder for User entities.
-type UserGroupBy struct {
+// UsersGroupBy is the group-by builder for Users entities.
+type UsersGroupBy struct {
 	selector
-	build *UserQuery
+	build *UsersQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ugb *UserGroupBy) Aggregate(fns ...AggregateFunc) *UserGroupBy {
+func (ugb *UsersGroupBy) Aggregate(fns ...AggregateFunc) *UsersGroupBy {
 	ugb.fns = append(ugb.fns, fns...)
 	return ugb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ugb *UserGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeUser, "GroupBy")
+func (ugb *UsersGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = newQueryContext(ctx, TypeUsers, "GroupBy")
 	if err := ugb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserQuery, *UserGroupBy](ctx, ugb.build, ugb, ugb.build.inters, v)
+	return scanWithInterceptors[*UsersQuery, *UsersGroupBy](ctx, ugb.build, ugb, ugb.build.inters, v)
 }
 
-func (ugb *UserGroupBy) sqlScan(ctx context.Context, root *UserQuery, v any) error {
+func (ugb *UsersGroupBy) sqlScan(ctx context.Context, root *UsersQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(ugb.fns))
 	for _, fn := range ugb.fns {
@@ -472,28 +472,28 @@ func (ugb *UserGroupBy) sqlScan(ctx context.Context, root *UserQuery, v any) err
 	return sql.ScanSlice(rows, v)
 }
 
-// UserSelect is the builder for selecting fields of User entities.
-type UserSelect struct {
-	*UserQuery
+// UsersSelect is the builder for selecting fields of Users entities.
+type UsersSelect struct {
+	*UsersQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (us *UserSelect) Aggregate(fns ...AggregateFunc) *UserSelect {
+func (us *UsersSelect) Aggregate(fns ...AggregateFunc) *UsersSelect {
 	us.fns = append(us.fns, fns...)
 	return us
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (us *UserSelect) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeUser, "Select")
+func (us *UsersSelect) Scan(ctx context.Context, v any) error {
+	ctx = newQueryContext(ctx, TypeUsers, "Select")
 	if err := us.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserQuery, *UserSelect](ctx, us.UserQuery, us, us.inters, v)
+	return scanWithInterceptors[*UsersQuery, *UsersSelect](ctx, us.UsersQuery, us, us.inters, v)
 }
 
-func (us *UserSelect) sqlScan(ctx context.Context, root *UserQuery, v any) error {
+func (us *UsersSelect) sqlScan(ctx context.Context, root *UsersQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(us.fns))
 	for _, fn := range us.fns {

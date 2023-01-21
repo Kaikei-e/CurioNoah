@@ -5,33 +5,33 @@ package ent
 import (
 	"context"
 	"insightstream/ent/predicate"
-	"insightstream/ent/user"
+	"insightstream/ent/users"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
 
-// UserDelete is the builder for deleting a User entity.
-type UserDelete struct {
+// UsersDelete is the builder for deleting a Users entity.
+type UsersDelete struct {
 	config
 	hooks    []Hook
-	mutation *UserMutation
+	mutation *UsersMutation
 }
 
-// Where appends a list predicates to the UserDelete builder.
-func (ud *UserDelete) Where(ps ...predicate.User) *UserDelete {
+// Where appends a list predicates to the UsersDelete builder.
+func (ud *UsersDelete) Where(ps ...predicate.Users) *UsersDelete {
 	ud.mutation.Where(ps...)
 	return ud
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ud *UserDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, UserMutation](ctx, ud.sqlExec, ud.mutation, ud.hooks)
+func (ud *UsersDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks[int, UsersMutation](ctx, ud.sqlExec, ud.mutation, ud.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ud *UserDelete) ExecX(ctx context.Context) int {
+func (ud *UsersDelete) ExecX(ctx context.Context) int {
 	n, err := ud.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,13 +39,13 @@ func (ud *UserDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (ud *UserDelete) sqlExec(ctx context.Context) (int, error) {
+func (ud *UsersDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: user.Table,
+			Table: users.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: user.FieldID,
+				Column: users.FieldID,
 			},
 		},
 	}
@@ -64,25 +64,25 @@ func (ud *UserDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// UserDeleteOne is the builder for deleting a single User entity.
-type UserDeleteOne struct {
-	ud *UserDelete
+// UsersDeleteOne is the builder for deleting a single Users entity.
+type UsersDeleteOne struct {
+	ud *UsersDelete
 }
 
 // Exec executes the deletion query.
-func (udo *UserDeleteOne) Exec(ctx context.Context) error {
+func (udo *UsersDeleteOne) Exec(ctx context.Context) error {
 	n, err := udo.ud.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{user.Label}
+		return &NotFoundError{users.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (udo *UserDeleteOne) ExecX(ctx context.Context) {
+func (udo *UsersDeleteOne) ExecX(ctx context.Context) {
 	udo.ud.ExecX(ctx)
 }

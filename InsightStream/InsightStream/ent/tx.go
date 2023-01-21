@@ -14,8 +14,8 @@ type Tx struct {
 	config
 	// FollowList is the client for interacting with the FollowList builders.
 	FollowList *FollowListClient
-	// User is the client for interacting with the User builders.
-	User *UserClient
+	// Users is the client for interacting with the Users builders.
+	Users *UsersClient
 
 	// lazily loaded.
 	client     *Client
@@ -148,7 +148,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.FollowList = NewFollowListClient(tx.config)
-	tx.User = NewUserClient(tx.config)
+	tx.Users = NewUsersClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

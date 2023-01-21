@@ -28,11 +28,11 @@ type config struct {
 type (
 	hooks struct {
 		FollowList []ent.Hook
-		User       []ent.Hook
+		Users      []ent.Hook
 	}
 	inters struct {
 		FollowList []ent.Interceptor
-		User       []ent.Interceptor
+		Users      []ent.Interceptor
 	}
 )
 

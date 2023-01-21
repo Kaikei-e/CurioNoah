@@ -5,31 +5,31 @@ package ent
 import (
 	"context"
 	"fmt"
-	"insightstream/ent/user"
+	"insightstream/ent/users"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
 
-// UserCreate is the builder for creating a User entity.
-type UserCreate struct {
+// UsersCreate is the builder for creating a Users entity.
+type UsersCreate struct {
 	config
-	mutation *UserMutation
+	mutation *UsersMutation
 	hooks    []Hook
 }
 
-// Mutation returns the UserMutation object of the builder.
-func (uc *UserCreate) Mutation() *UserMutation {
+// Mutation returns the UsersMutation object of the builder.
+func (uc *UsersCreate) Mutation() *UsersMutation {
 	return uc.mutation
 }
 
-// Save creates the User in the database.
-func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
-	return withHooks[*User, UserMutation](ctx, uc.sqlSave, uc.mutation, uc.hooks)
+// Save creates the Users in the database.
+func (uc *UsersCreate) Save(ctx context.Context) (*Users, error) {
+	return withHooks[*Users, UsersMutation](ctx, uc.sqlSave, uc.mutation, uc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (uc *UserCreate) SaveX(ctx context.Context) *User {
+func (uc *UsersCreate) SaveX(ctx context.Context) *Users {
 	v, err := uc.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -38,24 +38,24 @@ func (uc *UserCreate) SaveX(ctx context.Context) *User {
 }
 
 // Exec executes the query.
-func (uc *UserCreate) Exec(ctx context.Context) error {
+func (uc *UsersCreate) Exec(ctx context.Context) error {
 	_, err := uc.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uc *UserCreate) ExecX(ctx context.Context) {
+func (uc *UsersCreate) ExecX(ctx context.Context) {
 	if err := uc.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uc *UserCreate) check() error {
+func (uc *UsersCreate) check() error {
 	return nil
 }
 
-func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
+func (uc *UsersCreate) sqlSave(ctx context.Context) (*Users, error) {
 	if err := uc.check(); err != nil {
 		return nil, err
 	}
@@ -73,36 +73,36 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 	return _node, nil
 }
 
-func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
+func (uc *UsersCreate) createSpec() (*Users, *sqlgraph.CreateSpec) {
 	var (
-		_node = &User{config: uc.config}
+		_node = &Users{config: uc.config}
 		_spec = &sqlgraph.CreateSpec{
-			Table: user.Table,
+			Table: users.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: user.FieldID,
+				Column: users.FieldID,
 			},
 		}
 	)
 	return _node, _spec
 }
 
-// UserCreateBulk is the builder for creating many User entities in bulk.
-type UserCreateBulk struct {
+// UsersCreateBulk is the builder for creating many Users entities in bulk.
+type UsersCreateBulk struct {
 	config
-	builders []*UserCreate
+	builders []*UsersCreate
 }
 
-// Save creates the User entities in the database.
-func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
+// Save creates the Users entities in the database.
+func (ucb *UsersCreateBulk) Save(ctx context.Context) ([]*Users, error) {
 	specs := make([]*sqlgraph.CreateSpec, len(ucb.builders))
-	nodes := make([]*User, len(ucb.builders))
+	nodes := make([]*Users, len(ucb.builders))
 	mutators := make([]Mutator, len(ucb.builders))
 	for i := range ucb.builders {
 		func(i int, root context.Context) {
 			builder := ucb.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				mutation, ok := m.(*UserMutation)
+				mutation, ok := m.(*UsersMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
 				}
@@ -149,7 +149,7 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ucb *UserCreateBulk) SaveX(ctx context.Context) []*User {
+func (ucb *UsersCreateBulk) SaveX(ctx context.Context) []*Users {
 	v, err := ucb.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -158,13 +158,13 @@ func (ucb *UserCreateBulk) SaveX(ctx context.Context) []*User {
 }
 
 // Exec executes the query.
-func (ucb *UserCreateBulk) Exec(ctx context.Context) error {
+func (ucb *UsersCreateBulk) Exec(ctx context.Context) error {
 	_, err := ucb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ucb *UserCreateBulk) ExecX(ctx context.Context) {
+func (ucb *UsersCreateBulk) ExecX(ctx context.Context) {
 	if err := ucb.Exec(ctx); err != nil {
 		panic(err)
 	}

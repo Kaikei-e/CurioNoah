@@ -1,11 +1,12 @@
 package schema
 
 import (
+	"insightstream/models/feeds"
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"insightstream/models/feeds"
-	"time"
 )
 
 // FollowList holds the schema definition for the FollowList entity.
@@ -23,7 +24,7 @@ func (FollowList) Fields() []ent.Field {
 		field.String("title"),
 		field.String("description"),
 		field.String("link"),
-		field.String("links"),
+		field.JSON("links", feeds.FeedLink{}),
 		field.JSON("item_description", []feeds.FeedItem{}),
 		field.String("language"),
 		field.Time("dt_created").Default(time.Now()),

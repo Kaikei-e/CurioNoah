@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"insightstream/ent/followlist"
-	"insightstream/ent/user"
+	"insightstream/ent/users"
 	"reflect"
 
 	"entgo.io/ent"
@@ -40,7 +40,7 @@ type OrderFunc func(*sql.Selector)
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		followlist.Table: followlist.ValidColumn,
-		user.Table:       user.ValidColumn,
+		users.Table:      users.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

@@ -112,8 +112,8 @@ func (flu *FollowListUpdate) SetLink(s string) *FollowListUpdate {
 }
 
 // SetLinks sets the "links" field.
-func (flu *FollowListUpdate) SetLinks(s string) *FollowListUpdate {
-	flu.mutation.SetLinks(s)
+func (flu *FollowListUpdate) SetLinks(fl feeds.FeedLink) *FollowListUpdate {
+	flu.mutation.SetLinks(fl)
 	return flu
 }
 
@@ -318,7 +318,7 @@ func (flu *FollowListUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(followlist.FieldLink, field.TypeString, value)
 	}
 	if value, ok := flu.mutation.Links(); ok {
-		_spec.SetField(followlist.FieldLinks, field.TypeString, value)
+		_spec.SetField(followlist.FieldLinks, field.TypeJSON, value)
 	}
 	if value, ok := flu.mutation.ItemDescription(); ok {
 		_spec.SetField(followlist.FieldItemDescription, field.TypeJSON, value)
@@ -456,8 +456,8 @@ func (fluo *FollowListUpdateOne) SetLink(s string) *FollowListUpdateOne {
 }
 
 // SetLinks sets the "links" field.
-func (fluo *FollowListUpdateOne) SetLinks(s string) *FollowListUpdateOne {
-	fluo.mutation.SetLinks(s)
+func (fluo *FollowListUpdateOne) SetLinks(fl feeds.FeedLink) *FollowListUpdateOne {
+	fluo.mutation.SetLinks(fl)
 	return fluo
 }
 
@@ -686,7 +686,7 @@ func (fluo *FollowListUpdateOne) sqlSave(ctx context.Context) (_node *FollowList
 		_spec.SetField(followlist.FieldLink, field.TypeString, value)
 	}
 	if value, ok := fluo.mutation.Links(); ok {
-		_spec.SetField(followlist.FieldLinks, field.TypeString, value)
+		_spec.SetField(followlist.FieldLinks, field.TypeJSON, value)
 	}
 	if value, ok := fluo.mutation.ItemDescription(); ok {
 		_spec.SetField(followlist.FieldItemDescription, field.TypeJSON, value)

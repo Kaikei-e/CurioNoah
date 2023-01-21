@@ -34,7 +34,7 @@ type FollowList struct {
 	// Link holds the value of the "link" field.
 	Link string `json:"link,omitempty"`
 	// Links holds the value of the "links" field.
-	Links string `json:"links,omitempty"`
+	Links feeds.FeedLink `json:"links,omitempty"`
 	// ItemDescription holds the value of the "item_description" field.
 	ItemDescription []feeds.FeedItem `json:"item_description,omitempty"`
 	// Language holds the value of the "language" field.
@@ -60,13 +60,13 @@ func (*FollowList) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case followlist.FieldItemDescription:
+		case followlist.FieldLinks, followlist.FieldItemDescription:
 			values[i] = new([]byte)
 		case followlist.FieldIsActive, followlist.FieldIsFavorite, followlist.FieldIsRead, followlist.FieldIsUpdated:
 			values[i] = new(sql.NullBool)
 		case followlist.FieldID, followlist.FieldXMLVersion, followlist.FieldRssVersion, followlist.FieldFeedCategory:
 			values[i] = new(sql.NullInt64)
-		case followlist.FieldURL, followlist.FieldTitle, followlist.FieldDescription, followlist.FieldLink, followlist.FieldLinks, followlist.FieldLanguage:
+		case followlist.FieldURL, followlist.FieldTitle, followlist.FieldDescription, followlist.FieldLink, followlist.FieldLanguage:
 			values[i] = new(sql.NullString)
 		case followlist.FieldDtCreated, followlist.FieldDtUpdated:
 			values[i] = new(sql.NullTime)
@@ -136,10 +136,12 @@ func (fl *FollowList) assignValues(columns []string, values []any) error {
 				fl.Link = value.String
 			}
 		case followlist.FieldLinks:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field links", values[i])
-			} else if value.Valid {
-				fl.Links = value.String
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &fl.Links); err != nil {
+					return fmt.Errorf("unmarshal field links: %w", err)
+				}
 			}
 		case followlist.FieldItemDescription:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -247,7 +249,7 @@ func (fl *FollowList) String() string {
 	builder.WriteString(fl.Link)
 	builder.WriteString(", ")
 	builder.WriteString("links=")
-	builder.WriteString(fl.Links)
+	builder.WriteString(fmt.Sprintf("%v", fl.Links))
 	builder.WriteString(", ")
 	builder.WriteString("item_description=")
 	builder.WriteString(fmt.Sprintf("%v", fl.ItemDescription))
