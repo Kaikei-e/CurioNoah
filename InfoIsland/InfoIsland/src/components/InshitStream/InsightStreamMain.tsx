@@ -75,7 +75,7 @@ const InsightStreamMain = () => {
                 </Flex>
             </Flex>
             <Flex flexDirection={"row"}
-                  w={"100%"} h={"100%"}
+                  w={"80%"} h={"100%"}
                   bgColor={"#88A6B1"} p={"2%"}>
                 <Flex flexDirection={"column"}
                       w={"70%"} h={"100%"}
