@@ -14,7 +14,7 @@ const AddFeed = () => {
                   mb={"2%"}
             >
                 You can register a new feed by entering the URL of the feed
-                in the input field below.
+                in this input field below.
             </Text>
             <form method={"POST"}>
                 <Flex flexDirection={"column"}
