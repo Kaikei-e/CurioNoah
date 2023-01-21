@@ -5,7 +5,7 @@ CurioNoah is a set of applications that arouse curiosity and help you explore th
 
 ## Setting up
 
-First, place the three .env files.
+### First, place the three .env files.
 The variables are example. So you can configure it.
 
 /.env
@@ -44,6 +44,12 @@ NET_TYPE="tcp"
 
 <br/>
 
+### Next, enter the InsightStream container and execute the following command
+
+```
+cd /usr/src/app
+go run main.go
+```
 
 ## Why am I working on this project?
 
