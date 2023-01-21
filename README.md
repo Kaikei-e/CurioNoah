@@ -44,12 +44,23 @@ NET_TYPE="tcp"
 
 <br/>
 
+### Then, edit the hosts.
+
+```
+127.0.0.1 curionoah.com
+```
+
+<br/>
+
 ### Next, enter the InsightStream container and execute the following command
 
 ```
 cd /usr/src/app
 go run main.go
 ```
+
+
+<br/>
 
 ## Why am I working on this project?
 
