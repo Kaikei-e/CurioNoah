@@ -52,6 +52,15 @@ NET_TYPE="tcp"
 
 <br/>
 
+### Once these preparations are complete, run the following command at project root
+
+
+```
+docker compose up -d
+```
+
+<br/>
+
 ### Next, enter the InsightStream container and execute the following command
 
 ```
