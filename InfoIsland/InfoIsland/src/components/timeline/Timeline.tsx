@@ -40,17 +40,9 @@ function Timeline(props: { data: Feed[]; }) {
                                             <ExternalLinkIcon mx={"2px"}/>
                                         </Text>
                                     </Link>
-                                    {/*<Flex w={"100%"} h={"100%"}>*/}
-                                    {/*    <Suspense fallback={<Spinner/>}>*/}
-                                    {/*        <ImageRenderer url={feed.image.url}/>*/}
-                                    {/*    </Suspense>*/}
-                                    {/*</Flex>*/}
-
                                     <Text w={"30%"} h={"100%"}>
                                         {feed.published}
                                     </Text>
-                                    {/*<Link w={"20%"} h={"100%"} href={"/insight-stream"}>More*/}
-                                    {/*    feeds ={">"}</Link>*/}
                                 </Flex>
                                 <Flex flexDirection={"column"} p={"1%"}
                                       border={"1px"} borderRadius={"md"}
@@ -64,7 +56,6 @@ function Timeline(props: { data: Feed[]; }) {
                                                   mb={"1%"}>
                                                 <Link href={item.link} isExternal>
                                                     <Text>
-                                                        {/*&#x1F4CC;: {item.title}*/}
                                                         &#x1F587;: {item.title}
                                                         <ExternalLinkIcon mx={"2px"}/>
                                                         / {item.description!.slice(0, 40)} ...
