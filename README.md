@@ -1,6 +1,21 @@
 # CurioNoah
 CurioNoah is a set of applications that arouse curiosity and help you explore through intellectual pursuits.
 
+## About
+
+CurioNoah is composed of several applications that are based on RSS feeds. Some of the applications' roles have yet to be determined, and I am working on their implementation and ideas.
+
+<br/>
+
+- Curiosity: This is the core application of CurioNoah. It will help curate and expand knowledge in a way that stimulates curiosity and encourages exploration. It may use some kind of external API to aid in curation.
+
+- InfoIsland: This is a web-based application that serves as a user interface and front end. It will aggregate and list all services. It is intended to be minimalistic with an integrated, unified user interface.
+- InsightStream: This is the main backend and will be responsible for registering, reading, and updating feeds. The update function may be implemented in Rust for greater speed and efficiency, but currently this app is written in Go, my main development language.
+- CoreManager: This will be the core service. It will be written in Rust as mentioned above (to study Rust) and will be the behind-the-scenes help, doing batch processing, etc.
+- FeedFlare: This will be an RSS feed search aid, and will focus on discovering new RSS feeds.
+- SlateFlex: This is a desire, but it is envisioned as a native application, and we would like to make it note-taking capable. I have absolutely no experience in native app development, so this is the lowest priority.
+
+
 ***Cloning and building the environment from scratch is too much work, so it will be improved.***
 
 ## Setting up
