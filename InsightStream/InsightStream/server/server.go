@@ -90,6 +90,7 @@ func Server(cl *ent.Client) {
 				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
 
 			}
+
 		}
 
 		registerFeed := apiV1.Group("/register-feed")

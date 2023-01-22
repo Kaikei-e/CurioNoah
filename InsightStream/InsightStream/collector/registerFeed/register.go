@@ -8,7 +8,6 @@ import (
 	"github.com/mmcdole/gofeed"
 	"insightstream/ent"
 	"insightstream/models/feeds"
-	"insightstream/repository"
 )
 
 // TODO will implement unit tests
@@ -64,7 +63,7 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 		SetIsFavorite(false).
 		SetIsRead(false).
 		SetIsUpdated(false).
-		SetLink(feed.Link).
+		SetLink(feed.FeedLink).
 		SetLinks(linksJson).
 		Save(ctx)
 
@@ -77,13 +76,11 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 
 // TODO will implement unit tests
 func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error {
-	client := repository.InitConnection()
-
 	ctx := context.Background()
 	bulk := make([]*ent.FollowListCreate, 0, len(feeds))
 
 	for i, feed := range feeds {
-		bulk[i] = client.FollowList.Create().
+		bulk[i] = cl.FollowList.Create().
 			SetTitle(feed.Title).
 			SetURL(feed.Link).
 			SetDescription(feed.Description).
@@ -97,7 +94,7 @@ func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error {
 
 	}
 
-	if _, err := client.FollowList.CreateBulk(bulk...).Save(ctx); err != nil {
+	if _, err := cl.FollowList.CreateBulk(bulk...).Save(ctx); err != nil {
 		return errors.New(fmt.Sprintf("failed to register feed: %v", err))
 	}
 

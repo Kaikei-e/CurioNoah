@@ -23,6 +23,7 @@ var (
 		{Name: "language", Type: field.TypeString},
 		{Name: "dt_created", Type: field.TypeTime},
 		{Name: "dt_updated", Type: field.TypeTime},
+		{Name: "dt_last_inserted", Type: field.TypeTime},
 		{Name: "feed_category", Type: field.TypeInt, Default: 0},
 		{Name: "is_active", Type: field.TypeBool, Default: true},
 		{Name: "is_favorite", Type: field.TypeBool, Default: false},
