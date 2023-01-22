@@ -7,8 +7,10 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import AddFeed from "./AddFeed";
+import StreamLine from "./InsightStream/StreamLine";
 
 const InsightStreamMain = () => {
+
     return (
         <Flex h={"100vh"} w={"100vw"}
               minH={"100%"} minW={"100%"}
@@ -82,6 +84,10 @@ const InsightStreamMain = () => {
                       bgColor={"#EAF2F8"}
                       rounded={"xl"} p={"2%"}
                 >
+                    {/*<StreamLine/>*/}
+                    <Flex>
+                        <p>StreamLine</p>
+                    </Flex>
                 </Flex>
                 <Flex w={"25%"} h={"40%"}
                       rounded={"xl"} p={"2%"} ml={"5%"}

@@ -48,7 +48,7 @@ export type Image = {
     title: string;
 }
 
-export type Item = {
+export interface Item {
     title: string;
     description?: string;
     link: string;
