@@ -105,6 +105,11 @@ func DtUpdated(v time.Time) predicate.FollowList {
 	return predicate.FollowList(sql.FieldEQ(FieldDtUpdated, v))
 }
 
+// DtLastInserted applies equality check predicate on the "dt_last_inserted" field. It's identical to DtLastInsertedEQ.
+func DtLastInserted(v time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldEQ(FieldDtLastInserted, v))
+}
+
 // FeedCategory applies equality check predicate on the "feed_category" field. It's identical to FeedCategoryEQ.
 func FeedCategory(v int) predicate.FollowList {
 	return predicate.FollowList(sql.FieldEQ(FieldFeedCategory, v))
@@ -653,6 +658,46 @@ func DtUpdatedLT(v time.Time) predicate.FollowList {
 // DtUpdatedLTE applies the LTE predicate on the "dt_updated" field.
 func DtUpdatedLTE(v time.Time) predicate.FollowList {
 	return predicate.FollowList(sql.FieldLTE(FieldDtUpdated, v))
+}
+
+// DtLastInsertedEQ applies the EQ predicate on the "dt_last_inserted" field.
+func DtLastInsertedEQ(v time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldEQ(FieldDtLastInserted, v))
+}
+
+// DtLastInsertedNEQ applies the NEQ predicate on the "dt_last_inserted" field.
+func DtLastInsertedNEQ(v time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldNEQ(FieldDtLastInserted, v))
+}
+
+// DtLastInsertedIn applies the In predicate on the "dt_last_inserted" field.
+func DtLastInsertedIn(vs ...time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldIn(FieldDtLastInserted, vs...))
+}
+
+// DtLastInsertedNotIn applies the NotIn predicate on the "dt_last_inserted" field.
+func DtLastInsertedNotIn(vs ...time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldNotIn(FieldDtLastInserted, vs...))
+}
+
+// DtLastInsertedGT applies the GT predicate on the "dt_last_inserted" field.
+func DtLastInsertedGT(v time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldGT(FieldDtLastInserted, v))
+}
+
+// DtLastInsertedGTE applies the GTE predicate on the "dt_last_inserted" field.
+func DtLastInsertedGTE(v time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldGTE(FieldDtLastInserted, v))
+}
+
+// DtLastInsertedLT applies the LT predicate on the "dt_last_inserted" field.
+func DtLastInsertedLT(v time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldLT(FieldDtLastInserted, v))
+}
+
+// DtLastInsertedLTE applies the LTE predicate on the "dt_last_inserted" field.
+func DtLastInsertedLTE(v time.Time) predicate.FollowList {
+	return predicate.FollowList(sql.FieldLTE(FieldDtLastInserted, v))
 }
 
 // FeedCategoryEQ applies the EQ predicate on the "feed_category" field.

@@ -52,6 +52,7 @@ type FollowListMutation struct {
 	language               *string
 	dt_created             *time.Time
 	dt_updated             *time.Time
+	dt_last_inserted       *time.Time
 	feed_category          *int
 	addfeed_category       *int
 	is_active              *bool
@@ -649,6 +650,42 @@ func (m *FollowListMutation) ResetDtUpdated() {
 	m.dt_updated = nil
 }
 
+// SetDtLastInserted sets the "dt_last_inserted" field.
+func (m *FollowListMutation) SetDtLastInserted(t time.Time) {
+	m.dt_last_inserted = &t
+}
+
+// DtLastInserted returns the value of the "dt_last_inserted" field in the mutation.
+func (m *FollowListMutation) DtLastInserted() (r time.Time, exists bool) {
+	v := m.dt_last_inserted
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDtLastInserted returns the old "dt_last_inserted" field's value of the FollowList entity.
+// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FollowListMutation) OldDtLastInserted(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDtLastInserted is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDtLastInserted requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDtLastInserted: %w", err)
+	}
+	return oldValue.DtLastInserted, nil
+}
+
+// ResetDtLastInserted resets all changes to the "dt_last_inserted" field.
+func (m *FollowListMutation) ResetDtLastInserted() {
+	m.dt_last_inserted = nil
+}
+
 // SetFeedCategory sets the "feed_category" field.
 func (m *FollowListMutation) SetFeedCategory(i int) {
 	m.feed_category = &i
@@ -883,7 +920,7 @@ func (m *FollowListMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FollowListMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.uuid != nil {
 		fields = append(fields, followlist.FieldUUID)
 	}
@@ -919,6 +956,9 @@ func (m *FollowListMutation) Fields() []string {
 	}
 	if m.dt_updated != nil {
 		fields = append(fields, followlist.FieldDtUpdated)
+	}
+	if m.dt_last_inserted != nil {
+		fields = append(fields, followlist.FieldDtLastInserted)
 	}
 	if m.feed_category != nil {
 		fields = append(fields, followlist.FieldFeedCategory)
@@ -967,6 +1007,8 @@ func (m *FollowListMutation) Field(name string) (ent.Value, bool) {
 		return m.DtCreated()
 	case followlist.FieldDtUpdated:
 		return m.DtUpdated()
+	case followlist.FieldDtLastInserted:
+		return m.DtLastInserted()
 	case followlist.FieldFeedCategory:
 		return m.FeedCategory()
 	case followlist.FieldIsActive:
@@ -1010,6 +1052,8 @@ func (m *FollowListMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldDtCreated(ctx)
 	case followlist.FieldDtUpdated:
 		return m.OldDtUpdated(ctx)
+	case followlist.FieldDtLastInserted:
+		return m.OldDtLastInserted(ctx)
 	case followlist.FieldFeedCategory:
 		return m.OldFeedCategory(ctx)
 	case followlist.FieldIsActive:
@@ -1112,6 +1156,13 @@ func (m *FollowListMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDtUpdated(v)
+		return nil
+	case followlist.FieldDtLastInserted:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDtLastInserted(v)
 		return nil
 	case followlist.FieldFeedCategory:
 		v, ok := value.(int)
@@ -1271,6 +1322,9 @@ func (m *FollowListMutation) ResetField(name string) error {
 		return nil
 	case followlist.FieldDtUpdated:
 		m.ResetDtUpdated()
+		return nil
+	case followlist.FieldDtLastInserted:
+		m.ResetDtLastInserted()
 		return nil
 	case followlist.FieldFeedCategory:
 		m.ResetFeedCategory()

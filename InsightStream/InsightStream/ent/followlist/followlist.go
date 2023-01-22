@@ -37,6 +37,8 @@ const (
 	FieldDtCreated = "dt_created"
 	// FieldDtUpdated holds the string denoting the dt_updated field in the database.
 	FieldDtUpdated = "dt_updated"
+	// FieldDtLastInserted holds the string denoting the dt_last_inserted field in the database.
+	FieldDtLastInserted = "dt_last_inserted"
 	// FieldFeedCategory holds the string denoting the feed_category field in the database.
 	FieldFeedCategory = "feed_category"
 	// FieldIsActive holds the string denoting the is_active field in the database.
@@ -66,6 +68,7 @@ var Columns = []string{
 	FieldLanguage,
 	FieldDtCreated,
 	FieldDtUpdated,
+	FieldDtLastInserted,
 	FieldFeedCategory,
 	FieldIsActive,
 	FieldIsFavorite,
@@ -94,6 +97,8 @@ var (
 	DefaultDtCreated time.Time
 	// DefaultDtUpdated holds the default value on creation for the "dt_updated" field.
 	DefaultDtUpdated time.Time
+	// DefaultDtLastInserted holds the default value on creation for the "dt_last_inserted" field.
+	DefaultDtLastInserted time.Time
 	// DefaultFeedCategory holds the default value on creation for the "feed_category" field.
 	DefaultFeedCategory int
 	// DefaultIsActive holds the default value on creation for the "is_active" field.

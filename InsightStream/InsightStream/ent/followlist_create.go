@@ -134,6 +134,20 @@ func (flc *FollowListCreate) SetNillableDtUpdated(t *time.Time) *FollowListCreat
 	return flc
 }
 
+// SetDtLastInserted sets the "dt_last_inserted" field.
+func (flc *FollowListCreate) SetDtLastInserted(t time.Time) *FollowListCreate {
+	flc.mutation.SetDtLastInserted(t)
+	return flc
+}
+
+// SetNillableDtLastInserted sets the "dt_last_inserted" field if the given value is not nil.
+func (flc *FollowListCreate) SetNillableDtLastInserted(t *time.Time) *FollowListCreate {
+	if t != nil {
+		flc.SetDtLastInserted(*t)
+	}
+	return flc
+}
+
 // SetFeedCategory sets the "feed_category" field.
 func (flc *FollowListCreate) SetFeedCategory(i int) *FollowListCreate {
 	flc.mutation.SetFeedCategory(i)
@@ -259,6 +273,10 @@ func (flc *FollowListCreate) defaults() {
 		v := followlist.DefaultDtUpdated
 		flc.mutation.SetDtUpdated(v)
 	}
+	if _, ok := flc.mutation.DtLastInserted(); !ok {
+		v := followlist.DefaultDtLastInserted
+		flc.mutation.SetDtLastInserted(v)
+	}
 	if _, ok := flc.mutation.FeedCategory(); !ok {
 		v := followlist.DefaultFeedCategory
 		flc.mutation.SetFeedCategory(v)
@@ -318,6 +336,9 @@ func (flc *FollowListCreate) check() error {
 	}
 	if _, ok := flc.mutation.DtUpdated(); !ok {
 		return &ValidationError{Name: "dt_updated", err: errors.New(`ent: missing required field "FollowList.dt_updated"`)}
+	}
+	if _, ok := flc.mutation.DtLastInserted(); !ok {
+		return &ValidationError{Name: "dt_last_inserted", err: errors.New(`ent: missing required field "FollowList.dt_last_inserted"`)}
 	}
 	if _, ok := flc.mutation.FeedCategory(); !ok {
 		return &ValidationError{Name: "feed_category", err: errors.New(`ent: missing required field "FollowList.feed_category"`)}
@@ -413,6 +434,10 @@ func (flc *FollowListCreate) createSpec() (*FollowList, *sqlgraph.CreateSpec) {
 	if value, ok := flc.mutation.DtUpdated(); ok {
 		_spec.SetField(followlist.FieldDtUpdated, field.TypeTime, value)
 		_node.DtUpdated = value
+	}
+	if value, ok := flc.mutation.DtLastInserted(); ok {
+		_spec.SetField(followlist.FieldDtLastInserted, field.TypeTime, value)
+		_node.DtLastInserted = value
 	}
 	if value, ok := flc.mutation.FeedCategory(); ok {
 		_spec.SetField(followlist.FieldFeedCategory, field.TypeInt, value)

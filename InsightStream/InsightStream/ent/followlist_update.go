@@ -163,6 +163,20 @@ func (flu *FollowListUpdate) SetNillableDtUpdated(t *time.Time) *FollowListUpdat
 	return flu
 }
 
+// SetDtLastInserted sets the "dt_last_inserted" field.
+func (flu *FollowListUpdate) SetDtLastInserted(t time.Time) *FollowListUpdate {
+	flu.mutation.SetDtLastInserted(t)
+	return flu
+}
+
+// SetNillableDtLastInserted sets the "dt_last_inserted" field if the given value is not nil.
+func (flu *FollowListUpdate) SetNillableDtLastInserted(t *time.Time) *FollowListUpdate {
+	if t != nil {
+		flu.SetDtLastInserted(*t)
+	}
+	return flu
+}
+
 // SetFeedCategory sets the "feed_category" field.
 func (flu *FollowListUpdate) SetFeedCategory(i int) *FollowListUpdate {
 	flu.mutation.ResetFeedCategory()
@@ -337,6 +351,9 @@ func (flu *FollowListUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := flu.mutation.DtUpdated(); ok {
 		_spec.SetField(followlist.FieldDtUpdated, field.TypeTime, value)
 	}
+	if value, ok := flu.mutation.DtLastInserted(); ok {
+		_spec.SetField(followlist.FieldDtLastInserted, field.TypeTime, value)
+	}
 	if value, ok := flu.mutation.FeedCategory(); ok {
 		_spec.SetField(followlist.FieldFeedCategory, field.TypeInt, value)
 	}
@@ -503,6 +520,20 @@ func (fluo *FollowListUpdateOne) SetDtUpdated(t time.Time) *FollowListUpdateOne 
 func (fluo *FollowListUpdateOne) SetNillableDtUpdated(t *time.Time) *FollowListUpdateOne {
 	if t != nil {
 		fluo.SetDtUpdated(*t)
+	}
+	return fluo
+}
+
+// SetDtLastInserted sets the "dt_last_inserted" field.
+func (fluo *FollowListUpdateOne) SetDtLastInserted(t time.Time) *FollowListUpdateOne {
+	fluo.mutation.SetDtLastInserted(t)
+	return fluo
+}
+
+// SetNillableDtLastInserted sets the "dt_last_inserted" field if the given value is not nil.
+func (fluo *FollowListUpdateOne) SetNillableDtLastInserted(t *time.Time) *FollowListUpdateOne {
+	if t != nil {
+		fluo.SetDtLastInserted(*t)
 	}
 	return fluo
 }
@@ -704,6 +735,9 @@ func (fluo *FollowListUpdateOne) sqlSave(ctx context.Context) (_node *FollowList
 	}
 	if value, ok := fluo.mutation.DtUpdated(); ok {
 		_spec.SetField(followlist.FieldDtUpdated, field.TypeTime, value)
+	}
+	if value, ok := fluo.mutation.DtLastInserted(); ok {
+		_spec.SetField(followlist.FieldDtLastInserted, field.TypeTime, value)
 	}
 	if value, ok := fluo.mutation.FeedCategory(); ok {
 		_spec.SetField(followlist.FieldFeedCategory, field.TypeInt, value)

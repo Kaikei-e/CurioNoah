@@ -29,6 +29,7 @@ func (FollowList) Fields() []ent.Field {
 		field.String("language"),
 		field.Time("dt_created").Default(time.Now()),
 		field.Time("dt_updated").Default(time.Now()),
+		field.Time("dt_last_inserted").Default(time.Now()),
 		field.Int("feed_category").Default(0),
 		field.Bool("is_active").Default(true),
 		field.Bool("is_favorite").Default(false),

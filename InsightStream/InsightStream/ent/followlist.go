@@ -43,6 +43,8 @@ type FollowList struct {
 	DtCreated time.Time `json:"dt_created,omitempty"`
 	// DtUpdated holds the value of the "dt_updated" field.
 	DtUpdated time.Time `json:"dt_updated,omitempty"`
+	// DtLastInserted holds the value of the "dt_last_inserted" field.
+	DtLastInserted time.Time `json:"dt_last_inserted,omitempty"`
 	// FeedCategory holds the value of the "feed_category" field.
 	FeedCategory int `json:"feed_category,omitempty"`
 	// IsActive holds the value of the "is_active" field.
@@ -68,7 +70,7 @@ func (*FollowList) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case followlist.FieldURL, followlist.FieldTitle, followlist.FieldDescription, followlist.FieldLink, followlist.FieldLanguage:
 			values[i] = new(sql.NullString)
-		case followlist.FieldDtCreated, followlist.FieldDtUpdated:
+		case followlist.FieldDtCreated, followlist.FieldDtUpdated, followlist.FieldDtLastInserted:
 			values[i] = new(sql.NullTime)
 		case followlist.FieldUUID:
 			values[i] = new(uuid.UUID)
@@ -169,6 +171,12 @@ func (fl *FollowList) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fl.DtUpdated = value.Time
 			}
+		case followlist.FieldDtLastInserted:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field dt_last_inserted", values[i])
+			} else if value.Valid {
+				fl.DtLastInserted = value.Time
+			}
 		case followlist.FieldFeedCategory:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_category", values[i])
@@ -262,6 +270,9 @@ func (fl *FollowList) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("dt_updated=")
 	builder.WriteString(fl.DtUpdated.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("dt_last_inserted=")
+	builder.WriteString(fl.DtLastInserted.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("feed_category=")
 	builder.WriteString(fmt.Sprintf("%v", fl.FeedCategory))
