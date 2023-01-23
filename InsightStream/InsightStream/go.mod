@@ -19,6 +19,7 @@ require (
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
+	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
