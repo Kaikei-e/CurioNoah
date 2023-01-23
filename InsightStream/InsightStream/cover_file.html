@@ -1,0 +1,679 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Init: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">insightstream/Init/initialize.go (27.8%)</option>
+				
+				<option value="file1">insightstream/collector/collector.go (85.7%)</option>
+				
+				<option value="file2">insightstream/collector/fetchFeeds/fetchHadler.go (0.0%)</option>
+				
+				<option value="file3">insightstream/collector/fetchFeeds/multiFeeds.go (100.0%)</option>
+				
+				<option value="file4">insightstream/collector/fetchFeeds/parallelFetch.go (0.0%)</option>
+				
+				<option value="file5">insightstream/collector/registerFeed/register.go (0.0%)</option>
+				
+				<option value="file6">insightstream/collector/registerFeed/registerHandler.go (0.0%)</option>
+				
+				<option value="file7">insightstream/collector/registerFeed/update.go (0.0%)</option>
+				
+				<option value="file8">insightstream/server/server.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package Init
+
+import (
+        "errors"
+        "fmt"
+        "github.com/joho/godotenv"
+        "golang.org/x/exp/slices"
+        "os"
+        "path/filepath"
+        "strings"
+)
+
+func getSlice() []string <span class="cov0" title="0">{
+        return []string{
+                "MYSQL_USER",
+                "MYSQL_PASSWORD",
+                "MYSQL_DATABASE",
+                "MYSQL_ADDR",
+                "NET_TYPE",
+        }
+}</span>
+
+func Initialize() error <span class="cov8" title="1">{
+
+        wd, err := os.Getwd()
+        if err != nil </span><span class="cov0" title="0">{
+                _, err := os.Stderr.WriteString(fmt.Sprintf("failed to get working directory: %v", err))
+                if err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+                <span class="cov0" title="0">return errors.New("failed to get working directory")</span>
+        }
+
+        <span class="cov8" title="1">projectRoot := filepath.Dir(wd)
+
+        projectRootEnv := filepath.Join(projectRoot, ".env")
+
+        err = godotenv.Load(projectRootEnv)
+        if err != nil </span><span class="cov0" title="0">{
+                _, err := os.Stderr.WriteString(fmt.Sprintf("failed to open .env: %v", err))
+                if err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+
+                <span class="cov0" title="0">return errors.New("failed to open .env")</span>
+        }
+
+        <span class="cov8" title="1">var myEnv map[string]string
+        myEnv, err = godotenv.Read()
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("failed to open .env")
+        }</span>
+
+        <span class="cov0" title="0">var envs []string
+        for k := range myEnv </span><span class="cov0" title="0">{
+                envs = append(envs, k)
+        }</span>
+
+        <span class="cov0" title="0">err = envRequired(envs, getSlice())
+        if err != nil </span><span class="cov0" title="0">{
+                _, err := os.Stderr.WriteString(fmt.Sprintf("%v", err))
+                if err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+                <span class="cov0" title="0">return errors.New("required env is not set")</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func envRequired(envs []string, want []string) error <span class="cov0" title="0">{
+        slices.Sort(envs)
+        slices.Sort(want)
+
+        for i, env := range envs </span><span class="cov0" title="0">{
+                if strings.Compare(env, want[i]) == 0 </span><span class="cov0" title="0">{
+                        continue</span>
+                } else<span class="cov0" title="0"> {
+                        return errors.New(fmt.Sprintf("failed to parse .env: %v is required", want[i]))
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package collector
+
+import (
+        "errors"
+        "fmt"
+        "github.com/mmcdole/gofeed"
+)
+
+func Collector(targetURL string) (*gofeed.Feed, error) <span class="cov8" title="1">{
+
+        //f, err := os.OpenFile(targetURL, os.O_RDWR, 0644)
+        //if err != nil {
+        //        return nil, errors.New(fmt.Sprintf("open %s: %v", targetURL, err))
+        //}
+        //
+        //redByte, err := io.ReadAll(f)
+        //if err != nil {
+        //        return nil, errors.New(fmt.Sprintf("read %s: %v", targetURL, err))
+        //}
+
+        fp := gofeed.NewParser()
+        //feed, err := fp.ParseString(string(redByte))
+        ////if err != nil {
+        ////        return nil, errors.New(fmt.Sprintf("parse %s: %v", targetURL, err))
+        ////}
+        feed, err := fp.ParseURL(targetURL)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, errors.New(fmt.Sprintf("parse %s: %v", targetURL, err))
+        }</span>
+
+        <span class="cov8" title="1">for _, author := range feed.Authors </span><span class="cov0" title="0">{
+                fmt.Println(author.Name)
+        }</span>
+
+        <span class="cov8" title="1">return feed, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package fetchFeeds
+
+import (
+        "github.com/labstack/echo/v4"
+        "insightstream/ent"
+)
+
+func FetchHandler(eg *echo.Group, cl *ent.Client) <span class="cov0" title="0">{
+        stored := eg.Group("/stored")
+        </span><span class="cov0" title="0">{
+                stored.GET("/all", func(c echo.Context) error </span><span class="cov0" title="0">{
+                        return nil
+                }</span>)
+
+        }
+
+        <span class="cov0" title="0">realtime := eg.Group("/realtime")
+        </span><span class="cov0" title="0">{
+                realtime.GET("/latest", func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                        return nil
+                }</span>)
+        }
+
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package fetchFeeds
+
+import (
+        "errors"
+        "fmt"
+        "insightstream/collector"
+
+        "github.com/mmcdole/gofeed"
+)
+
+func MultiFeed(storedList []string) ([]*gofeed.Feed, error) <span class="cov8" title="1">{
+        fmt.Printf("storedList: %v \n", storedList)
+
+        var feeds []*gofeed.Feed
+
+        for _, url := range storedList </span><span class="cov8" title="1">{
+                feed, err := collector.Collector(url)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, errors.New(fmt.Sprintf("fetch %s: %v", url, err))
+                }</span>
+
+                // TODO will have functionally to check if the feed is updated or not
+                <span class="cov8" title="1">feed.Items = feed.Items[:3]
+
+                feeds = append(feeds, feed)</span>
+        }
+
+        <span class="cov8" title="1">return feeds, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package fetchFeeds
+
+import (
+        "errors"
+        "fmt"
+        "github.com/mmcdole/gofeed"
+        "sync"
+)
+
+func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) <span class="cov0" title="0">{
+        var separatedList [][]string
+
+        parallelAmount := len(storedList) / 5
+        div0 := len(storedList) % 5
+
+        if div0 != 0 </span><span class="cov0" title="0">{
+                parallelAmount++
+        }</span>
+
+        <span class="cov0" title="0">for i := 0; i &lt; parallelAmount; i++ </span><span class="cov0" title="0">{
+                if i == parallelAmount-1 </span><span class="cov0" title="0">{
+                        separatedList = append(separatedList, storedList[i*5:])
+                }</span> else<span class="cov0" title="0"> {
+                        separatedList = append(separatedList, storedList[i*5:(i+1)*5])
+                }</span>
+        }
+
+        <span class="cov0" title="0">var parallelList [][]*gofeed.Feed
+
+        var wg sync.WaitGroup
+        wg.Add(1)
+
+        go func() </span><span class="cov0" title="0">{
+                defer wg.Done()
+
+                for _, list := range separatedList </span><span class="cov0" title="0">{
+                        paralyzedFeeds, err := paralyzingFetch(list)
+                        if err != nil </span><span class="cov0" title="0">{
+                                // TODO have to consider error handling in this go routine
+                                fmt.Println(err)
+                                errors.New(fmt.Sprintf("failed to parallelize list: %v", err))
+                        }</span>
+
+                        <span class="cov0" title="0">parallelList = append(parallelList, paralyzedFeeds)</span>
+                }
+        }()
+
+        <span class="cov0" title="0">wg.Wait()
+
+        var flattenedList []*gofeed.Feed
+        for _, feeds := range parallelList </span><span class="cov0" title="0">{
+                for _, feed := range feeds </span><span class="cov0" title="0">{
+                        flattenedList = append(flattenedList, feed)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return flattenedList, nil</span>
+}
+
+func paralyzingFetch(feedsList []string) ([]*gofeed.Feed, error) <span class="cov0" title="0">{
+
+        feeds, err := MultiFeed(feedsList)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(fmt.Sprintf("failed to fetch feeds: %v", err))
+        }</span>
+
+        <span class="cov0" title="0">return feeds, err</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package registerFeed
+
+import (
+        "context"
+        "errors"
+        "fmt"
+        "github.com/google/uuid"
+        "github.com/mmcdole/gofeed"
+        "insightstream/ent"
+        "insightstream/models/feeds"
+)
+
+// TODO will implement unit tests
+func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error <span class="cov0" title="0">{
+        //client := repository.InitConnection()
+
+        var links []string
+        for _, item := range feed.Items </span><span class="cov0" title="0">{
+                for _, link := range item.Links </span><span class="cov0" title="0">{
+                        links = append(links, link)
+                }</span>
+        }
+
+        <span class="cov0" title="0">var linksJson feeds.FeedLink
+        linksJson.Link = links
+
+        //flattenLinks, err := json.Marshal(links)
+        //if err != nil {
+        //        return errors.New(fmt.Sprintf("failed to marshal links: %v", err))
+        //}
+
+        var fis []feeds.FeedItem
+        for _, item := range feed.Items </span><span class="cov0" title="0">{
+                var authors []string
+                for _, author := range item.Authors </span><span class="cov0" title="0">{
+                        authors = append(authors, author.Name)
+                }</span>
+
+                <span class="cov0" title="0">fis = append(fis, feeds.FeedItem{
+                        Id:              uuid.New(),
+                        ItemDescription: item.Title,
+                        ItemLink:        item.Link,
+                        ItemTitle:       item.Title,
+                        Updated:         item.Updated,
+                        UpdatedParsed:   item.UpdatedParsed,
+                        Published:       item.Published,
+                        PublishedParsed: item.PublishedParsed,
+                        Authors:         authors,
+                        GUID:            item.GUID,
+                        Categories:      item.Categories,
+                })</span>
+        }
+
+        <span class="cov0" title="0">ctx := context.Background()
+
+        _, err := cl.FollowList.Create().
+                SetTitle(feed.Title).
+                SetURL(feed.Link).
+                SetDescription(feed.Description).
+                SetLanguage(feed.Language).
+                SetItemDescription(fis).
+                SetIsActive(true).
+                SetIsFavorite(false).
+                SetIsRead(false).
+                SetIsUpdated(false).
+                SetLink(feed.FeedLink).
+                SetLinks(linksJson).
+                Save(ctx)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return errors.New(fmt.Sprintf("failed to register feed: %v", err))
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// TODO will implement unit tests
+func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error <span class="cov0" title="0">{
+        ctx := context.Background()
+        bulk := make([]*ent.FollowListCreate, 0, len(feeds))
+
+        for i, feed := range feeds </span><span class="cov0" title="0">{
+                bulk[i] = cl.FollowList.Create().
+                        SetTitle(feed.Title).
+                        SetURL(feed.Link).
+                        SetDescription(feed.Description).
+                        SetLanguage(feed.Language).
+                        SetIsActive(true).
+                        SetIsFavorite(false).
+                        SetIsRead(false).
+                        SetIsUpdated(false).
+                        SetLink(feed.Link)
+                //SetLinks(feed.Links)
+
+        }</span>
+
+        <span class="cov0" title="0">if _, err := cl.FollowList.CreateBulk(bulk...).Save(ctx); err != nil </span><span class="cov0" title="0">{
+                return errors.New(fmt.Sprintf("failed to register feed: %v", err))
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package registerFeed
+
+import (
+        "errors"
+        "fmt"
+        "github.com/labstack/echo/v4"
+        "insightstream/collector/fetchFeeds"
+        "insightstream/ent"
+        "insightstream/models/apiexcahnge"
+)
+
+// TODO will implement unit tests
+func RegisterHandler(g *echo.Group, cl *ent.Client) <span class="cov0" title="0">{
+        register := g.Group("/store")
+        register.Use()
+        </span><span class="cov0" title="0">{
+                register.POST("/single", func(c echo.Context) error </span><span class="cov0" title="0">{
+                        c.Logger().Info("single api is called")
+
+                        sf := new(apiexcahnge.FeedRegister)
+
+                        if err := c.Bind(sf); err != nil </span><span class="cov0" title="0">{
+                                c.Logger().Errorf("error in bind: %v", err)
+                                return c.JSON(400, errors.New("invalid request"))
+                        }</span>
+
+                        <span class="cov0" title="0">c.Logger().Infof("single feed registering started: %v", sf)
+
+                        feeds, err := fetchFeeds.MultiFeed([]string{sf.URL})
+                        if err != nil </span><span class="cov0" title="0">{
+                                c.Logger().Errorf("error in fetch feed: %v", err)
+                                return errors.New(fmt.Sprintf("fetch %s: %v", sf.URL, err))
+                        }</span>
+
+                        <span class="cov0" title="0">err = RegisterSingle(feeds[0], cl)
+                        if err != nil </span><span class="cov0" title="0">{
+                                c.Logger().Errorf("error in register feed: %v", err)
+                                return errors.New(fmt.Sprintf("register %s: %v", sf.URL, err))
+                        }</span>
+
+                        <span class="cov0" title="0">c.Logger().Infof("single feed is registered: %v", sf)
+
+                        response := struct {
+                                Message   string `json:"message"`
+                                TargetURL string `json:"target_url"`
+                        }{
+                                Message:   "success",
+                                TargetURL: sf.URL,
+                        }
+
+                        return c.JSON(200, response)</span>
+                })
+
+        }
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package registerFeed
+
+import (
+        "context"
+        "errors"
+        "fmt"
+        "github.com/mmcdole/gofeed"
+        "insightstream/ent"
+        "insightstream/ent/followlist"
+        "insightstream/models/feeds"
+        "time"
+)
+
+func Update(fds []*gofeed.Feed, cl *ent.Client) error <span class="cov0" title="0">{
+        ctx := context.Background()
+
+        n := time.Now()
+
+        // TODO this updating method is weak. also update one by one is not good.
+        for _, fd := range fds </span><span class="cov0" title="0">{
+                var ls feeds.FeedLink
+                ls.Link = []string{fd.Link}
+
+                _, err := cl.FollowList.Update().
+                        Where(
+                                followlist.IsActive(true),
+                                followlist.URL(fd.Link), //caution this url means site link without feed link
+                        ).
+                        SetDtLastInserted(n). // is this necessary?
+                        SetDtUpdated(n).
+                        SetLink(fd.FeedLink).
+                        SetURL(fd.Link).
+                        SetLinks(ls).
+                        Save(ctx)
+                if err != nil </span><span class="cov0" title="0">{
+                        return errors.New(fmt.Sprintf("failed to update: %v", err))
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package server
+
+import (
+        "github.com/labstack/echo/v4"
+        "github.com/labstack/echo/v4/middleware"
+        "github.com/mmcdole/gofeed"
+        register "insightstream/collector/registerFeed"
+        "insightstream/ent"
+        "insightstream/repository/readfeed"
+        "insightstream/restorerss"
+)
+
+func Server(cl *ent.Client) <span class="cov0" title="0">{
+        e := echo.New()
+        e.Use(middleware.Logger())
+
+        err := e.GET("/", func(c echo.Context) error </span><span class="cov0" title="0">{
+                return c.String(200, "Hello, World!")
+        }</span>)
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                e.Logger.Errorf("error: %v. maybe serer is down", err)
+        }</span>
+
+        <span class="cov0" title="0">corsConfig := middleware.CORSConfig{
+                AllowOrigins: []string{"http://localhost:5173", "http://127.0.0.1:5173",
+                        "http://localhost:4173", "http://127.0.0.1:4173",
+                        "http://curionoah.com:5173", "http://curionoah.com:4173",
+                },
+                AllowHeaders: []string{
+                        echo.HeaderOrigin,
+                        echo.HeaderContentType,
+                        echo.HeaderAccessControlAllowHeaders,
+                        echo.HeaderAccept},
+                AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+        }
+
+        e.Use(middleware.CORSWithConfig(corsConfig))
+
+        apiV1 := e.Group("/api/v1")
+        apiV1.Use()
+        </span><span class="cov0" title="0">{
+
+                fetchFeed := apiV1.Group("/fetch-feed")
+                fetchFeed.Use()
+                </span><span class="cov0" title="0">{
+                        // TODO will rotate the logics to small functions
+                        err := fetchFeed.GET("/stored-all", func(c echo.Context) error </span><span class="cov0" title="0">{
+                                e.Logger.Info("stored-all api is called")
+
+                                //feeds, err := fetchFeeds.ParallelizeFetch(testdata.FeedList)
+                                feedEnt, err := readfeed.QueryByTen(cl)
+                                if err != nil </span><span class="cov0" title="0">{
+                                        e.Logger.Errorf("error: %v. maybe sever is down", err)
+                                        // TODO FIX: return error
+                                        err := c.JSON(500, err)
+                                        if err != nil </span><span class="cov0" title="0">{
+                                                e.Logger.Errorf("error: %v. maybe sever is down", err)
+
+                                        }</span>
+                                }
+
+                                <span class="cov0" title="0">feeds, err := restorerss.FeedExchange(feedEnt)
+                                if err != nil </span><span class="cov0" title="0">{
+                                        e.Logger.Errorf("error: %v. maybe sever is down", err)
+                                        // TODO FIX: return error
+                                        err := c.JSON(500, err)
+                                        if err != nil </span><span class="cov0" title="0">{
+                                                e.Logger.Errorf("error: %v. maybe sever is down", err)
+
+                                        }</span>
+                                }
+
+                                <span class="cov0" title="0">e.Logger.Infof("feeds were fetched: feed number is %v", len(feeds))
+
+                                var feedsFormatted []gofeed.Feed
+                                for _, feed := range feeds </span><span class="cov0" title="0">{
+                                        feedFormatted := *feed
+                                        feedsFormatted = append(feedsFormatted, feedFormatted)
+                                }</span>
+
+                                <span class="cov0" title="0">c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+                                c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
+                                c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
+
+                                e.Logger.Info("response header is set")
+
+                                return c.JSON(200, feedsFormatted)</span>
+                        })
+                        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                                e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
+
+                        }</span>
+
+                }
+
+                <span class="cov0" title="0">registerFeed := apiV1.Group("/register-feed")
+                registerFeed.Use()
+                </span><span class="cov0" title="0">{
+                        register.RegisterHandler(registerFeed, cl)
+
+                }</span>
+        }
+
+        <span class="cov0" title="0">e.Logger.Fatal(e.Start(":9000"))</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
