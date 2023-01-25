@@ -20,7 +20,7 @@ const FeedCard = ({feed}: { feed: Item }) => {
     return (
         <Card maxW='md'>
             <CardHeader>
-                <Flex spacing='4'>
+                <Flex>
 
                 </Flex>
             </CardHeader>
