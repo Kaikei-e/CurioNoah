@@ -1,14 +1,16 @@
 package main
 
 import (
-	"insightstream/collector/fetchFeeds/realtime"
+	"fmt"
+	"insightstream/collector/fetchFeeds/indexing"
 	"insightstream/repository"
 	"insightstream/server"
 	"time"
 )
 
 func main() {
-	ticker := time.NewTicker(15 * time.Second)
+	// 30 minute is not intentional value. Just for testing.
+	ticker := time.NewTicker(30 * time.Minute)
 	done := make(chan bool)
 
 	cl := repository.InitConnection()
@@ -18,7 +20,11 @@ func main() {
 			case <-done:
 				return
 			case <-ticker.C:
-				realtime.Store(cl)
+				err := indexing.Store(cl)
+				if err != nil {
+					// TODO wil add logger
+					fmt.Sprintf("failed to store: %v", err)
+				}
 			}
 		}
 	}()
