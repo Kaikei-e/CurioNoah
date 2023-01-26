@@ -16,9 +16,5 @@ func QueryAll(cl *ent.Client) ([]*ent.FollowList, error) {
 			followlist.FieldLink, followlist.FieldLinks, followlist.FieldDtLastInserted).
 		AllX(ctx)
 
-	//if err != nil {
-	//	return nil, errors.New(fmt.Sprintf("failed to query all data: %v", err))
-	//}
-
 	return fl, nil
 }

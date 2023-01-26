@@ -28,8 +28,6 @@ func Store(cl *ent.Client) error {
 		return errors.New(fmt.Sprintf("failed to check diff: %v", err))
 	}
 
-	fmt.Println("//////////////////////////////////")
-
 	// Comment out this snippet:
 	// because I can't remember why I wrote this snippet.
 	//for _, list := range result {

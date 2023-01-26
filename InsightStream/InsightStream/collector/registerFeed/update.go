@@ -48,7 +48,6 @@ func Update(fds []*ent.FollowList, cl *ent.Client) error {
 			Save(ctx)
 
 		if err != nil {
-
 			fmt.Printf("failed to update: %v", err)
 			panic(err)
 			//			return errors.New(fmt.Sprintf("failed to update: %v", err))

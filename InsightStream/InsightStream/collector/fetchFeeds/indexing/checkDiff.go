@@ -34,7 +34,6 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 		return nil, nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
 	}
 
-	//var newFeeds []*gofeed.Feed
 	newFeeds, err := fetchFeeds.ParallelizeFetch(links)
 	if err != nil {
 		return nil, nil, errors.New(fmt.Sprintf("failed to fetch feed. error: %v", err))
