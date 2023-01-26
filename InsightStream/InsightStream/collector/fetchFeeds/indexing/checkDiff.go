@@ -3,6 +3,7 @@ package indexing
 import (
 	"errors"
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"github.com/mmcdole/gofeed"
 	"golang.org/x/exp/slices"
 	"insightstream/collector/fetchFeeds"
@@ -92,52 +93,48 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 		})
 	}
 
+	// compare oldLinks and newLinks
 	var updateLinkList []string
-	for i, oLink := range oldLinks {
-		fmt.Println(oLink.Links, newLinks[i].Links)
-		sort.SliceStable(oLink.Links, func(i, j int) bool {
-			return oLink.Links[i] < oLink.Links[j]
-		})
-
-		for _, nl := range newLinks {
-			isAdded := false
-			sort.SliceStable(nl.Links, func(i, j int) bool {
-				return nl.Links[i] < nl.Links[j]
-			})
-
-			for i, link := range oLink.Links {
-				if isAdded {
-					break
-				}
-
-				if link != nl.Links[i] {
-					updateLinkList = append(updateLinkList, oLink.URL)
-					isAdded = true
-					break
-				}
-
+	for i, link := range oldLinks {
+		for i2, l := range link.Links {
+			if cmp.Diff(l, newLinks[i].Links[i2]) != "" {
+				updateLinkList = append(updateLinkList, fl[i].Link)
+				break
 			}
-
-			//if !reflect.DeepEqual(oLink.Links, nl.Links) {
-			//	updateLinkList = append(updateLinkList, oLink.URL)
-			//}
 		}
 	}
 
-	// delete duplicate elements
-	compactedList := slices.Compact(updateLinkList)
+	// to compare oldLinks and newLinks
+	// and return the list of links that need to be updated
+	//var updateLinkList []string
+	//for _, oLink := range oldLinks {
+	//	for _, nl := range newLinks {
+	//		if oLink.URL == nl.URL {
+	//			for _, link := range oLink.Links {
+	//				for i, nLink := range nl.Links {
+	//					if link != nLink {
+	//						updateLinkList = append(updateLinkList, fl[i].Link)
+	//						break
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
 	var updateIDList []int
 	for _, list := range fl {
-		for _, ul := range compactedList {
+		for _, ul := range updateLinkList {
 			if list.Link == ul {
 				updateIDList = append(updateIDList, list.ID)
 			}
 		}
 	}
 
-	fmt.Printf("updateIDList: %v \n", updateIDList)
+	compactedIDList := slices.Compact(updateIDList)
 
-	return updateIDList, newFeeds, nil
+	fmt.Printf("updateIDList: %v \n", compactedIDList)
+
+	return compactedIDList, newFeeds, nil
 
 }
