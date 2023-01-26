@@ -27,23 +27,26 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 
 	var parallelList [][]*gofeed.Feed
 
+	// one of the most complicated part of the code
+	// this part is to make sure that the feeds are fetched in parallel
 	var wg sync.WaitGroup
-	wg.Add(1)
-
-	go func() {
-		defer wg.Done()
-
-		for _, list := range separatedList {
-			paralyzedFeeds, err := paralyzingFetch(list)
+	var ch = make(chan [][]*gofeed.Feed, len(separatedList))
+	for _, list := range separatedList {
+		wg.Add(1)
+		go func(list []string) {
+			defer wg.Done()
+			feeds, err := paralyzingFetch(list)
 			if err != nil {
-				// TODO have to consider error handling in this go routine
-				fmt.Println(err)
-				errors.New(fmt.Sprintf("failed to parallelize list: %v", err))
+				panic(err)
 			}
+			ch <- [][]*gofeed.Feed{feeds}
+		}(list)
 
-			parallelList = append(parallelList, paralyzedFeeds)
-		}
-	}()
+		parallelList = append(parallelList, <-ch...)
+
+	}
+
+	fmt.Println("len is ", len(parallelList))
 
 	wg.Wait()
 
@@ -58,7 +61,7 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 }
 
 func paralyzingFetch(feedsList []string) ([]*gofeed.Feed, error) {
-
+	//li := <-feedsList
 	feeds, err := MultiFeed(feedsList)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("failed to fetch feeds: %v", err))
