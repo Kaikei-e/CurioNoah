@@ -86,7 +86,7 @@ const InsightStreamMain = () => {
                 >
                     {/*<StreamLine/>*/}
                     <Flex>
-                        <p>StreamLine</p>
+                        <p>StreamLine Just text</p>
                     </Flex>
                 </Flex>
                 <Flex w={"25%"} h={"40%"}
