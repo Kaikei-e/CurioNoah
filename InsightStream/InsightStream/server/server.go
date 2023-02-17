@@ -101,5 +101,34 @@ func Server(cl *ent.Client) {
 		}
 	}
 
+	// change the architecture to onion architecture like
+	apiV2 := e.Group("/api/v2")
+	apiV2.Use()
+	{
+		fetchFeed := apiV2.Group("/fetch-feed")
+		fetchFeed.Use()
+		{
+			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
+				if err != nil {
+					e.Logger.Errorf("error: %v. maybe sever is down", err)
+					// TODO FIX: return error
+					err := c.JSON(500, err)
+					if err != nil {
+						e.Logger.Errorf("error: %v. maybe sever is down", err)
+
+					}
+				}
+
+				return nil
+			})
+
+			if err != nil {
+				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
+
+			}
+
+		}
+	}
+
 	e.Logger.Fatal(e.Start(":9000"))
 }
