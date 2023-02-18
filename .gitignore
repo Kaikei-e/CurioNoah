@@ -15,3 +15,4 @@ InfoIsland/InfoIsland/.yarn/install-state.gz
 
 # build files
 /load_balancer/app
+CoreManager/CoreManager/target
