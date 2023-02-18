@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mmcdole/gofeed"
-	"insightstream/adaptor/feedCollection"
+	"insightstream/adaptor"
 	register "insightstream/collector/registerFeed"
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
@@ -110,7 +110,7 @@ func Server(cl *ent.Client) {
 		fetchFeed.Use()
 		{
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
-				err := feedCollection.CollectAll(c)
+				err := adaptor.CollectAll(c, cl)
 
 				return err
 			})

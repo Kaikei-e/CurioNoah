@@ -1,8 +1,10 @@
 package dependencyInversion
 
+import "insightstream/ent"
+
 type (
 	FeedCollection interface {
-		FetchAll() error
+		FetchAll(cl *ent.Client) error
 		FetchSingle() error
 	}
 
@@ -14,7 +16,7 @@ func NewFeedCollection() FeedCollection {
 	return &FeedCollectionImpl{}
 }
 
-func (f *FeedCollectionImpl) FetchAll() error {
+func (f *FeedCollectionImpl) FetchAll(cl *ent.Client) error {
 
 	return nil
 
