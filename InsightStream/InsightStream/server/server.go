@@ -110,19 +110,9 @@ func Server(cl *ent.Client) {
 		fetchFeed.Use()
 		{
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
-				feedCollection.CollectAll()
+				err := feedCollection.CollectAll(c)
 
-				if err != nil {
-					e.Logger.Errorf("error: %v. maybe sever is down", err)
-					// TODO FIX: return error
-					err := c.JSON(500, err)
-					if err != nil {
-						e.Logger.Errorf("error: %v. maybe sever is down", err)
-
-					}
-				}
-
-				return nil
+				return err
 			})
 
 			if err != nil {
