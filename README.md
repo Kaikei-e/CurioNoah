@@ -80,6 +80,7 @@ docker compose up -d
 
 ```
 cd /usr/src/app
+go generate ./ent
 go run main.go
 ```
 
