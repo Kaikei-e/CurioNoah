@@ -1,0 +1,5 @@
+package feedCollection
+
+func CollectAll() {
+
+}
