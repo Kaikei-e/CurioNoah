@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/mmcdole/gofeed"
+	"insightstream/adaptor/feedCollection"
 	register "insightstream/collector/registerFeed"
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
@@ -109,6 +110,8 @@ func Server(cl *ent.Client) {
 		fetchFeed.Use()
 		{
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
+				feedCollection.CollectAll()
+
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
 					// TODO FIX: return error
