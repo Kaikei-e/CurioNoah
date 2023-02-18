@@ -15,6 +15,7 @@ func NewFeedCollection() FeedCollection {
 }
 
 func (f *FeedCollectionImpl) FetchAll() error {
+
 	return nil
 
 }

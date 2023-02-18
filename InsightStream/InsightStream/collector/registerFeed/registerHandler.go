@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"insightstream/collector/fetchFeeds"
+	"insightstream/collector/fetchFeedDomain"
 	"insightstream/ent"
 	"insightstream/models/apiexcahnge"
 )
@@ -26,7 +26,7 @@ func RegisterHandler(g *echo.Group, cl *ent.Client) {
 
 			c.Logger().Infof("single feed registering started: %v", sf)
 
-			feeds, err := fetchFeeds.MultiFeed([]string{sf.URL})
+			feeds, err := fetchFeedDomain.MultiFeed([]string{sf.URL})
 			if err != nil {
 				c.Logger().Errorf("error in fetch feed: %v", err)
 				return errors.New(fmt.Sprintf("fetch %s: %v", sf.URL, err))

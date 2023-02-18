@@ -1,4 +1,4 @@
-package fetchFeeds
+package fetchFeedDomain
 
 import (
 	"github.com/labstack/echo/v4"

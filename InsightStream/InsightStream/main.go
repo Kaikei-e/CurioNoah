@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"insightstream/collector/fetchFeeds/indexing"
+	"insightstream/collector/fetchFeedDomain/indexing"
 	"insightstream/repository"
 	"insightstream/server"
 	"time"
