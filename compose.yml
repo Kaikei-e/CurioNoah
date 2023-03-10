@@ -125,6 +125,24 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.6
+        
+  feed_spark:
+    # Curation Manager
+    build:
+      context: ./FeedSpark
+      dockerfile: Dockerfile
+    ports:
+      - '5010:5010'
+    environment:
+      timezone: 'Asia/Tokyo'
+    tty: true
+    volumes:
+      - './FeedSpark:/app'
+    depends_on:
+      - core_database
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.7
 
   core_database:
     # Database
