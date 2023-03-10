@@ -1,3 +1,5 @@
+mod fiber;
+
 fn main() {
-    println!("Hello, world!");
+    fiber::server::server::main();
 }
