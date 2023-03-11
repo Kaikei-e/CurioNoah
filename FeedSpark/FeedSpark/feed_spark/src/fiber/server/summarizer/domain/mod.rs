@@ -1,1 +1,1 @@
-pub(crate) mod summarize;
+pub mod summarize;
