@@ -2,7 +2,7 @@ use axum::http::StatusCode;
 use axum::Json;
 use axum::response::IntoResponse;
 use serde::{Serialize, Deserialize};
-use crate::fiber::server::summarizer::domain::domain::summarize;
+use crate::fiber::server::summarizer::domain::summarize::summarize;
 
 #[derive(Deserialize)]
 pub struct SummarizerRequest {

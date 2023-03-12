@@ -1,5 +1,5 @@
 mod fiber;
 
 fn main() {
-    fiber::server::server::main();
+    fiber::server::api_server::main();
 }

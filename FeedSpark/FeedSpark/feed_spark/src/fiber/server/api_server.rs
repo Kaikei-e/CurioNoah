@@ -1,5 +1,6 @@
 use axum::{routing::{get, post},  Router};
-use crate::fiber::server::summarizer::summarizer::summarizer;
+use crate::fiber::server::summarizer::presentation::summarize_api::summarizer;
+
 
 #[tokio::main]
 pub async fn main() {
