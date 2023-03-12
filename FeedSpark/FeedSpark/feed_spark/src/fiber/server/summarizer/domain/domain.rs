@@ -1,6 +1,5 @@
 pub fn summarize(target_text: String, summary_length: usize) -> String {
-    let summary = String::from("summarize");
-    summary
+    String::from("summarize")
 }
 
 #[cfg(test)]
