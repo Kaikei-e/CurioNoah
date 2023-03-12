@@ -1,1 +1,1 @@
-pub mod summarize;
+pub mod domain;

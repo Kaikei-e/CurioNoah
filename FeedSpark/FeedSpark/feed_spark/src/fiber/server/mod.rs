@@ -1,2 +1,2 @@
 pub mod server;
-mod summarizer;
+pub mod summarizer;

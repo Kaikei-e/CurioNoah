@@ -1,7 +1,6 @@
 use axum::{routing::{get, post},  Router};
 use crate::fiber::server::summarizer::summarizer::summarizer;
 
-
 #[tokio::main]
 pub async fn main() {
     let app = Router::new()
