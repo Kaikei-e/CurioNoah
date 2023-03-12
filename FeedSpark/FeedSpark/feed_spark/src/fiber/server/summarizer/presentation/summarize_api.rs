@@ -2,7 +2,7 @@ use axum::http::StatusCode;
 use axum::Json;
 use axum::response::IntoResponse;
 use serde::{Serialize, Deserialize};
-use crate::fiber::server::summarizer::domain::summarize::summarize;
+use crate::fiber::server::summarizer::usecase::summarize_usecase::summarize_usecase;
 
 #[derive(Deserialize)]
 pub struct SummarizerRequest {
@@ -22,7 +22,7 @@ pub async fn summarizer(Json(payload): Json<SummarizerRequest>) -> impl IntoResp
     };
     let text = summarizer_request.text;
     let summary_length = summarizer_request.summary_length;
-    let summary = summarize(text, summary_length);
+    let summary = summarize_usecase(text, summary_length);
     let response = SummarizedResponse {
         summary,
     };
