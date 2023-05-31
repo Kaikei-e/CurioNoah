@@ -26,7 +26,7 @@ export const App = () => (
                     width={{base: "100%", md: "100%", lg: "100%"}}
                     maxWidth="100%"
                 >
-                    <span>CurioNoah </span>
+                    <span>CurioNoah</span>
                     <br/>
                     <Box as="span" fontWeight="light"
                          fontSize={{base: "xl", md: "2xl", lg: "6xl"}}>
