@@ -7,6 +7,7 @@ authors = [
 ]
 dependencies = [
     "flax~=0.6.10",
+    "jax[cuda12_local]~=0.4.11",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
