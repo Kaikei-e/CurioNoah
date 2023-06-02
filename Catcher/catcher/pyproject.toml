@@ -5,7 +5,9 @@ description = "Catcher is the summarizer for RSS feeds."
 authors = [
     { name = "Kaikei-e", email = "" }
 ]
-dependencies = []
+dependencies = [
+    "flax~=0.6.10",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 
