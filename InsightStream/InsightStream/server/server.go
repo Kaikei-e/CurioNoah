@@ -50,7 +50,8 @@ func Server(cl *ent.Client) {
 				e.Logger.Info("stored-all api is called")
 
 				//feeds, err := fetchFeeds.ParallelizeFetch(testdata.FeedList)
-				feedEnt, err := readfeed.QueryByTen(cl)
+				//feedEnt, err := readfeed.QueryByTen(cl)
+				feedEnt, err := readfeed.QueryByTwenty(cl)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
 					// TODO FIX: return error

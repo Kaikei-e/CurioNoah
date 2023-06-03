@@ -11,13 +11,11 @@ func FetchHandler(eg *echo.Group, cl *ent.Client) {
 		stored.GET("/all", func(c echo.Context) error {
 			return nil
 		})
-
 	}
 
 	realtime := eg.Group("/realtime")
 	{
 		realtime.GET("/latest", func(c echo.Context) error {
-
 			return nil
 		})
 	}
