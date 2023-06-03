@@ -13,7 +13,7 @@ services:
       - ./load_balancer:/usr/share/nginx/html
       - ./load_balancer/config/nginx.conf:/etc/nginx.conf
       - ./load_balancer/nginx:/var/www/html
-      - ./load_balancer/app:/var/www/app
+      - ./load_balancer/app:/var/www/log
     environment:
       NGINX_HOST: 'curionoah.com'
     networks:
@@ -37,7 +37,6 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.15
-    
 
   curiosity:
     # Explorer by Curiosity
@@ -125,7 +124,7 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.6
-        
+
   feed_spark:
     # Curation Manager
     build:
