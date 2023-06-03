@@ -41,13 +41,14 @@ func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
 		}
 
 		feedList = append(feedList, &gofeed.Feed{
-			Title:       feed.Title,
-			Description: feed.Description,
-			Link:        feed.URL,
-			FeedLink:    feed.Link,
-			Language:    feed.Language,
-			Links:       feed.Links.Link,
-			Items:       items,
+			Title:         feed.Title,
+			Description:   feed.Description,
+			Link:          feed.URL,
+			FeedLink:      feed.Link,
+			Language:      feed.Language,
+			Links:         feed.Links.Link,
+			Items:         items,
+			UpdatedParsed: &feed.DtUpdated,
 		})
 	}
 

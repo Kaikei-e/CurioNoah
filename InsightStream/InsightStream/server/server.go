@@ -9,6 +9,7 @@ import (
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
+	"sort"
 )
 
 func Server(cl *ent.Client) {
@@ -78,6 +79,10 @@ func Server(cl *ent.Client) {
 					feedFormatted := *feed
 					feedsFormatted = append(feedsFormatted, feedFormatted)
 				}
+
+				sort.Slice(feedsFormatted, func(i, j int) bool {
+					return feedsFormatted[i].UpdatedParsed.After(*feedsFormatted[j].UpdatedParsed)
+				})
 
 				c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 				c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
