@@ -16,6 +16,9 @@ func CollectAll(c echo.Context, cl *ent.Client) error {
 
 	f := dependencyInversion.NewFeedCollection()
 	err := f.FetchAll(cl)
+	if err != nil {
+		return err
+	}
 
 	err = c.JSON(200, "success")
 	if err != nil {

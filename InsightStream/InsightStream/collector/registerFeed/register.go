@@ -15,19 +15,10 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 	//client := repository.InitConnection()
 
 	var links []string
-	for _, item := range feed.Items {
-		for _, link := range item.Links {
-			links = append(links, link)
-		}
-	}
+	links = append(links, feed.Links...)
 
 	var linksJson feeds.FeedLink
 	linksJson.Link = links
-
-	//flattenLinks, err := json.Marshal(links)
-	//if err != nil {
-	//	return errors.New(fmt.Sprintf("failed to marshal links: %v", err))
-	//}
 
 	var fis []feeds.FeedItem
 	for _, item := range feed.Items {

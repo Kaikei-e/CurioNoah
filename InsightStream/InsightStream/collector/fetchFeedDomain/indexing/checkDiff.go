@@ -45,9 +45,7 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 		var sortedLink []string
 		var oldLink linksItem
 
-		for _, link := range feed.Links {
-			sortedLink = append(sortedLink, link)
-		}
+		sortedLink = append(sortedLink, feed.Links...)
 
 		sort.SliceStable(sortedLink, func(i, j int) bool {
 			return sortedLink[i] < sortedLink[j]

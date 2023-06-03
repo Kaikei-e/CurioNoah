@@ -52,9 +52,7 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 
 	var flattenedList []*gofeed.Feed
 	for _, feeds := range parallelList {
-		for _, feed := range feeds {
-			flattenedList = append(flattenedList, feed)
-		}
+		flattenedList = append(flattenedList, feeds...)
 	}
 
 	return flattenedList, nil
