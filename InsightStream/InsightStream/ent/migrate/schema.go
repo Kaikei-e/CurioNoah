@@ -8,6 +8,24 @@ import (
 )
 
 var (
+	// FeedsColumns holds the columns for the "feeds" table.
+	FeedsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "site_url", Type: field.TypeString, Default: ""},
+		{Name: "title", Type: field.TypeString, Default: ""},
+		{Name: "description", Type: field.TypeString, Default: ""},
+		{Name: "feed_url", Type: field.TypeString, Default: ""},
+		{Name: "language", Type: field.TypeString, Default: ""},
+		{Name: "dt_created", Type: field.TypeTime},
+		{Name: "dt_updated", Type: field.TypeTime},
+		{Name: "favorites", Type: field.TypeInt64, Default: 0},
+	}
+	// FeedsTable holds the schema information for the "feeds" table.
+	FeedsTable = &schema.Table{
+		Name:       "feeds",
+		Columns:    FeedsColumns,
+		PrimaryKey: []*schema.Column{FeedsColumns[0]},
+	}
 	// FollowListsColumns holds the columns for the "follow_lists" table.
 	FollowListsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -48,6 +66,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		FeedsTable,
 		FollowListsTable,
 		UsersTable,
 	}

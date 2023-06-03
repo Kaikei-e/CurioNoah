@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Feeds is the predicate function for entfeeds builders.
+type Feeds func(*sql.Selector)
+
 // FollowList is the predicate function for followlist builders.
 type FollowList func(*sql.Selector)
 
