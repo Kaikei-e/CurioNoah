@@ -23,7 +23,8 @@ func main() {
 				err := indexing.Store(cl)
 				if err != nil {
 					// TODO wil add logger
-					fmt.Sprintf("failed to store: %v", err)
+					err := fmt.Sprintf("failed to store: %v", err)
+					fmt.Println(err)
 				}
 			}
 		}
