@@ -1,7 +1,8 @@
 use chrono::prelude::*;
+use uuid::Uuid;
 
 pub struct Feed {
-    pub id: i32,
+    pub id: Uuid,
     pub title: String,
     pub url: String,
     pub created_at: DateTime<Utc>,
