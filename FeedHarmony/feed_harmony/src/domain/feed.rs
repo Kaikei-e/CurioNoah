@@ -13,7 +13,7 @@ pub struct Feed {
     pub updated_at: DateTime<Utc>,
 }
 
-// TODO: just copied from db schema, need to update
+// TODO: just copied from db schema, need to update and refactor
 pub struct FeedList {
     pub id: i32,
     pub uuid: Uuid,
