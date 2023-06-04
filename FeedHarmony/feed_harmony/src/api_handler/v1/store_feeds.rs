@@ -1,9 +1,8 @@
-use anyhow::Error;
-use axum::{http::StatusCode, response::IntoResponse, Json};
-use serde::{Deserialize, Serialize};
+use axum::{response::IntoResponse, Json};
+use serde::Deserialize;
 use uuid::Uuid;
 
-pub async fn store_feeds(Json(payload): Json<all_feeds>) -> impl IntoResponse {
+pub async fn store_feeds(Json(payload): Json<AllFeeds>) -> impl IntoResponse {
     // Payload is a just boolean. This is bad.
     let will_launch = payload.store;
     if will_launch {}
@@ -13,12 +12,12 @@ pub async fn store_feeds(Json(payload): Json<all_feeds>) -> impl IntoResponse {
 
 #[derive(Clone, Debug, PartialEq, Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct all_feeds {
+pub struct AllFeeds {
     store: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct follow_list_by_id {
+pub struct FollowListById {
     user_id: Uuid,
 }
