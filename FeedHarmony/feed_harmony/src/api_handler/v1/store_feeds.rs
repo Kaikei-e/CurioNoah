@@ -5,7 +5,11 @@ use uuid::Uuid;
 
 pub async fn store_feeds(Json(payload): Json<all_feeds>) -> impl IntoResponse {
     // Payload is a just boolean. This is bad.
-    
+    let will_launch = payload.store;
+    if will_launch {
+
+    }
+
 
     todo!()
 }
