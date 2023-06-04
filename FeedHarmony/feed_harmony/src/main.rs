@@ -1,5 +1,6 @@
 mod domain;
+mod api_handler;
 
 fn main() {
-    println!("Hello, world!");
+    api_handler::handler::handler();
 }

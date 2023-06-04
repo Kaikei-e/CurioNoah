@@ -1,3 +1,3 @@
 mod feed;
 
-pub use models::Feed;
+pub use feed::Feed;
