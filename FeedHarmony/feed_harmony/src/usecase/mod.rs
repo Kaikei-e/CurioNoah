@@ -1,1 +1,1 @@
-mod fetch_all_follow_list;
+pub(crate) mod fetch_all_follow_list;

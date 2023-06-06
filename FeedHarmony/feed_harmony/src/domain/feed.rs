@@ -1,7 +1,7 @@
-use axum::{http, Json};
-use chrono::prelude::*;
+use axum::http;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use uuid::Uuid;
 
 pub struct Feed {
@@ -16,22 +16,22 @@ pub struct Feed {
 }
 
 // TODO: just copied from db schema, need to update and refactor
-#[derive(Debug, sqlx::FromRow, Serialize, Deserialize, Clone, PartialEq, Eq)]
+#[derive(sqlx::FromRow, Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
 pub struct FollowList {
     pub id: i32,
     pub uuid: Uuid,
     pub xml_version: i8,
     pub rss_version: i8,
-    pub url: http::Uri,
+    pub url: String,
     pub title: String,
     pub description: String,
-    pub link: http::Uri,
-    pub links: Json<String>,
-    pub item_description: Json<String>,
+    pub link: String,
+    pub links: Value,
+    pub item_description: Value,
     pub language: String,
-    pub dt_created: DateTime<Utc>,
-    pub dt_updated: DateTime<Utc>,
-    pub dt_last_inserted: DateTime<Utc>,
+    pub dt_created: NaiveDateTime,
+    pub dt_updated: NaiveDateTime,
+    pub dt_last_inserted: NaiveDateTime,
     pub feed_category: i32,
     pub is_favorite: i8,
     pub is_active: i8,

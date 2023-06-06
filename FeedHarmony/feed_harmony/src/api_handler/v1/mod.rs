@@ -1,1 +1,1 @@
-mod store_feeds;
+pub(crate) mod store_feeds;
