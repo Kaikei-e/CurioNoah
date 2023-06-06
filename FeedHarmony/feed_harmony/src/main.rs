@@ -3,6 +3,7 @@ use std::env;
 mod api_handler;
 mod domain;
 mod driver;
+mod usecase;
 
 fn main() {
     let loaded = dotenvy::dotenv();
@@ -16,14 +17,14 @@ fn main() {
         }
     }
     let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = driver::repository::connect::initialize_connection(var);
+    let pool = driver::repository::feed_db::connect::initialize_connection(var);
 
     match pool {
         Ok(_) => {
-            println!("Connected to database");
+            println!("Established connection to database");
         }
         Err(e) => {
-            println!("Failed to connect to database: {}", e);
+            panic!("Failed to initialize application : {}", e)
         }
     }
 

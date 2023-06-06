@@ -1,5 +1,6 @@
 use axum::{http, Json};
 use chrono::prelude::*;
+use sqlx::types::Type;
 use uuid::Uuid;
 
 pub struct Feed {
@@ -14,6 +15,7 @@ pub struct Feed {
 }
 
 // TODO: just copied from db schema, need to update and refactor
+#[derive(Type, Clone, Debug, Default)]
 pub struct FeedList {
     pub id: i32,
     pub uuid: Uuid,
