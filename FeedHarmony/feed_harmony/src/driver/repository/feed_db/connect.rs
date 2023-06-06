@@ -1,4 +1,4 @@
-use crate::domain::feed::FeedList;
+use crate::domain::feed::FollowList;
 use axum::async_trait;
 use sqlx::mysql::MySqlPool;
 use sqlx::{MySql, Pool};
@@ -16,39 +16,20 @@ impl FeedRepository {
 
 #[async_trait]
 pub trait FeedConnection {
-    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FeedList>>;
+    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FollowList>>;
 }
 
 // TODO: need to think about using query builder
 #[async_trait]
 impl FeedConnection for FeedRepository {
-    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FeedList>> {
-        const feed_list: FeedList = FeedList {
-            id: 0,
-            uuid: uuid::Uuid::new_v4(),
-            xml_version: 0,
-            rss_version: 0,
-            url: Default::default(),
-            title: "".to_string(),
-            description: "".to_string(),
-            link: Default::default(),
-            links: Default::default(),
-            item_description: Default::default(),
-            language: "".to_string(),
-            dt_created: Default::default(),
-            dt_updated: Default::default(),
-            dt_last_inserted: Default::default(),
-            feed_category: 0,
-            is_favorite: 0,
-            is_active: 0,
-            is_read: 0,
-            is_updated: 0,
-        };
+    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FollowList>> {
+        let follow_list: FollowList;
 
-        let feeds = sqlx::query_as::<_, FeedList>("SELECT * FROM follow_list")
+        let follow_list = sqlx::query_as::<_, FollowList>("SELECT * FROM follow_list")
+            .bind(follow_list)
             .fetch_all(&self.pool)
             .await?;
-        Ok(feeds);
+        Ok(follow_list);
         todo!("Implement this function")
     }
 }

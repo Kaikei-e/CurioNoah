@@ -1,6 +1,7 @@
 use axum::{http, Json};
 use chrono::prelude::*;
-use sqlx::types::Type;
+use chrono::NaiveDateTime;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 pub struct Feed {
@@ -9,14 +10,14 @@ pub struct Feed {
     pub item_link: http::Uri,
     pub item_title: String,
     pub item_description: String,
-    pub published_parsed: DateTime<Utc>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
+    pub published_parsed: NaiveDateTime,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
 }
 
 // TODO: just copied from db schema, need to update and refactor
-#[derive(Type, Clone, Debug, Default)]
-pub struct FeedList {
+#[derive(Debug, sqlx::FromRow, Serialize, Deserialize, Clone, PartialEq, Eq)]
+pub struct FollowList {
     pub id: i32,
     pub uuid: Uuid,
     pub xml_version: i8,
