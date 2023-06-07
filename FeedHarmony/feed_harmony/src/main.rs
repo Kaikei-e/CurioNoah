@@ -1,23 +1,27 @@
-use std::env;
+
 
 mod api_handler;
 mod domain;
 mod driver;
 mod usecase;
 
-fn main() {
-    let loaded = dotenvy::dotenv();
+#[tokio::main]
+async fn main() {
+    // let loaded = dotenvy::dotenv();
+    //
+    // match loaded {
+    //     Ok(_) => {
+    //         println!("Loaded .env file");
+    //     }
+    //     Err(e) => {
+    //         panic!("Failed to load .env file: {}", e)
+    //     }
+    // }
+    // let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    // api_handler::handler::handler(var)
 
-    match loaded {
-        Ok(_) => {
-            println!("Loaded .env file");
-        }
-        Err(e) => {
-            panic!("Failed to load .env file: {}", e)
-        }
-    }
-    let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = driver::repository::feed_db::connect::initialize_connection(var);
+    // let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let pool = driver::repository::feed_db::connect::initialize_connection().await;
 
     match pool {
         Ok(_) => {
@@ -27,6 +31,5 @@ fn main() {
             panic!("Failed to initialize application : {}", e)
         }
     }
-
     api_handler::handler::handler();
 }

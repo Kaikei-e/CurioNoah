@@ -7,7 +7,7 @@ pub async fn handler() {
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" }))
         .route(
-            "/store_feeds",
+            "/api/v1/store_feeds",
             post(api_handler::v1::store_feeds::store_feeds),
         );
 

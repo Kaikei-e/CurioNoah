@@ -2,6 +2,7 @@ use crate::domain::feed::FollowList;
 use axum::async_trait;
 use sqlx::mysql::MySqlPool;
 use sqlx::{MySql, Pool};
+use std::env;
 
 #[derive(Debug, Clone)]
 pub struct FeedRepository {
@@ -31,13 +32,33 @@ impl FeedConnection for FeedRepository {
     }
 }
 
-#[tokio::main]
-pub async fn initialize_connection(var: String) -> anyhow::Result<Pool<MySql>, sqlx::Error> {
+pub async fn initialize_connection() -> anyhow::Result<Pool<MySql>> {
+    let loaded = dotenvy::dotenv();
+
+    match loaded {
+        Ok(_) => {
+            println!("Loaded .env file");
+        }
+        Err(e) => {
+            panic!("Failed to load .env file: {}", e)
+        }
+    }
+    let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+
     let pool = MySqlPool::connect(&var).await;
+    // match pool {
+    //     Ok(_) => {
+    //         println!("Connected to database");
+    //         Ok(pool?)
+    //     }
+    //     Err(e) => {
+    //         panic!("Failed to connect to database: {}", e)
+    //     }
+    // }
     match pool {
         Ok(_) => {
             println!("Connected to database");
-            pool
+            Ok(pool?)
         }
         Err(e) => {
             panic!("Failed to connect to database: {}", e)
