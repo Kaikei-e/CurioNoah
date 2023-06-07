@@ -6,7 +6,7 @@ use sqlx::{MySql, Pool};
 
 #[derive(Clone)]
 pub struct DatabasePool {
-    pool: Pool<MySql>,
+    pub(crate) pool: Pool<MySql>,
 }
 
 #[derive(Clone)]

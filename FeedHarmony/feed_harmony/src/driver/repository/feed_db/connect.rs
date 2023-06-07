@@ -11,7 +11,7 @@ pub struct FeedRepository {
 
 impl FeedRepository {
     pub fn new(pool: DatabasePool) -> Self {
-        FeedRepository { pool }
+        FeedRepository { pool: pool.pool }
     }
 }
 
