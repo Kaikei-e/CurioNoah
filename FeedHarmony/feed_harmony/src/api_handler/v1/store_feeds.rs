@@ -6,8 +6,8 @@ use serde::Deserialize;
 use uuid::Uuid;
 
 pub async fn store_feeds(
-    Json(payload): Json<AllFeeds>,
     State(pool): State<DatabasePool>,
+    Json(payload): Json<AllFeeds>,
 ) -> impl IntoResponse {
     // Payload is a just boolean. This is bad.
     let will_launch = payload.store;

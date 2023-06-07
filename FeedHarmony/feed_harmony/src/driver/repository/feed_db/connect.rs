@@ -1,8 +1,8 @@
+use crate::api_handler::handler::DatabasePool;
 use crate::domain::feed::FollowList;
 use axum::async_trait;
 use sqlx::mysql::MySqlPool;
 use sqlx::{MySql, Pool};
-use crate::api_handler::handler::DatabasePool;
 
 #[derive(Debug, Clone)]
 pub struct FeedRepository {

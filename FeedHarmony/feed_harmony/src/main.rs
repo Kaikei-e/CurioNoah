@@ -18,9 +18,9 @@ async fn main() {
         }
     }
     let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = driver::repository::feed_db::connect::initialize_connection(var).await;
+    let pool = driver::repository::feed_db::connect::initialize_connection(var);
 
-    match pool {
+    match pool.await {
         Ok(pool) => {
             println!("Established connection to database");
             api_handler::handler::handler(pool);
