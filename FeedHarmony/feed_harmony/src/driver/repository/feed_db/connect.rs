@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use crate::api_handler::handler::DatabasePool;
 use crate::domain::feed::FollowList;
 use axum::async_trait;
@@ -33,7 +34,7 @@ impl FeedConnection for FeedRepository {
             .iter()
             .map(|row| FollowList {
                 id: row.get("id"),
-                uuid: uuid::Uuid::from_u128(row.get::<sqlx::types::Uuid, _>("uuid").as_u128()),
+                uuid: uuid::Uuid::from_str(row.get("uuid")).map_err(|e| anyhow::anyhow!(e)).unwrap(),
                 xml_version: row.get("xml_version"),
                 rss_version: row.get("rss_version"),
                 url: row.get("url"),

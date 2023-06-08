@@ -1,5 +1,5 @@
 use axum::http;
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use uuid::Uuid;
@@ -10,9 +10,9 @@ pub struct Feed {
     pub item_link: http::Uri,
     pub item_title: String,
     pub item_description: String,
-    pub published_parsed: NaiveDateTime,
-    pub created_at: NaiveDateTime,
-    pub updated_at: NaiveDateTime,
+    pub published_parsed: DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }
 
 // TODO: just copied from db schema, need to update and refactor
@@ -29,9 +29,9 @@ pub struct FollowList {
     pub links: Value,
     pub item_description: Value,
     pub language: String,
-    pub dt_created: NaiveDateTime,
-    pub dt_updated: NaiveDateTime,
-    pub dt_last_inserted: NaiveDateTime,
+    pub dt_created: DateTime<Utc>,
+    pub dt_updated: DateTime<Utc>,
+    pub dt_last_inserted: DateTime<Utc>,
     pub feed_category: i32,
     pub is_favorite: i8,
     pub is_active: i8,
