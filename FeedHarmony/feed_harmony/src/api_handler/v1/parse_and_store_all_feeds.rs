@@ -2,7 +2,7 @@ use crate::api_handler::handler::DatabasePool;
 use crate::usecase::parse_and_store::parse_and_store_feeds;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::{extract::State, http::header, http::Response, response, Json};
+use axum::{extract::State, Json};
 use serde_json::json;
 
 pub async fn parse_and_store(State(pool): State<DatabasePool>) -> impl IntoResponse {

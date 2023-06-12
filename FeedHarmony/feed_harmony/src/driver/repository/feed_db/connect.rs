@@ -4,7 +4,7 @@ use crate::domain::Feed;
 use anyhow::Result;
 use axum::async_trait;
 use serde_json::Value;
-use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
+use sqlx::mysql::MySqlPoolOptions;
 use sqlx::Error as SqlxError;
 use sqlx::{MySql, Pool, Row};
 use std::fmt::Debug;
@@ -80,7 +80,7 @@ impl FeedConnection for FeedRepository {
             let upserting_url = one_feed.feed_url.clone();
 
             let mut tx = self.pool.begin().await?;
-            let row = sqlx::query(
+            let _row = sqlx::query(
                 "INSERT INTO feeds (id, site_url, title, description, feed_url, language, favorites, dt_created, dt_updated)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ON DUPLICATE KEY UPDATE feed_url = ?;",   
