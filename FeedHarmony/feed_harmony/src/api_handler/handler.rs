@@ -23,7 +23,7 @@ pub async fn handler(pool: Pool<MySql>) {
         .route("/", get(|| async { "Hello, World!" }))
         .route(
             "/api/v1/store_feeds",
-            post(api_handler::v1::store_feeds::store_feeds),
+            post(api_handler::v1::store_feeds::fetch_all),
         )
         .with_state(state.pool);
 

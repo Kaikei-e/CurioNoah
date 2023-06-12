@@ -1,10 +1,12 @@
 use crate::api_handler::handler::DatabasePool;
-use crate::domain::feed::FollowList;
+use crate::domain::feed::{FeedLinks, FollowList, OneFeed};
 use crate::domain::Feed;
 use anyhow::{Error, Result};
 use axum::async_trait;
-use sqlx::mysql::{MySqlPool, MySqlPoolOptions, MySqlRow};
-use sqlx::{Executor, MySql, Pool, Row};
+use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
+use sqlx::Error as SqlxError;
+use sqlx::{MySql, Pool, Row};
+use std::fmt::Debug;
 use std::str::FromStr;
 
 #[derive(Debug, Clone)]
@@ -20,34 +22,41 @@ impl FeedRepository {
 
 #[async_trait]
 pub trait FeedConnection {
-    async fn get_all_feeds(&self) -> Result<Vec<FollowList>>;
-    async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), Error>;
+    async fn get_all_feeds(&self) -> Result<Vec<FollowList>, SqlxError>;
+    async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), SqlxError>;
 }
 
 // TODO: need to think about using query builder
 #[async_trait]
 impl FeedConnection for FeedRepository {
-    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FollowList>> {
-        let rows = sqlx::query("SELECT * FROM follow_lists")
+    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FollowList>, SqlxError> {
+        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists")
             .fetch_all(&self.pool)
             .await
-            .map_err(|e| anyhow::anyhow!(e))?;
+            .map_err(|e| anyhow::anyhow!(e));
 
-        let follow_lists = rows
+        if let Err(e) = maybe_rows {
+            println!("Failed to fetch all feeds: {}", e);
+            return Err(SqlxError::RowNotFound);
+        }
+
+        let follow_lists = maybe_rows
+            .unwrap()
             .iter()
             .map(|row| FollowList {
                 id: row.get("id"),
-                uuid: uuid::Uuid::from_str(row.get("uuid"))
-                    .map_err(|e| anyhow::anyhow!(e))
-                    .unwrap(),
+                uuid: uuid::Uuid::from_str(&*row.get::<String, _>("uuid")).unwrap(),
                 xml_version: row.get("xml_version"),
                 rss_version: row.get("rss_version"),
                 url: row.get("url"),
                 title: row.get("title"),
                 description: row.get("description"),
                 link: row.get("link"),
-                links: row.get("links"),
-                item_description: row.get("item_description"),
+                links: serde_json::from_str::<FeedLinks>(&row.get::<String, _>("links")).unwrap(),
+                item_description: serde_json::from_str::<OneFeed>(
+                    &row.get::<String, _>("item_description"),
+                )
+                .unwrap(),
                 language: row.get("language"),
                 dt_created: row.get("dt_created"),
                 dt_updated: row.get("dt_updated"),
@@ -63,7 +72,7 @@ impl FeedConnection for FeedRepository {
         Ok(follow_lists)
     }
 
-    async fn insert_all_feeds(&self, feeds: Vec<Feed>) -> Result<(), Error> {
+    async fn insert_all_feeds(&self, feeds: Vec<Feed>) -> Result<(), SqlxError> {
         self.pool.begin().await?;
 
         for one_feed in feeds {
@@ -91,7 +100,7 @@ impl FeedConnection for FeedRepository {
     }
 }
 
-pub async fn initialize_connection(var: String) -> Result<Pool<MySql>> {
+pub async fn initialize_connection(var: String) -> Result<Pool<MySql>, SqlxError> {
     let pool = MySqlPoolOptions::new()
         .max_connections(10)
         .min_connections(4)
@@ -107,7 +116,8 @@ pub async fn initialize_connection(var: String) -> Result<Pool<MySql>> {
             Ok(pool?)
         }
         Err(e) => {
-            panic!("Failed to connect to database: {}", e)
+            println!("Failed to connect to database:",);
+            Err(SqlxError::Database(e.into_database_error().unwrap()))
         }
     }
 }

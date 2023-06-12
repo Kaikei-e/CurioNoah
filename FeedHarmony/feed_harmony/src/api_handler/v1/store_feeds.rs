@@ -5,7 +5,7 @@ use axum::{response::IntoResponse, Json};
 use serde::Deserialize;
 use uuid::Uuid;
 
-pub async fn store_feeds(
+pub async fn fetch_all(
     State(pool): State<DatabasePool>,
     Json(payload): Json<AllFeeds>,
 ) -> impl IntoResponse {
