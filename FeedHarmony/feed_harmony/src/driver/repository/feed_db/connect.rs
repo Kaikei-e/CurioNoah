@@ -1,5 +1,6 @@
 use crate::api_handler::handler::DatabasePool;
 use crate::domain::feed::FollowList;
+use crate::domain::Feed;
 use anyhow::{Error, Result};
 use axum::async_trait;
 use sqlx::mysql::{MySqlPool, MySqlPoolOptions, MySqlRow};
@@ -20,7 +21,7 @@ impl FeedRepository {
 #[async_trait]
 pub trait FeedConnection {
     async fn get_all_feeds(&self) -> Result<Vec<FollowList>>;
-    async fn insert_all_feeds(&self) -> Result<bool, Error>;
+    async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), Error>;
 }
 
 // TODO: need to think about using query builder
@@ -62,14 +63,31 @@ impl FeedConnection for FeedRepository {
         Ok(follow_lists)
     }
 
-    async fn insert_all_feeds(&self) -> Result<bool, Error> {
+    async fn insert_all_feeds(&self, feeds: Vec<Feed>) -> Result<(), Error> {
         self.pool.begin().await?;
-        //         self.pool.execute(
-        //             "INSERT INTO feeds (id, site_url, title, description, feed_url, "language", dt_created, dt_updated, favorites)
-        // values ();"
-        //         )
 
-        todo!()
+        for one_feed in feeds {
+            let mut tx = self.pool.begin().await?;
+            let row = sqlx::query(
+                // "INSERT INTO feeds (id, site_url, title, description, feed_url, "language", favorites)
+                //     VALUES (?, ?, ?, ?, ?, ?, ?);",
+                "INSERT INTO feeds (id, site_url, title, description, feed_url, language, favorites)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",   
+            )
+            .bind(one_feed.id)
+                .bind(one_feed.site_url)
+            .bind(one_feed.title)
+                .bind(one_feed.description)
+            .bind(one_feed.feed_url)
+                .bind(one_feed.language)
+            .bind(one_feed.favorites)
+            .execute(&mut tx)
+            .await?;
+
+            tx.commit().await?;
+        }
+
+        Ok(())
     }
 }
 

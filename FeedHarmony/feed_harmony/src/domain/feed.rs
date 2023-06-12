@@ -5,14 +5,15 @@ use serde_json::Value;
 use uuid::Uuid;
 
 pub struct Feed {
-    pub uuid: Uuid,
-    pub guid: String,
-    pub item_link: http::Uri,
-    pub item_title: String,
-    pub item_description: String,
-    pub published_parsed: DateTime<Utc>,
+    pub id: Uuid,
+    pub site_url: String,
+    pub feed_url: String,
+    pub title: String,
+    pub language: String,
+    pub description: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub favorites: i32,
 }
 
 // TODO: just copied from db schema, need to update and refactor
