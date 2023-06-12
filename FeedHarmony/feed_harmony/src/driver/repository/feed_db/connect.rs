@@ -77,10 +77,13 @@ impl FeedConnection for FeedRepository {
         self.pool.begin().await?;
 
         for one_feed in feeds {
+            let upserting_url = one_feed.feed_url.clone();
+
             let mut tx = self.pool.begin().await?;
             let row = sqlx::query(
                 "INSERT INTO feeds (id, site_url, title, description, feed_url, language, favorites, dt_created, dt_updated)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",   
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE feed_url = ?;",   
             )
             .bind(one_feed.id)
                 .bind(one_feed.site_url)
@@ -91,6 +94,7 @@ impl FeedConnection for FeedRepository {
             .bind(one_feed.favorites)
             .bind(one_feed.created_at)
             .bind(one_feed.updated_at)
+                .bind(upserting_url)
             .execute(&mut tx)
             .await?;
 
