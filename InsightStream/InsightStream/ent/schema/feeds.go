@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/ent/schema/index"
 	"time"
 
 	"entgo.io/ent"
@@ -25,6 +26,15 @@ func (Feeds) Fields() []ent.Field {
 		field.Time("dt_created").Immutable().Default(time.Now),
 		field.Time("dt_updated").UpdateDefault(time.Now),
 		field.Int64("favorites").Default(0),
+	}
+}
+
+// Indexes of the Feeds.
+func (Feeds) Indexes() []ent.Index {
+	return []ent.Index{
+		// unique index
+		index.Fields("site_url", "feed_url").Unique(),
+		index.Fields("id", "feed_url").Unique(),
 	}
 }
 

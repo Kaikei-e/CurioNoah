@@ -25,6 +25,18 @@ var (
 		Name:       "feeds",
 		Columns:    FeedsColumns,
 		PrimaryKey: []*schema.Column{FeedsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "feeds_site_url_feed_url",
+				Unique:  true,
+				Columns: []*schema.Column{FeedsColumns[1], FeedsColumns[4]},
+			},
+			{
+				Name:    "feeds_id_feed_url",
+				Unique:  true,
+				Columns: []*schema.Column{FeedsColumns[0], FeedsColumns[4]},
+			},
+		},
 	}
 	// FollowListsColumns holds the columns for the "follow_lists" table.
 	FollowListsColumns = []*schema.Column{
