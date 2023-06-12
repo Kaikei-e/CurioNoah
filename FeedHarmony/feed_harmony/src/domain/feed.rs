@@ -1,11 +1,11 @@
-use anyhow::Result;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use uuid::Uuid;
 
+#[derive(sqlx::Encode, Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
 pub struct Feed {
-    pub id: Uuid,
+    pub id: String,
     pub site_url: String,
     pub feed_url: String,
     pub title: String,

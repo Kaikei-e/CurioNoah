@@ -29,7 +29,7 @@ pub async fn parse_and_store_feeds(pool: DatabasePool) -> Result<(), Error> {
                 categories: item.clone().categories,
             };
             let one_feed = Feed {
-                id: uuid::Uuid::new_v4(),
+                id: uuid::Uuid::new_v4().to_string(),
                 site_url: feed.clone().url,
                 title: feed_element.clone().item_title,
                 description: feed_element.clone().item_description.to_string(),

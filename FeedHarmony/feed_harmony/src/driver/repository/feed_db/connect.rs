@@ -1,7 +1,7 @@
 use crate::api_handler::handler::DatabasePool;
-use crate::domain::feed::{FeedLinks, FollowList, OneFeed};
+use crate::domain::feed::{FollowList, OneFeed};
 use crate::domain::Feed;
-use anyhow::{Error, Result};
+use anyhow::Result;
 use axum::async_trait;
 use serde_json::Value;
 use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
@@ -81,7 +81,7 @@ impl FeedConnection for FeedRepository {
             let row = sqlx::query(
                 // "INSERT INTO feeds (id, site_url, title, description, feed_url, "language", favorites)
                 //     VALUES (?, ?, ?, ?, ?, ?, ?);",
-                "INSERT INTO feeds (id, site_url, title, description, feed_url, language, favorites)
+                "INSERT INTO feeds (id, site_url, title, description, feed_url, language, favorites, dt_created, dt_updated)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",   
             )
             .bind(one_feed.id)
@@ -91,6 +91,8 @@ impl FeedConnection for FeedRepository {
             .bind(one_feed.feed_url)
                 .bind(one_feed.language)
             .bind(one_feed.favorites)
+            .bind(one_feed.created_at)
+            .bind(one_feed.updated_at)
             .execute(&mut tx)
             .await?;
 
