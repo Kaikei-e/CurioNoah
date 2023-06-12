@@ -79,8 +79,6 @@ impl FeedConnection for FeedRepository {
         for one_feed in feeds {
             let mut tx = self.pool.begin().await?;
             let row = sqlx::query(
-                // "INSERT INTO feeds (id, site_url, title, description, feed_url, "language", favorites)
-                //     VALUES (?, ?, ?, ?, ?, ?, ?);",
                 "INSERT INTO feeds (id, site_url, title, description, feed_url, language, favorites, dt_created, dt_updated)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",   
             )
