@@ -50,7 +50,7 @@ VITE_ORIGIN="http://curionoah.com:4173"
 
 ```
 MYSQL_USER="userhogehoge"
-MYSQL_PASSWORD="testthisisatest"
+MYSQL_PASSWORD="testthisisatesttestestest"
 MYSQL_DATABASE="curio_noah"
 MYSQL_ADDR="192.168.100.10:3306"
 NET_TYPE="tcp"
