@@ -41,11 +41,6 @@ impl FeedConnection for FeedRepository {
             return Err(SqlxError::RowNotFound);
         }
 
-        // Copy code
-        // let links_value: Value = row.get("links");
-        // let links_str = links_value.to_string();
-        // let links: FeedLinks = serde_json::from_str(&links_str).unwrap();
-
         let follow_lists = maybe_rows
             .unwrap()
             .iter()
