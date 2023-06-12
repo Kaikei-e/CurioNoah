@@ -1,9 +1,10 @@
-use std::str::FromStr;
 use crate::api_handler::handler::DatabasePool;
 use crate::domain::feed::FollowList;
+use anyhow::{Error, Result};
 use axum::async_trait;
-use sqlx::mysql::{MySqlPool, MySqlRow};
-use sqlx::{MySql, Pool, Row};
+use sqlx::mysql::{MySqlPool, MySqlPoolOptions, MySqlRow};
+use sqlx::{Executor, MySql, Pool, Row};
+use std::str::FromStr;
 
 #[derive(Debug, Clone)]
 pub struct FeedRepository {
@@ -18,7 +19,8 @@ impl FeedRepository {
 
 #[async_trait]
 pub trait FeedConnection {
-    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FollowList>>;
+    async fn get_all_feeds(&self) -> Result<Vec<FollowList>>;
+    async fn insert_all_feeds(&self) -> Result<bool, Error>;
 }
 
 // TODO: need to think about using query builder
@@ -34,7 +36,9 @@ impl FeedConnection for FeedRepository {
             .iter()
             .map(|row| FollowList {
                 id: row.get("id"),
-                uuid: uuid::Uuid::from_str(row.get("uuid")).map_err(|e| anyhow::anyhow!(e)).unwrap(),
+                uuid: uuid::Uuid::from_str(row.get("uuid"))
+                    .map_err(|e| anyhow::anyhow!(e))
+                    .unwrap(),
                 xml_version: row.get("xml_version"),
                 rss_version: row.get("rss_version"),
                 url: row.get("url"),
@@ -57,10 +61,28 @@ impl FeedConnection for FeedRepository {
 
         Ok(follow_lists)
     }
+
+    async fn insert_all_feeds(&self) -> Result<bool, Error> {
+        self.pool.begin().await?;
+        //         self.pool.execute(
+        //             "INSERT INTO feeds (id, site_url, title, description, feed_url, "language", dt_created, dt_updated, favorites)
+        // values ();"
+        //         )
+
+        todo!()
+    }
 }
 
-pub async fn initialize_connection(var: String) -> anyhow::Result<Pool<MySql>> {
-    let pool = MySqlPool::connect(&var).await;
+pub async fn initialize_connection(var: String) -> Result<Pool<MySql>> {
+    let pool = MySqlPoolOptions::new()
+        .max_connections(10)
+        .min_connections(4)
+        .idle_timeout(std::time::Duration::from_secs(60 * 60 * 12))
+        .max_lifetime(std::time::Duration::from_secs(60 * 60 * 12))
+        .acquire_timeout(std::time::Duration::from_secs(10))
+        .connect(&var)
+        .await;
+
     match pool {
         Ok(_) => {
             println!("Connected to database");
