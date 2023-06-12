@@ -12,7 +12,7 @@ pub async fn fetch_all_follow_list(pool: DatabasePool) -> anyhow::Result<Vec<Fol
             Ok(feeds)
         }
         Err(e) => {
-            println!("Failed to fetch all feeds: {}", e);
+            println!("Failed to fetch all feeds: {:?}", e);
             Err(e.into())
         }
     }

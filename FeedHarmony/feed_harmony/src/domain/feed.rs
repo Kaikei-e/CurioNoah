@@ -1,18 +1,8 @@
-use anyhow::{Error, Result};
-use axum::http;
+use anyhow::Result;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use uuid::Uuid;
-
-async fn parse_rss_feeds_to_domain_model(
-    composed_feeds: Vec<FollowList>,
-) -> Result<Vec<FeedElement>, Error> {
-    // feeds: Object {"links": Array [String("https://zenn.dev/isana/articles/tips-for-dockerfile-standardization-across-env"), String("https://zenn.dev/uniker9/articles/ec53f5b2d1ae63"), String("https://zenn.dev/nekoallergy/articles/docker-basic-02")]}
-    for one_feed in composed_feeds {}
-
-    todo!("Implement this function")
-}
 
 pub struct Feed {
     pub id: Uuid,
