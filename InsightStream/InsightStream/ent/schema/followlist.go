@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/ent/schema/index"
 	"insightstream/models/feeds"
 	"time"
 
@@ -35,6 +36,14 @@ func (FollowList) Fields() []ent.Field {
 		field.Bool("is_favorite").Default(false),
 		field.Bool("is_read").Default(false),
 		field.Bool("is_updated").Default(false),
+	}
+}
+
+// Indexes of the FollowList.
+func (FollowList) Indexes() []ent.Index {
+	return []ent.Index{
+		// unique index
+		index.Fields("uuid").Unique(),
 	}
 }
 

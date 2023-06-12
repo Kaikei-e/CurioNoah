@@ -32,6 +32,7 @@ func (Feeds) Fields() []ent.Field {
 // Indexes of the Feeds.
 func (Feeds) Indexes() []ent.Index {
 	return []ent.Index{
+		index.Fields("id").Unique(),
 		// unique index
 		index.Fields("site_url", "feed_url").Unique(),
 		index.Fields("id", "feed_url").Unique(),

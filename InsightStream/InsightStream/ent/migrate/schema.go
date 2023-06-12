@@ -27,6 +27,11 @@ var (
 		PrimaryKey: []*schema.Column{FeedsColumns[0]},
 		Indexes: []*schema.Index{
 			{
+				Name:    "feeds_id",
+				Unique:  true,
+				Columns: []*schema.Column{FeedsColumns[0]},
+			},
+			{
 				Name:    "feeds_site_url_feed_url",
 				Unique:  true,
 				Columns: []*schema.Column{FeedsColumns[1], FeedsColumns[4]},
@@ -65,6 +70,13 @@ var (
 		Name:       "follow_lists",
 		Columns:    FollowListsColumns,
 		PrimaryKey: []*schema.Column{FollowListsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "followlist_uuid",
+				Unique:  true,
+				Columns: []*schema.Column{FollowListsColumns[1]},
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
