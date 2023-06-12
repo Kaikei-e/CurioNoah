@@ -3,6 +3,7 @@ use crate::domain::feed::{FeedLinks, FollowList, OneFeed};
 use crate::domain::Feed;
 use anyhow::{Error, Result};
 use axum::async_trait;
+use serde_json::Value;
 use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
 use sqlx::Error as SqlxError;
 use sqlx::{MySql, Pool, Row};
@@ -40,21 +41,26 @@ impl FeedConnection for FeedRepository {
             return Err(SqlxError::RowNotFound);
         }
 
+        // Copy code
+        // let links_value: Value = row.get("links");
+        // let links_str = links_value.to_string();
+        // let links: FeedLinks = serde_json::from_str(&links_str).unwrap();
+
         let follow_lists = maybe_rows
             .unwrap()
             .iter()
             .map(|row| FollowList {
                 id: row.get("id"),
-                uuid: uuid::Uuid::from_str(&*row.get::<String, _>("uuid")).unwrap(),
+                uuid: uuid::Uuid::from_str(&row.get::<String, _>("uuid")).unwrap(),
                 xml_version: row.get("xml_version"),
                 rss_version: row.get("rss_version"),
                 url: row.get("url"),
                 title: row.get("title"),
                 description: row.get("description"),
                 link: row.get("link"),
-                links: serde_json::from_str::<FeedLinks>(&row.get::<String, _>("links")).unwrap(),
+                links: serde_json::from_str(&row.get::<Value, _>("links").to_string()).unwrap(),
                 item_description: serde_json::from_str::<OneFeed>(
-                    &row.get::<String, _>("item_description"),
+                    &row.get::<Value, _>("item_description").to_string(),
                 )
                 .unwrap(),
                 language: row.get("language"),

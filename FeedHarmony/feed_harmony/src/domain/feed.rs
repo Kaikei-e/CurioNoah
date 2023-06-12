@@ -2,6 +2,7 @@ use anyhow::{Error, Result};
 use axum::http;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use uuid::Uuid;
 
 async fn parse_rss_feeds_to_domain_model(
@@ -42,7 +43,7 @@ pub struct FeedElement {
     #[serde(rename = "item_title")]
     pub item_title: String,
     #[serde(rename = "item_description")]
-    pub item_description: String,
+    pub item_description: Value,
     #[serde(rename = "published_parsed")]
     pub published_parsed: String,
     #[serde(rename = "categories")]
