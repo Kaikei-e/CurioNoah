@@ -1,7 +1,6 @@
 use crate::api_handler;
-use axum::extract::State;
 use axum::routing::post;
-use axum::{async_trait, routing::get, Router};
+use axum::{routing::get, Router};
 use sqlx::{MySql, Pool};
 
 #[derive(Clone)]
