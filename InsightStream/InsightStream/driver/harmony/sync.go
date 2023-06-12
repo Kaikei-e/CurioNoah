@@ -1,7 +1,6 @@
 package harmony
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -43,10 +42,9 @@ func Driver(host string, path string, method string, body io.ReadCloser) (http.R
 
 	res, err := cl.Do(&req)
 	if err != nil {
-		errors.New(fmt.Sprintf("do %s: %v", ul, err))
 		return http.Response{
 			StatusCode: 500,
-			Status:     "Internal Server Error",
+			Status:     fmt.Sprintf("Internal Server Error in %v: %v", ul, err.Error()),
 		}, err
 	}
 

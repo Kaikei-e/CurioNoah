@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// 30 minute is not intentional value. Just for testing.
-	ticker := time.NewTicker(30 * time.Minute)
+	ticker := time.NewTicker(20 * time.Minute)
 	done := make(chan bool)
 
 	cl := repository.InitConnection()
