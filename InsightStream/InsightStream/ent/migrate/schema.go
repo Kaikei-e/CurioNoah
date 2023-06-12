@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "site_url", Type: field.TypeString, Default: ""},
 		{Name: "title", Type: field.TypeString, Default: ""},
-		{Name: "description", Type: field.TypeString, Default: ""},
+		{Name: "description", Type: field.TypeString, Size: 2147483647, Default: ""},
 		{Name: "feed_url", Type: field.TypeString, Default: ""},
 		{Name: "language", Type: field.TypeString, Default: ""},
 		{Name: "dt_created", Type: field.TypeTime},

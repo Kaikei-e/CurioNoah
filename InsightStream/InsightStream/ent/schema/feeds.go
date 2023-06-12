@@ -19,7 +19,7 @@ func (Feeds) Fields() []ent.Field {
 		field.UUID("id", uuid.New()).Default(uuid.New).Unique(),
 		field.String("site_url").Default("").NotEmpty(),
 		field.String("title").Default("").NotEmpty(),
-		field.String("description").Default("").NotEmpty(),
+		field.Text("description").Default("").NotEmpty(),
 		field.String("feed_url").Default("").NotEmpty(),
 		field.String("language").Default("").NotEmpty(),
 		field.Time("dt_created").Immutable().Default(time.Now),
