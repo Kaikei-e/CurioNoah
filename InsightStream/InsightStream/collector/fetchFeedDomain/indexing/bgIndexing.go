@@ -9,6 +9,7 @@ import (
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
 	"sort"
+	"sync"
 )
 
 //const (
@@ -16,6 +17,8 @@ import (
 //)
 
 func Store(cl *ent.Client) error {
+	var wg sync.WaitGroup
+
 	result, err := readfeed.QueryAll(cl)
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to query all: %v", err))
@@ -80,14 +83,32 @@ func Store(cl *ent.Client) error {
 		return nil
 	}
 
-	err = register.Update(addingList, cl)
-	if err != nil {
-		log.Warnj(map[string]interface{}{
-			"error": err,
-		})
+	wg.Add(1)
 
-		return errors.New(fmt.Sprintf("failed to update the RSS feed list"))
-	}
+	go func() {
+		defer wg.Done()
+		err = register.Update(addingList, cl)
+		if err != nil {
+			log.Warnj(map[string]interface{}{
+				"error": err,
+			})
+
+		}
+	}()
+
+	wg.Wait()
+	log.Info("Synchronizing feeds was completed")
+
+	//err = register.Update(addingList, cl)
+	//if err != nil {
+	//	log.Warnj(map[string]interface{}{
+	//		"error": err,
+	//	})
+	//
+	//	return errors.New(fmt.Sprintf("failed to update the RSS feed list"))
+	//}
+
+	PingToSync()
 
 	return nil
 }
