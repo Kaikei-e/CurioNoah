@@ -6,6 +6,9 @@ import (
 )
 
 func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
+	// To reduce the amount of data fetched per feed, set a limit on the number of items to fetch per feed
+	const sendAmount = 3
+
 	// TODO will implement unit tests
 
 	var feedList []*gofeed.Feed
@@ -13,7 +16,11 @@ func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
 
 		var items []*gofeed.Item
 		var authors []*gofeed.Person
-		for _, item := range feed.ItemDescription {
+		//for _, item := range feed.ItemDescription {
+		for i, item := range feed.ItemDescription {
+			if i >= sendAmount {
+				break
+			}
 
 			if len(item.Authors) > 0 {
 				for _, author := range item.Authors {

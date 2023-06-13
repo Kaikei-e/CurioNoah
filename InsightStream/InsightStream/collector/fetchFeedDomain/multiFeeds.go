@@ -11,6 +11,12 @@ import (
 func MultiFeed(storedList []string) ([]*gofeed.Feed, error) {
 	fmt.Printf("storedList: %v \n", storedList)
 
+	// Determine amount of feed data to fetch per URL
+	fetchFeedAmount := len(storedList)
+	if fetchFeedAmount == 0 {
+		return nil, errors.New("no stored URLs to fetch from")
+	}
+
 	var feeds []*gofeed.Feed
 
 	for _, url := range storedList {
@@ -19,8 +25,11 @@ func MultiFeed(storedList []string) ([]*gofeed.Feed, error) {
 			return nil, errors.New(fmt.Sprintf("fetch %s: %v", url, err))
 		}
 
-		// TODO will have functionally to check if the feed is updated or not
-		feed.Items = feed.Items[:3]
+		// If the number of items is less than the fetchFeedAmount, adjust fetchFeedAmount accordingly
+		if len(feed.Items) < fetchFeedAmount {
+			fetchFeedAmount = len(feed.Items)
+		}
+		feed.Items = feed.Items[:fetchFeedAmount]
 
 		feeds = append(feeds, feed)
 	}

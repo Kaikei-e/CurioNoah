@@ -51,6 +51,7 @@ func Server(cl *ent.Client) {
 
 				//feeds, err := fetchFeeds.ParallelizeFetch(testdata.FeedList)
 				//feedEnt, err := readfeed.QueryByTen(cl)
+				// the twenty is the number of list to send the followList to Front
 				feedEnt, err := readfeed.QueryByTwenty(cl)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
