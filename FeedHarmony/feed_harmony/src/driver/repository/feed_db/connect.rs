@@ -32,7 +32,7 @@ pub trait FeedConnection {
 #[async_trait]
 #[cfg_attr(test, automock)]
 impl FeedConnection for FeedRepository {
-    async fn get_all_feeds(&self) -> anyhow::Result<Vec<FollowList>, SqlxError> {
+    async fn get_all_feeds(&self) -> Result<Vec<FollowList>, SqlxError> {
         let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists")
             .fetch_all(&self.pool)
             .await
