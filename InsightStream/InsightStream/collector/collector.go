@@ -23,6 +23,7 @@ func Collector(targetURL string) (*gofeed.Feed, error) {
 	////if err != nil {
 	////	return nil, errors.New(fmt.Sprintf("parse %s: %v", targetURL, err))
 	////}
+
 	feed, err := fp.ParseURL(targetURL)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("parse %s: %v", targetURL, err))
