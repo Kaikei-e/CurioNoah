@@ -64,15 +64,23 @@ impl FetchSiteUrlGroup for WordNetworkRepository {
         for one_site in grouped_urls {
             let uuid = uuid::Uuid::new_v4();
             let mut tx = self.pool.begin().await?;
-            sqlx::query!(
-                "INSERT INTO cooccurrence_network_pools (id, site_url, titles, descriptions) VALUES (?, ?, ?, ?)",
+            let result = sqlx::query!(
+                "INSERT INTO cooccurrence_network_pools (id, site_url, titles, descriptions)
+                 VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE site_url = ?;
+                 ",
                 uuid.to_string(),
                 one_site.site_url,
                 one_site.titles,
-                one_site.descriptions
+                one_site.descriptions,
+                one_site.site_url
             )
-                .execute(&mut tx)
-                .await?;
+            .execute(&mut tx)
+            .await;
+
+            if let Err(e) = result {
+                println!("Failed to insert all feeds: {:?}", e);
+                return Err(e);
+            }
 
             tx.commit().await?;
         }
