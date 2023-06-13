@@ -92,7 +92,7 @@ impl FeedConnection for FeedRepository {
             .bind(one_feed.feed_url)
                 .bind(one_feed.language)
             .bind(one_feed.favorites)
-            .bind(one_feed.created_at)
+                .bind(one_feed.created_at)
             .bind(one_feed.updated_at)
                 .bind(upserting_url)
             .execute(&mut tx)
