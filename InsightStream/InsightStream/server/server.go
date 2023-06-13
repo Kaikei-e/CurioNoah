@@ -9,6 +9,7 @@ import (
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
+	"insightstream/restorerss/manageFeedsAmount"
 	"sort"
 )
 
@@ -74,11 +75,16 @@ func Server(cl *ent.Client) {
 					}
 				}
 
-				e.Logger.Infof("feeds were fetched: feed number is %v", len(feeds))
+				reducedFeeds, err := manageFeedsAmount.ReduceToLatestThreeItems(feeds)
+				if err != nil {
+					e.Logger.Errorf("failed to reduce feeds. error: %v", err)
+				}
+
+				e.Logger.Infof("feeds were fetched: feed number is %v", len(reducedFeeds))
 
 				var feedsFormatted []gofeed.Feed
-				for _, feed := range feeds {
-					feedFormatted := *feed
+				for _, feed := range reducedFeeds {
+					feedFormatted := feed
 					feedsFormatted = append(feedsFormatted, feedFormatted)
 				}
 
@@ -96,7 +102,6 @@ func Server(cl *ent.Client) {
 			})
 			if err != nil {
 				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
-
 			}
 
 		}
@@ -105,7 +110,6 @@ func Server(cl *ent.Client) {
 		registerFeed.Use()
 		{
 			register.RegisterHandler(registerFeed, cl)
-
 		}
 	}
 
@@ -118,13 +122,11 @@ func Server(cl *ent.Client) {
 		{
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				err := adaptor.CollectAll(c, cl)
-
 				return err
 			})
 
 			if err != nil {
 				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
-
 			}
 
 		}
