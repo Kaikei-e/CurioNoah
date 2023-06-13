@@ -10,6 +10,7 @@ import (
 
 	"insightstream/ent/migrate"
 
+	"insightstream/ent/cooccurrencenetworkpool"
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/users"
@@ -24,6 +25,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// CooccurrenceNetworkPool is the client for interacting with the CooccurrenceNetworkPool builders.
+	CooccurrenceNetworkPool *CooccurrenceNetworkPoolClient
 	// Feeds is the client for interacting with the Feeds builders.
 	Feeds *FeedsClient
 	// FollowList is the client for interacting with the FollowList builders.
@@ -43,6 +46,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.CooccurrenceNetworkPool = NewCooccurrenceNetworkPoolClient(c.config)
 	c.Feeds = NewFeedsClient(c.config)
 	c.FollowList = NewFollowListClient(c.config)
 	c.Users = NewUsersClient(c.config)
@@ -77,11 +81,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Feeds:      NewFeedsClient(cfg),
-		FollowList: NewFollowListClient(cfg),
-		Users:      NewUsersClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		CooccurrenceNetworkPool: NewCooccurrenceNetworkPoolClient(cfg),
+		Feeds:                   NewFeedsClient(cfg),
+		FollowList:              NewFollowListClient(cfg),
+		Users:                   NewUsersClient(cfg),
 	}, nil
 }
 
@@ -99,18 +104,19 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Feeds:      NewFeedsClient(cfg),
-		FollowList: NewFollowListClient(cfg),
-		Users:      NewUsersClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		CooccurrenceNetworkPool: NewCooccurrenceNetworkPoolClient(cfg),
+		Feeds:                   NewFeedsClient(cfg),
+		FollowList:              NewFollowListClient(cfg),
+		Users:                   NewUsersClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Feeds.
+//		CooccurrenceNetworkPool.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -132,6 +138,7 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.CooccurrenceNetworkPool.Use(hooks...)
 	c.Feeds.Use(hooks...)
 	c.FollowList.Use(hooks...)
 	c.Users.Use(hooks...)
@@ -140,6 +147,7 @@ func (c *Client) Use(hooks ...Hook) {
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.CooccurrenceNetworkPool.Intercept(interceptors...)
 	c.Feeds.Intercept(interceptors...)
 	c.FollowList.Intercept(interceptors...)
 	c.Users.Intercept(interceptors...)
@@ -148,6 +156,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *CooccurrenceNetworkPoolMutation:
+		return c.CooccurrenceNetworkPool.mutate(ctx, m)
 	case *FeedsMutation:
 		return c.Feeds.mutate(ctx, m)
 	case *FollowListMutation:
@@ -156,6 +166,123 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Users.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// CooccurrenceNetworkPoolClient is a client for the CooccurrenceNetworkPool schema.
+type CooccurrenceNetworkPoolClient struct {
+	config
+}
+
+// NewCooccurrenceNetworkPoolClient returns a client for the CooccurrenceNetworkPool from the given config.
+func NewCooccurrenceNetworkPoolClient(c config) *CooccurrenceNetworkPoolClient {
+	return &CooccurrenceNetworkPoolClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `cooccurrencenetworkpool.Hooks(f(g(h())))`.
+func (c *CooccurrenceNetworkPoolClient) Use(hooks ...Hook) {
+	c.hooks.CooccurrenceNetworkPool = append(c.hooks.CooccurrenceNetworkPool, hooks...)
+}
+
+// Use adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `cooccurrencenetworkpool.Intercept(f(g(h())))`.
+func (c *CooccurrenceNetworkPoolClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CooccurrenceNetworkPool = append(c.inters.CooccurrenceNetworkPool, interceptors...)
+}
+
+// Create returns a builder for creating a CooccurrenceNetworkPool entity.
+func (c *CooccurrenceNetworkPoolClient) Create() *CooccurrenceNetworkPoolCreate {
+	mutation := newCooccurrenceNetworkPoolMutation(c.config, OpCreate)
+	return &CooccurrenceNetworkPoolCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CooccurrenceNetworkPool entities.
+func (c *CooccurrenceNetworkPoolClient) CreateBulk(builders ...*CooccurrenceNetworkPoolCreate) *CooccurrenceNetworkPoolCreateBulk {
+	return &CooccurrenceNetworkPoolCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CooccurrenceNetworkPool.
+func (c *CooccurrenceNetworkPoolClient) Update() *CooccurrenceNetworkPoolUpdate {
+	mutation := newCooccurrenceNetworkPoolMutation(c.config, OpUpdate)
+	return &CooccurrenceNetworkPoolUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CooccurrenceNetworkPoolClient) UpdateOne(cnp *CooccurrenceNetworkPool) *CooccurrenceNetworkPoolUpdateOne {
+	mutation := newCooccurrenceNetworkPoolMutation(c.config, OpUpdateOne, withCooccurrenceNetworkPool(cnp))
+	return &CooccurrenceNetworkPoolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CooccurrenceNetworkPoolClient) UpdateOneID(id uuid.UUID) *CooccurrenceNetworkPoolUpdateOne {
+	mutation := newCooccurrenceNetworkPoolMutation(c.config, OpUpdateOne, withCooccurrenceNetworkPoolID(id))
+	return &CooccurrenceNetworkPoolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CooccurrenceNetworkPool.
+func (c *CooccurrenceNetworkPoolClient) Delete() *CooccurrenceNetworkPoolDelete {
+	mutation := newCooccurrenceNetworkPoolMutation(c.config, OpDelete)
+	return &CooccurrenceNetworkPoolDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CooccurrenceNetworkPoolClient) DeleteOne(cnp *CooccurrenceNetworkPool) *CooccurrenceNetworkPoolDeleteOne {
+	return c.DeleteOneID(cnp.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CooccurrenceNetworkPoolClient) DeleteOneID(id uuid.UUID) *CooccurrenceNetworkPoolDeleteOne {
+	builder := c.Delete().Where(cooccurrencenetworkpool.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CooccurrenceNetworkPoolDeleteOne{builder}
+}
+
+// Query returns a query builder for CooccurrenceNetworkPool.
+func (c *CooccurrenceNetworkPoolClient) Query() *CooccurrenceNetworkPoolQuery {
+	return &CooccurrenceNetworkPoolQuery{
+		config: c.config,
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a CooccurrenceNetworkPool entity by its id.
+func (c *CooccurrenceNetworkPoolClient) Get(ctx context.Context, id uuid.UUID) (*CooccurrenceNetworkPool, error) {
+	return c.Query().Where(cooccurrencenetworkpool.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CooccurrenceNetworkPoolClient) GetX(ctx context.Context, id uuid.UUID) *CooccurrenceNetworkPool {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CooccurrenceNetworkPoolClient) Hooks() []Hook {
+	return c.hooks.CooccurrenceNetworkPool
+}
+
+// Interceptors returns the client interceptors.
+func (c *CooccurrenceNetworkPoolClient) Interceptors() []Interceptor {
+	return c.inters.CooccurrenceNetworkPool
+}
+
+func (c *CooccurrenceNetworkPoolClient) mutate(ctx context.Context, m *CooccurrenceNetworkPoolMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CooccurrenceNetworkPoolCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CooccurrenceNetworkPoolUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CooccurrenceNetworkPoolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CooccurrenceNetworkPoolDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown CooccurrenceNetworkPool mutation op: %q", m.Op())
 	}
 }
 

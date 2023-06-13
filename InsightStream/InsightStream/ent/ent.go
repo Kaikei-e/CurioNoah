@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/ent/cooccurrencenetworkpool"
 	"reflect"
 
 	"entgo.io/ent"
@@ -41,9 +42,10 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		entfeeds.Table:   entfeeds.ValidColumn,
-		followlist.Table: followlist.ValidColumn,
-		users.Table:      users.ValidColumn,
+		cooccurrencenetworkpool.Table: cooccurrencenetworkpool.ValidColumn,
+		entfeeds.Table:                entfeeds.ValidColumn,
+		followlist.Table:              followlist.ValidColumn,
+		users.Table:                   users.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

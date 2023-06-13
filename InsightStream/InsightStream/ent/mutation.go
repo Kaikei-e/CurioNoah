@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/ent/cooccurrencenetworkpool"
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/predicate"
@@ -28,10 +29,467 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeFeeds      = "Feeds"
-	TypeFollowList = "FollowList"
-	TypeUsers      = "Users"
+	TypeCooccurrenceNetworkPool = "CooccurrenceNetworkPool"
+	TypeFeeds                   = "Feeds"
+	TypeFollowList              = "FollowList"
+	TypeUsers                   = "Users"
 )
+
+// CooccurrenceNetworkPoolMutation represents an operation that mutates the CooccurrenceNetworkPool nodes in the graph.
+type CooccurrenceNetworkPoolMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *uuid.UUID
+	site_url           *string
+	titles             *string
+	descriptions       *[]string
+	appenddescriptions []string
+	clearedFields      map[string]struct{}
+	done               bool
+	oldValue           func(context.Context) (*CooccurrenceNetworkPool, error)
+	predicates         []predicate.CooccurrenceNetworkPool
+}
+
+var _ ent.Mutation = (*CooccurrenceNetworkPoolMutation)(nil)
+
+// cooccurrencenetworkpoolOption allows management of the mutation configuration using functional options.
+type cooccurrencenetworkpoolOption func(*CooccurrenceNetworkPoolMutation)
+
+// newCooccurrenceNetworkPoolMutation creates new mutation for the CooccurrenceNetworkPool entity.
+func newCooccurrenceNetworkPoolMutation(c config, op Op, opts ...cooccurrencenetworkpoolOption) *CooccurrenceNetworkPoolMutation {
+	m := &CooccurrenceNetworkPoolMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCooccurrenceNetworkPool,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCooccurrenceNetworkPoolID sets the ID field of the mutation.
+func withCooccurrenceNetworkPoolID(id uuid.UUID) cooccurrencenetworkpoolOption {
+	return func(m *CooccurrenceNetworkPoolMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *CooccurrenceNetworkPool
+		)
+		m.oldValue = func(ctx context.Context) (*CooccurrenceNetworkPool, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().CooccurrenceNetworkPool.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCooccurrenceNetworkPool sets the old CooccurrenceNetworkPool of the mutation.
+func withCooccurrenceNetworkPool(node *CooccurrenceNetworkPool) cooccurrencenetworkpoolOption {
+	return func(m *CooccurrenceNetworkPoolMutation) {
+		m.oldValue = func(context.Context) (*CooccurrenceNetworkPool, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CooccurrenceNetworkPoolMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CooccurrenceNetworkPoolMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of CooccurrenceNetworkPool entities.
+func (m *CooccurrenceNetworkPoolMutation) SetID(id uuid.UUID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CooccurrenceNetworkPoolMutation) ID() (id uuid.UUID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CooccurrenceNetworkPoolMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uuid.UUID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().CooccurrenceNetworkPool.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSiteURL sets the "site_url" field.
+func (m *CooccurrenceNetworkPoolMutation) SetSiteURL(s string) {
+	m.site_url = &s
+}
+
+// SiteURL returns the value of the "site_url" field in the mutation.
+func (m *CooccurrenceNetworkPoolMutation) SiteURL() (r string, exists bool) {
+	v := m.site_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSiteURL returns the old "site_url" field's value of the CooccurrenceNetworkPool entity.
+// If the CooccurrenceNetworkPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CooccurrenceNetworkPoolMutation) OldSiteURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSiteURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSiteURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSiteURL: %w", err)
+	}
+	return oldValue.SiteURL, nil
+}
+
+// ResetSiteURL resets all changes to the "site_url" field.
+func (m *CooccurrenceNetworkPoolMutation) ResetSiteURL() {
+	m.site_url = nil
+}
+
+// SetTitles sets the "titles" field.
+func (m *CooccurrenceNetworkPoolMutation) SetTitles(s string) {
+	m.titles = &s
+}
+
+// Titles returns the value of the "titles" field in the mutation.
+func (m *CooccurrenceNetworkPoolMutation) Titles() (r string, exists bool) {
+	v := m.titles
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTitles returns the old "titles" field's value of the CooccurrenceNetworkPool entity.
+// If the CooccurrenceNetworkPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CooccurrenceNetworkPoolMutation) OldTitles(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTitles is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTitles requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTitles: %w", err)
+	}
+	return oldValue.Titles, nil
+}
+
+// ResetTitles resets all changes to the "titles" field.
+func (m *CooccurrenceNetworkPoolMutation) ResetTitles() {
+	m.titles = nil
+}
+
+// SetDescriptions sets the "descriptions" field.
+func (m *CooccurrenceNetworkPoolMutation) SetDescriptions(s []string) {
+	m.descriptions = &s
+	m.appenddescriptions = nil
+}
+
+// Descriptions returns the value of the "descriptions" field in the mutation.
+func (m *CooccurrenceNetworkPoolMutation) Descriptions() (r []string, exists bool) {
+	v := m.descriptions
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescriptions returns the old "descriptions" field's value of the CooccurrenceNetworkPool entity.
+// If the CooccurrenceNetworkPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CooccurrenceNetworkPoolMutation) OldDescriptions(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescriptions is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescriptions requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescriptions: %w", err)
+	}
+	return oldValue.Descriptions, nil
+}
+
+// AppendDescriptions adds s to the "descriptions" field.
+func (m *CooccurrenceNetworkPoolMutation) AppendDescriptions(s []string) {
+	m.appenddescriptions = append(m.appenddescriptions, s...)
+}
+
+// AppendedDescriptions returns the list of values that were appended to the "descriptions" field in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) AppendedDescriptions() ([]string, bool) {
+	if len(m.appenddescriptions) == 0 {
+		return nil, false
+	}
+	return m.appenddescriptions, true
+}
+
+// ResetDescriptions resets all changes to the "descriptions" field.
+func (m *CooccurrenceNetworkPoolMutation) ResetDescriptions() {
+	m.descriptions = nil
+	m.appenddescriptions = nil
+}
+
+// Where appends a list predicates to the CooccurrenceNetworkPoolMutation builder.
+func (m *CooccurrenceNetworkPoolMutation) Where(ps ...predicate.CooccurrenceNetworkPool) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CooccurrenceNetworkPoolMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CooccurrenceNetworkPoolMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.CooccurrenceNetworkPool, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CooccurrenceNetworkPoolMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CooccurrenceNetworkPoolMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (CooccurrenceNetworkPool).
+func (m *CooccurrenceNetworkPoolMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CooccurrenceNetworkPoolMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.site_url != nil {
+		fields = append(fields, cooccurrencenetworkpool.FieldSiteURL)
+	}
+	if m.titles != nil {
+		fields = append(fields, cooccurrencenetworkpool.FieldTitles)
+	}
+	if m.descriptions != nil {
+		fields = append(fields, cooccurrencenetworkpool.FieldDescriptions)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CooccurrenceNetworkPoolMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case cooccurrencenetworkpool.FieldSiteURL:
+		return m.SiteURL()
+	case cooccurrencenetworkpool.FieldTitles:
+		return m.Titles()
+	case cooccurrencenetworkpool.FieldDescriptions:
+		return m.Descriptions()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CooccurrenceNetworkPoolMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case cooccurrencenetworkpool.FieldSiteURL:
+		return m.OldSiteURL(ctx)
+	case cooccurrencenetworkpool.FieldTitles:
+		return m.OldTitles(ctx)
+	case cooccurrencenetworkpool.FieldDescriptions:
+		return m.OldDescriptions(ctx)
+	}
+	return nil, fmt.Errorf("unknown CooccurrenceNetworkPool field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CooccurrenceNetworkPoolMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case cooccurrencenetworkpool.FieldSiteURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSiteURL(v)
+		return nil
+	case cooccurrencenetworkpool.FieldTitles:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTitles(v)
+		return nil
+	case cooccurrencenetworkpool.FieldDescriptions:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescriptions(v)
+		return nil
+	}
+	return fmt.Errorf("unknown CooccurrenceNetworkPool field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CooccurrenceNetworkPoolMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CooccurrenceNetworkPoolMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CooccurrenceNetworkPoolMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown CooccurrenceNetworkPool numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CooccurrenceNetworkPoolMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CooccurrenceNetworkPoolMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown CooccurrenceNetworkPool nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CooccurrenceNetworkPoolMutation) ResetField(name string) error {
+	switch name {
+	case cooccurrencenetworkpool.FieldSiteURL:
+		m.ResetSiteURL()
+		return nil
+	case cooccurrencenetworkpool.FieldTitles:
+		m.ResetTitles()
+		return nil
+	case cooccurrencenetworkpool.FieldDescriptions:
+		m.ResetDescriptions()
+		return nil
+	}
+	return fmt.Errorf("unknown CooccurrenceNetworkPool field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CooccurrenceNetworkPoolMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown CooccurrenceNetworkPool unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CooccurrenceNetworkPoolMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown CooccurrenceNetworkPool edge %s", name)
+}
 
 // FeedsMutation represents an operation that mutates the Feeds nodes in the graph.
 type FeedsMutation struct {

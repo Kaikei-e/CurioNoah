@@ -8,6 +8,31 @@ import (
 )
 
 var (
+	// CooccurrenceNetworkPoolsColumns holds the columns for the "cooccurrence_network_pools" table.
+	CooccurrenceNetworkPoolsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "site_url", Type: field.TypeString, Unique: true},
+		{Name: "titles", Type: field.TypeString, Size: 4000, Default: ""},
+		{Name: "descriptions", Type: field.TypeJSON},
+	}
+	// CooccurrenceNetworkPoolsTable holds the schema information for the "cooccurrence_network_pools" table.
+	CooccurrenceNetworkPoolsTable = &schema.Table{
+		Name:       "cooccurrence_network_pools",
+		Columns:    CooccurrenceNetworkPoolsColumns,
+		PrimaryKey: []*schema.Column{CooccurrenceNetworkPoolsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "cooccurrencenetworkpool_id",
+				Unique:  true,
+				Columns: []*schema.Column{CooccurrenceNetworkPoolsColumns[0]},
+			},
+			{
+				Name:    "cooccurrencenetworkpool_id_site_url",
+				Unique:  true,
+				Columns: []*schema.Column{CooccurrenceNetworkPoolsColumns[0], CooccurrenceNetworkPoolsColumns[1]},
+			},
+		},
+	}
 	// FeedsColumns holds the columns for the "feeds" table.
 	FeedsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -95,6 +120,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CooccurrenceNetworkPoolsTable,
 		FeedsTable,
 		FollowListsTable,
 		UsersTable,

@@ -8,6 +8,18 @@ import (
 	"insightstream/ent"
 )
 
+// The CooccurrenceNetworkPoolFunc type is an adapter to allow the use of ordinary
+// function as CooccurrenceNetworkPool mutator.
+type CooccurrenceNetworkPoolFunc func(context.Context, *ent.CooccurrenceNetworkPoolMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CooccurrenceNetworkPoolFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CooccurrenceNetworkPoolMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CooccurrenceNetworkPoolMutation", m)
+}
+
 // The FeedsFunc type is an adapter to allow the use of ordinary
 // function as Feeds mutator.
 type FeedsFunc func(context.Context, *ent.FeedsMutation) (ent.Value, error)

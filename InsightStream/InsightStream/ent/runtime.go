@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"insightstream/ent/cooccurrencenetworkpool"
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/schema"
@@ -15,6 +16,40 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	cooccurrencenetworkpoolFields := schema.CooccurrenceNetworkPool{}.Fields()
+	_ = cooccurrencenetworkpoolFields
+	// cooccurrencenetworkpoolDescSiteURL is the schema descriptor for site_url field.
+	cooccurrencenetworkpoolDescSiteURL := cooccurrencenetworkpoolFields[1].Descriptor()
+	// cooccurrencenetworkpool.SiteURLValidator is a validator for the "site_url" field. It is called by the builders before save.
+	cooccurrencenetworkpool.SiteURLValidator = cooccurrencenetworkpoolDescSiteURL.Validators[0].(func(string) error)
+	// cooccurrencenetworkpoolDescTitles is the schema descriptor for titles field.
+	cooccurrencenetworkpoolDescTitles := cooccurrencenetworkpoolFields[2].Descriptor()
+	// cooccurrencenetworkpool.DefaultTitles holds the default value on creation for the titles field.
+	cooccurrencenetworkpool.DefaultTitles = cooccurrencenetworkpoolDescTitles.Default.(string)
+	// cooccurrencenetworkpool.TitlesValidator is a validator for the "titles" field. It is called by the builders before save.
+	cooccurrencenetworkpool.TitlesValidator = func() func(string) error {
+		validators := cooccurrencenetworkpoolDescTitles.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(titles string) error {
+			for _, fn := range fns {
+				if err := fn(titles); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// cooccurrencenetworkpoolDescDescriptions is the schema descriptor for descriptions field.
+	cooccurrencenetworkpoolDescDescriptions := cooccurrencenetworkpoolFields[3].Descriptor()
+	// cooccurrencenetworkpool.DefaultDescriptions holds the default value on creation for the descriptions field.
+	cooccurrencenetworkpool.DefaultDescriptions = cooccurrencenetworkpoolDescDescriptions.Default.([]string)
+	// cooccurrencenetworkpoolDescID is the schema descriptor for id field.
+	cooccurrencenetworkpoolDescID := cooccurrencenetworkpoolFields[0].Descriptor()
+	// cooccurrencenetworkpool.DefaultID holds the default value on creation for the id field.
+	cooccurrencenetworkpool.DefaultID = cooccurrencenetworkpoolDescID.Default.(func() uuid.UUID)
 	entfeedsFields := schema.Feeds{}.Fields()
 	_ = entfeedsFields
 	// entfeedsDescSiteURL is the schema descriptor for site_url field.
