@@ -94,30 +94,12 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 	var updateLinkList []string
 	for i, link := range oldLinks {
 		for i2, l := range link.Links {
-			if cmp.Diff(l, newLinks[i].Links[i2]) != "" {
+			if i2 < len(newLinks[i].Links) && cmp.Diff(l, newLinks[i].Links[i2]) != "" {
 				updateLinkList = append(updateLinkList, fl[i].Link)
 				break
 			}
 		}
 	}
-
-	// to compare oldLinks and newLinks
-	// and return the list of links that need to be updated
-	//var updateLinkList []string
-	//for _, oLink := range oldLinks {
-	//	for _, nl := range newLinks {
-	//		if oLink.URL == nl.URL {
-	//			for _, link := range oLink.Links {
-	//				for i, nLink := range nl.Links {
-	//					if link != nLink {
-	//						updateLinkList = append(updateLinkList, fl[i].Link)
-	//						break
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 
 	var updateIDList []int
 	for _, list := range fl {
