@@ -11,10 +11,6 @@ type CooccurrenceNetworkPool struct {
 	ent.Schema
 }
 
-//SELECT site_url, JSON_ARRAYAGG(title) as titles, JSON_ARRAYAGG(description) as descriptions
-//FROM feeds
-//GROUP BY site_url;
-
 func (CooccurrenceNetworkPool) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.New()).Default(uuid.New).Unique(),
