@@ -3,6 +3,7 @@ use crate::domain::feed::{FollowList, OneFeed};
 use crate::domain::Feed;
 use anyhow::Result;
 use axum::async_trait;
+use mockall::automock;
 use serde_json::Value;
 use sqlx::mysql::MySqlPoolOptions;
 use sqlx::Error as SqlxError;
@@ -29,6 +30,7 @@ pub trait FeedConnection {
 
 // TODO: need to think about using query builder
 #[async_trait]
+#[cfg_attr(test, automock)]
 impl FeedConnection for FeedRepository {
     async fn get_all_feeds(&self) -> anyhow::Result<Vec<FollowList>, SqlxError> {
         let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists")
@@ -125,4 +127,32 @@ pub async fn initialize_connection(var: String) -> Result<Pool<MySql>, SqlxError
             Err(SqlxError::Database(e.into_database_error().unwrap()))
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn success_feed_repository() {
+        // let expected = MockFeedRepository::new();
+
+        let var = dotenvy::var("DATABASE_URL").unwrap();
+        let pool = initialize_connection(var).await.unwrap();
+        let feed_repository = FeedRepository::new(DatabasePool { pool });
+        let result = feed_repository.get_all_feeds().await;
+
+        assert!(result.is_ok());
+    }
+
+    // #[tokio::test]
+    // async fn test_initialize_connection() {
+    //     let var = dotenvy::var("DATABASE_URL").unwrap();
+    //
+    //     let pool = initialize_connection(var);
+    //
+    //
+    //
+    //     todo!()
+    // }
 }
