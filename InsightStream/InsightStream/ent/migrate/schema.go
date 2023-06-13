@@ -41,6 +41,11 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{FeedsColumns[0], FeedsColumns[4]},
 			},
+			{
+				Name:    "feeds_id_dt_updated",
+				Unique:  true,
+				Columns: []*schema.Column{FeedsColumns[0], FeedsColumns[7]},
+			},
 		},
 	}
 	// FollowListsColumns holds the columns for the "follow_lists" table.
