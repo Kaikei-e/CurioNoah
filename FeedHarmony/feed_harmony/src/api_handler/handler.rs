@@ -28,6 +28,10 @@ pub async fn handler(pool: Pool<MySql>) {
             "/api/v1/parse_and_store_feeds",
             post(api_handler::v1::parse_and_store_all_feeds::parse_and_store),
         )
+        .route(
+            "/api/v1/group_and_store_by_url",
+            post(api_handler::v1::data_pool::update_word_pool::group_and_store_by_url),
+        )
         .with_state(state.pool);
 
     axum::Server::bind(&"0.0.0.0:5100".parse().unwrap())

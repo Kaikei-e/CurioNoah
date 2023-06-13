@@ -1,1 +1,1 @@
-pub(crate) mod fetch_site_url_group;
+pub(crate) mod group_site_url;
