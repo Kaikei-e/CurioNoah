@@ -11,7 +11,7 @@ import (
 func MultiFeed(storedList []string) ([]*gofeed.Feed, error) {
 	fmt.Printf("storedList: %v \n", storedList)
 
-	// Determine amount of feed data to fetch per URL
+	// Determine initial amount of feed data to fetch per URL
 	fetchFeedAmount := len(storedList)
 	if fetchFeedAmount == 0 {
 		return nil, errors.New("no stored URLs to fetch from")
@@ -25,11 +25,14 @@ func MultiFeed(storedList []string) ([]*gofeed.Feed, error) {
 			return nil, errors.New(fmt.Sprintf("fetch %s: %v", url, err))
 		}
 
-		// If the number of items is less than the fetchFeedAmount, adjust fetchFeedAmount accordingly
+		// Determine the actual amount of feed items to fetch for this URL
+		actualAmount := fetchFeedAmount
 		if len(feed.Items) < fetchFeedAmount {
-			fetchFeedAmount = len(feed.Items)
+			actualAmount = len(feed.Items)
 		}
-		feed.Items = feed.Items[:fetchFeedAmount]
+
+		// Fetch the actual amount of feed items
+		feed.Items = feed.Items[:actualAmount]
 
 		feeds = append(feeds, feed)
 	}
