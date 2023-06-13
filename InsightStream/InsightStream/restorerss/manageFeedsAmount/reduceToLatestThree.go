@@ -2,11 +2,16 @@ package manageFeedsAmount
 
 import (
 	"github.com/mmcdole/gofeed"
+	"sort"
 )
 
 func ReduceToLatestThreeItems(feeds []*gofeed.Feed) ([]gofeed.Feed, error) {
 	const trimNum = 3
 	var reducedFeeds []gofeed.Feed
+
+	sort.Slice(feeds, func(i, j int) bool {
+		return feeds[i].UpdatedParsed.After(*feeds[j].UpdatedParsed)
+	})
 
 	for _, feed := range feeds {
 		var reducedItems []*gofeed.Item
