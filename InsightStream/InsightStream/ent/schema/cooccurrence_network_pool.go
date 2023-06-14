@@ -15,7 +15,7 @@ func (CooccurrenceNetworkPool) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.New()).Default(uuid.New).Unique(),
 		field.String("site_url").NotEmpty().Unique(),
-		field.Text("titles").Default("").NotEmpty().MaxLen(4000),
+		field.JSON("titles", []string{}).Default([]string{}),
 		field.JSON("descriptions", []string{}).Default([]string{}),
 	}
 }

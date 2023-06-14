@@ -25,23 +25,7 @@ func init() {
 	// cooccurrencenetworkpoolDescTitles is the schema descriptor for titles field.
 	cooccurrencenetworkpoolDescTitles := cooccurrencenetworkpoolFields[2].Descriptor()
 	// cooccurrencenetworkpool.DefaultTitles holds the default value on creation for the titles field.
-	cooccurrencenetworkpool.DefaultTitles = cooccurrencenetworkpoolDescTitles.Default.(string)
-	// cooccurrencenetworkpool.TitlesValidator is a validator for the "titles" field. It is called by the builders before save.
-	cooccurrencenetworkpool.TitlesValidator = func() func(string) error {
-		validators := cooccurrencenetworkpoolDescTitles.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(titles string) error {
-			for _, fn := range fns {
-				if err := fn(titles); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
+	cooccurrencenetworkpool.DefaultTitles = cooccurrencenetworkpoolDescTitles.Default.([]string)
 	// cooccurrencenetworkpoolDescDescriptions is the schema descriptor for descriptions field.
 	cooccurrencenetworkpoolDescDescriptions := cooccurrencenetworkpoolFields[3].Descriptor()
 	// cooccurrencenetworkpool.DefaultDescriptions holds the default value on creation for the descriptions field.

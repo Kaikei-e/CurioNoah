@@ -42,7 +42,8 @@ type CooccurrenceNetworkPoolMutation struct {
 	typ                string
 	id                 *uuid.UUID
 	site_url           *string
-	titles             *string
+	titles             *[]string
+	appendtitles       []string
 	descriptions       *[]string
 	appenddescriptions []string
 	clearedFields      map[string]struct{}
@@ -192,12 +193,13 @@ func (m *CooccurrenceNetworkPoolMutation) ResetSiteURL() {
 }
 
 // SetTitles sets the "titles" field.
-func (m *CooccurrenceNetworkPoolMutation) SetTitles(s string) {
+func (m *CooccurrenceNetworkPoolMutation) SetTitles(s []string) {
 	m.titles = &s
+	m.appendtitles = nil
 }
 
 // Titles returns the value of the "titles" field in the mutation.
-func (m *CooccurrenceNetworkPoolMutation) Titles() (r string, exists bool) {
+func (m *CooccurrenceNetworkPoolMutation) Titles() (r []string, exists bool) {
 	v := m.titles
 	if v == nil {
 		return
@@ -208,7 +210,7 @@ func (m *CooccurrenceNetworkPoolMutation) Titles() (r string, exists bool) {
 // OldTitles returns the old "titles" field's value of the CooccurrenceNetworkPool entity.
 // If the CooccurrenceNetworkPool object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CooccurrenceNetworkPoolMutation) OldTitles(ctx context.Context) (v string, err error) {
+func (m *CooccurrenceNetworkPoolMutation) OldTitles(ctx context.Context) (v []string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTitles is only allowed on UpdateOne operations")
 	}
@@ -222,9 +224,23 @@ func (m *CooccurrenceNetworkPoolMutation) OldTitles(ctx context.Context) (v stri
 	return oldValue.Titles, nil
 }
 
+// AppendTitles adds s to the "titles" field.
+func (m *CooccurrenceNetworkPoolMutation) AppendTitles(s []string) {
+	m.appendtitles = append(m.appendtitles, s...)
+}
+
+// AppendedTitles returns the list of values that were appended to the "titles" field in this mutation.
+func (m *CooccurrenceNetworkPoolMutation) AppendedTitles() ([]string, bool) {
+	if len(m.appendtitles) == 0 {
+		return nil, false
+	}
+	return m.appendtitles, true
+}
+
 // ResetTitles resets all changes to the "titles" field.
 func (m *CooccurrenceNetworkPoolMutation) ResetTitles() {
 	m.titles = nil
+	m.appendtitles = nil
 }
 
 // SetDescriptions sets the "descriptions" field.
@@ -368,7 +384,7 @@ func (m *CooccurrenceNetworkPoolMutation) SetField(name string, value ent.Value)
 		m.SetSiteURL(v)
 		return nil
 	case cooccurrencenetworkpool.FieldTitles:
-		v, ok := value.(string)
+		v, ok := value.([]string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

@@ -27,16 +27,8 @@ func (cnpc *CooccurrenceNetworkPoolCreate) SetSiteURL(s string) *CooccurrenceNet
 }
 
 // SetTitles sets the "titles" field.
-func (cnpc *CooccurrenceNetworkPoolCreate) SetTitles(s string) *CooccurrenceNetworkPoolCreate {
+func (cnpc *CooccurrenceNetworkPoolCreate) SetTitles(s []string) *CooccurrenceNetworkPoolCreate {
 	cnpc.mutation.SetTitles(s)
-	return cnpc
-}
-
-// SetNillableTitles sets the "titles" field if the given value is not nil.
-func (cnpc *CooccurrenceNetworkPoolCreate) SetNillableTitles(s *string) *CooccurrenceNetworkPoolCreate {
-	if s != nil {
-		cnpc.SetTitles(*s)
-	}
 	return cnpc
 }
 
@@ -122,11 +114,6 @@ func (cnpc *CooccurrenceNetworkPoolCreate) check() error {
 	if _, ok := cnpc.mutation.Titles(); !ok {
 		return &ValidationError{Name: "titles", err: errors.New(`ent: missing required field "CooccurrenceNetworkPool.titles"`)}
 	}
-	if v, ok := cnpc.mutation.Titles(); ok {
-		if err := cooccurrencenetworkpool.TitlesValidator(v); err != nil {
-			return &ValidationError{Name: "titles", err: fmt.Errorf(`ent: validator failed for field "CooccurrenceNetworkPool.titles": %w`, err)}
-		}
-	}
 	if _, ok := cnpc.mutation.Descriptions(); !ok {
 		return &ValidationError{Name: "descriptions", err: errors.New(`ent: missing required field "CooccurrenceNetworkPool.descriptions"`)}
 	}
@@ -176,7 +163,7 @@ func (cnpc *CooccurrenceNetworkPoolCreate) createSpec() (*CooccurrenceNetworkPoo
 		_node.SiteURL = value
 	}
 	if value, ok := cnpc.mutation.Titles(); ok {
-		_spec.SetField(cooccurrencenetworkpool.FieldTitles, field.TypeString, value)
+		_spec.SetField(cooccurrencenetworkpool.FieldTitles, field.TypeJSON, value)
 		_node.Titles = value
 	}
 	if value, ok := cnpc.mutation.Descriptions(); ok {

@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"insightstream/collector/fetchFeedDomain/indexing"
+	"insightstream/domain/groupDataPool"
 	"insightstream/repository"
 	"insightstream/server"
+	"sync"
 	"time"
 )
 
@@ -13,9 +15,12 @@ func main() {
 	ticker := time.NewTicker(20 * time.Minute)
 	done := make(chan bool)
 
+	var wg sync.WaitGroup
+
 	cl := repository.InitConnection()
 	go func() {
 		for {
+			wg.Add(1)
 			select {
 			case <-done:
 				return
@@ -26,6 +31,17 @@ func main() {
 					err := fmt.Sprintf("failed to store: %v", err)
 					fmt.Println(err)
 				}
+
+				wg.Done()
+				wg.Wait()
+
+				err = groupDataPool.UpdateGroupDataPool()
+				if err != nil {
+					// TODO wil add logger
+					err := fmt.Sprintf("failed to update group data pool: %v", err)
+					fmt.Println(err)
+				}
+
 			}
 		}
 	}()

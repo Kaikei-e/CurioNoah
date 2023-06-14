@@ -59,11 +59,6 @@ func SiteURL(v string) predicate.CooccurrenceNetworkPool {
 	return predicate.CooccurrenceNetworkPool(sql.FieldEQ(FieldSiteURL, v))
 }
 
-// Titles applies equality check predicate on the "titles" field. It's identical to TitlesEQ.
-func Titles(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldEQ(FieldTitles, v))
-}
-
 // SiteURLEQ applies the EQ predicate on the "site_url" field.
 func SiteURLEQ(v string) predicate.CooccurrenceNetworkPool {
 	return predicate.CooccurrenceNetworkPool(sql.FieldEQ(FieldSiteURL, v))
@@ -127,71 +122,6 @@ func SiteURLEqualFold(v string) predicate.CooccurrenceNetworkPool {
 // SiteURLContainsFold applies the ContainsFold predicate on the "site_url" field.
 func SiteURLContainsFold(v string) predicate.CooccurrenceNetworkPool {
 	return predicate.CooccurrenceNetworkPool(sql.FieldContainsFold(FieldSiteURL, v))
-}
-
-// TitlesEQ applies the EQ predicate on the "titles" field.
-func TitlesEQ(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldEQ(FieldTitles, v))
-}
-
-// TitlesNEQ applies the NEQ predicate on the "titles" field.
-func TitlesNEQ(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldNEQ(FieldTitles, v))
-}
-
-// TitlesIn applies the In predicate on the "titles" field.
-func TitlesIn(vs ...string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldIn(FieldTitles, vs...))
-}
-
-// TitlesNotIn applies the NotIn predicate on the "titles" field.
-func TitlesNotIn(vs ...string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldNotIn(FieldTitles, vs...))
-}
-
-// TitlesGT applies the GT predicate on the "titles" field.
-func TitlesGT(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldGT(FieldTitles, v))
-}
-
-// TitlesGTE applies the GTE predicate on the "titles" field.
-func TitlesGTE(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldGTE(FieldTitles, v))
-}
-
-// TitlesLT applies the LT predicate on the "titles" field.
-func TitlesLT(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldLT(FieldTitles, v))
-}
-
-// TitlesLTE applies the LTE predicate on the "titles" field.
-func TitlesLTE(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldLTE(FieldTitles, v))
-}
-
-// TitlesContains applies the Contains predicate on the "titles" field.
-func TitlesContains(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldContains(FieldTitles, v))
-}
-
-// TitlesHasPrefix applies the HasPrefix predicate on the "titles" field.
-func TitlesHasPrefix(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldHasPrefix(FieldTitles, v))
-}
-
-// TitlesHasSuffix applies the HasSuffix predicate on the "titles" field.
-func TitlesHasSuffix(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldHasSuffix(FieldTitles, v))
-}
-
-// TitlesEqualFold applies the EqualFold predicate on the "titles" field.
-func TitlesEqualFold(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldEqualFold(FieldTitles, v))
-}
-
-// TitlesContainsFold applies the ContainsFold predicate on the "titles" field.
-func TitlesContainsFold(v string) predicate.CooccurrenceNetworkPool {
-	return predicate.CooccurrenceNetworkPool(sql.FieldContainsFold(FieldTitles, v))
 }
 
 // And groups predicates with the AND operator between them.

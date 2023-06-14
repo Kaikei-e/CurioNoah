@@ -20,7 +20,7 @@ type CooccurrenceNetworkPool struct {
 	// SiteURL holds the value of the "site_url" field.
 	SiteURL string `json:"site_url,omitempty"`
 	// Titles holds the value of the "titles" field.
-	Titles string `json:"titles,omitempty"`
+	Titles []string `json:"titles,omitempty"`
 	// Descriptions holds the value of the "descriptions" field.
 	Descriptions []string `json:"descriptions,omitempty"`
 }
@@ -30,9 +30,9 @@ func (*CooccurrenceNetworkPool) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case cooccurrencenetworkpool.FieldDescriptions:
+		case cooccurrencenetworkpool.FieldTitles, cooccurrencenetworkpool.FieldDescriptions:
 			values[i] = new([]byte)
-		case cooccurrencenetworkpool.FieldSiteURL, cooccurrencenetworkpool.FieldTitles:
+		case cooccurrencenetworkpool.FieldSiteURL:
 			values[i] = new(sql.NullString)
 		case cooccurrencenetworkpool.FieldID:
 			values[i] = new(uuid.UUID)
@@ -64,10 +64,12 @@ func (cnp *CooccurrenceNetworkPool) assignValues(columns []string, values []any)
 				cnp.SiteURL = value.String
 			}
 		case cooccurrencenetworkpool.FieldTitles:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field titles", values[i])
-			} else if value.Valid {
-				cnp.Titles = value.String
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &cnp.Titles); err != nil {
+					return fmt.Errorf("unmarshal field titles: %w", err)
+				}
 			}
 		case cooccurrencenetworkpool.FieldDescriptions:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -109,7 +111,7 @@ func (cnp *CooccurrenceNetworkPool) String() string {
 	builder.WriteString(cnp.SiteURL)
 	builder.WriteString(", ")
 	builder.WriteString("titles=")
-	builder.WriteString(cnp.Titles)
+	builder.WriteString(fmt.Sprintf("%v", cnp.Titles))
 	builder.WriteString(", ")
 	builder.WriteString("descriptions=")
 	builder.WriteString(fmt.Sprintf("%v", cnp.Descriptions))

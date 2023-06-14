@@ -12,7 +12,7 @@ var (
 	CooccurrenceNetworkPoolsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "site_url", Type: field.TypeString, Unique: true},
-		{Name: "titles", Type: field.TypeString, Size: 4000, Default: ""},
+		{Name: "titles", Type: field.TypeJSON},
 		{Name: "descriptions", Type: field.TypeJSON},
 	}
 	// CooccurrenceNetworkPoolsTable holds the schema information for the "cooccurrence_network_pools" table.

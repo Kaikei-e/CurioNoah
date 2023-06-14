@@ -43,9 +43,7 @@ var (
 	// SiteURLValidator is a validator for the "site_url" field. It is called by the builders before save.
 	SiteURLValidator func(string) error
 	// DefaultTitles holds the default value on creation for the "titles" field.
-	DefaultTitles string
-	// TitlesValidator is a validator for the "titles" field. It is called by the builders before save.
-	TitlesValidator func(string) error
+	DefaultTitles []string
 	// DefaultDescriptions holds the default value on creation for the "descriptions" field.
 	DefaultDescriptions []string
 	// DefaultID holds the default value on creation for the "id" field.

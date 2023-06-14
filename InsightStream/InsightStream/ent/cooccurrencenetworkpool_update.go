@@ -35,16 +35,14 @@ func (cnpu *CooccurrenceNetworkPoolUpdate) SetSiteURL(s string) *CooccurrenceNet
 }
 
 // SetTitles sets the "titles" field.
-func (cnpu *CooccurrenceNetworkPoolUpdate) SetTitles(s string) *CooccurrenceNetworkPoolUpdate {
+func (cnpu *CooccurrenceNetworkPoolUpdate) SetTitles(s []string) *CooccurrenceNetworkPoolUpdate {
 	cnpu.mutation.SetTitles(s)
 	return cnpu
 }
 
-// SetNillableTitles sets the "titles" field if the given value is not nil.
-func (cnpu *CooccurrenceNetworkPoolUpdate) SetNillableTitles(s *string) *CooccurrenceNetworkPoolUpdate {
-	if s != nil {
-		cnpu.SetTitles(*s)
-	}
+// AppendTitles appends s to the "titles" field.
+func (cnpu *CooccurrenceNetworkPoolUpdate) AppendTitles(s []string) *CooccurrenceNetworkPoolUpdate {
+	cnpu.mutation.AppendTitles(s)
 	return cnpu
 }
 
@@ -99,11 +97,6 @@ func (cnpu *CooccurrenceNetworkPoolUpdate) check() error {
 			return &ValidationError{Name: "site_url", err: fmt.Errorf(`ent: validator failed for field "CooccurrenceNetworkPool.site_url": %w`, err)}
 		}
 	}
-	if v, ok := cnpu.mutation.Titles(); ok {
-		if err := cooccurrencenetworkpool.TitlesValidator(v); err != nil {
-			return &ValidationError{Name: "titles", err: fmt.Errorf(`ent: validator failed for field "CooccurrenceNetworkPool.titles": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -132,7 +125,12 @@ func (cnpu *CooccurrenceNetworkPoolUpdate) sqlSave(ctx context.Context) (n int, 
 		_spec.SetField(cooccurrencenetworkpool.FieldSiteURL, field.TypeString, value)
 	}
 	if value, ok := cnpu.mutation.Titles(); ok {
-		_spec.SetField(cooccurrencenetworkpool.FieldTitles, field.TypeString, value)
+		_spec.SetField(cooccurrencenetworkpool.FieldTitles, field.TypeJSON, value)
+	}
+	if value, ok := cnpu.mutation.AppendedTitles(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, cooccurrencenetworkpool.FieldTitles, value)
+		})
 	}
 	if value, ok := cnpu.mutation.Descriptions(); ok {
 		_spec.SetField(cooccurrencenetworkpool.FieldDescriptions, field.TypeJSON, value)
@@ -169,16 +167,14 @@ func (cnpuo *CooccurrenceNetworkPoolUpdateOne) SetSiteURL(s string) *Cooccurrenc
 }
 
 // SetTitles sets the "titles" field.
-func (cnpuo *CooccurrenceNetworkPoolUpdateOne) SetTitles(s string) *CooccurrenceNetworkPoolUpdateOne {
+func (cnpuo *CooccurrenceNetworkPoolUpdateOne) SetTitles(s []string) *CooccurrenceNetworkPoolUpdateOne {
 	cnpuo.mutation.SetTitles(s)
 	return cnpuo
 }
 
-// SetNillableTitles sets the "titles" field if the given value is not nil.
-func (cnpuo *CooccurrenceNetworkPoolUpdateOne) SetNillableTitles(s *string) *CooccurrenceNetworkPoolUpdateOne {
-	if s != nil {
-		cnpuo.SetTitles(*s)
-	}
+// AppendTitles appends s to the "titles" field.
+func (cnpuo *CooccurrenceNetworkPoolUpdateOne) AppendTitles(s []string) *CooccurrenceNetworkPoolUpdateOne {
+	cnpuo.mutation.AppendTitles(s)
 	return cnpuo
 }
 
@@ -240,11 +236,6 @@ func (cnpuo *CooccurrenceNetworkPoolUpdateOne) check() error {
 			return &ValidationError{Name: "site_url", err: fmt.Errorf(`ent: validator failed for field "CooccurrenceNetworkPool.site_url": %w`, err)}
 		}
 	}
-	if v, ok := cnpuo.mutation.Titles(); ok {
-		if err := cooccurrencenetworkpool.TitlesValidator(v); err != nil {
-			return &ValidationError{Name: "titles", err: fmt.Errorf(`ent: validator failed for field "CooccurrenceNetworkPool.titles": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -290,7 +281,12 @@ func (cnpuo *CooccurrenceNetworkPoolUpdateOne) sqlSave(ctx context.Context) (_no
 		_spec.SetField(cooccurrencenetworkpool.FieldSiteURL, field.TypeString, value)
 	}
 	if value, ok := cnpuo.mutation.Titles(); ok {
-		_spec.SetField(cooccurrencenetworkpool.FieldTitles, field.TypeString, value)
+		_spec.SetField(cooccurrencenetworkpool.FieldTitles, field.TypeJSON, value)
+	}
+	if value, ok := cnpuo.mutation.AppendedTitles(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, cooccurrencenetworkpool.FieldTitles, value)
+		})
 	}
 	if value, ok := cnpuo.mutation.Descriptions(); ok {
 		_spec.SetField(cooccurrencenetworkpool.FieldDescriptions, field.TypeJSON, value)
