@@ -19,7 +19,7 @@ type Users struct {
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
-	Password []byte `json:"-"`
+	Password []byte `json:"password,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -97,7 +97,8 @@ func (u *Users) String() string {
 	builder.WriteString("username=")
 	builder.WriteString(u.Username)
 	builder.WriteString(", ")
-	builder.WriteString("password=<sensitive>")
+	builder.WriteString("password=")
+	builder.WriteString(fmt.Sprintf("%v", u.Password))
 	builder.WriteByte(')')
 	return builder.String()
 }

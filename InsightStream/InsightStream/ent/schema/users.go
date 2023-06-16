@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
 )
 
@@ -16,7 +17,15 @@ func (Users) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.New()).Unique(),
 		field.String("username").NotEmpty(),
-		field.Bytes("password").Sensitive().NotEmpty(),
+		field.Bytes("password").NotEmpty(),
+	}
+}
+
+// Indexes of the Users.
+func (Users) Indexes() []ent.Index {
+	return []ent.Index{
+		// unique index
+		index.Fields("id").Unique(),
 	}
 }
 
