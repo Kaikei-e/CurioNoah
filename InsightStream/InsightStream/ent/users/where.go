@@ -59,9 +59,9 @@ func Username(v string) predicate.Users {
 	return predicate.Users(sql.FieldEQ(FieldUsername, v))
 }
 
-// Password applies equality check predicate on the "password" field. It's identical to PasswordEQ.
-func Password(v []byte) predicate.Users {
-	return predicate.Users(sql.FieldEQ(FieldPassword, v))
+// HashedPassword applies equality check predicate on the "hashed_password" field. It's identical to HashedPasswordEQ.
+func HashedPassword(v []byte) predicate.Users {
+	return predicate.Users(sql.FieldEQ(FieldHashedPassword, v))
 }
 
 // UsernameEQ applies the EQ predicate on the "username" field.
@@ -129,44 +129,44 @@ func UsernameContainsFold(v string) predicate.Users {
 	return predicate.Users(sql.FieldContainsFold(FieldUsername, v))
 }
 
-// PasswordEQ applies the EQ predicate on the "password" field.
-func PasswordEQ(v []byte) predicate.Users {
-	return predicate.Users(sql.FieldEQ(FieldPassword, v))
+// HashedPasswordEQ applies the EQ predicate on the "hashed_password" field.
+func HashedPasswordEQ(v []byte) predicate.Users {
+	return predicate.Users(sql.FieldEQ(FieldHashedPassword, v))
 }
 
-// PasswordNEQ applies the NEQ predicate on the "password" field.
-func PasswordNEQ(v []byte) predicate.Users {
-	return predicate.Users(sql.FieldNEQ(FieldPassword, v))
+// HashedPasswordNEQ applies the NEQ predicate on the "hashed_password" field.
+func HashedPasswordNEQ(v []byte) predicate.Users {
+	return predicate.Users(sql.FieldNEQ(FieldHashedPassword, v))
 }
 
-// PasswordIn applies the In predicate on the "password" field.
-func PasswordIn(vs ...[]byte) predicate.Users {
-	return predicate.Users(sql.FieldIn(FieldPassword, vs...))
+// HashedPasswordIn applies the In predicate on the "hashed_password" field.
+func HashedPasswordIn(vs ...[]byte) predicate.Users {
+	return predicate.Users(sql.FieldIn(FieldHashedPassword, vs...))
 }
 
-// PasswordNotIn applies the NotIn predicate on the "password" field.
-func PasswordNotIn(vs ...[]byte) predicate.Users {
-	return predicate.Users(sql.FieldNotIn(FieldPassword, vs...))
+// HashedPasswordNotIn applies the NotIn predicate on the "hashed_password" field.
+func HashedPasswordNotIn(vs ...[]byte) predicate.Users {
+	return predicate.Users(sql.FieldNotIn(FieldHashedPassword, vs...))
 }
 
-// PasswordGT applies the GT predicate on the "password" field.
-func PasswordGT(v []byte) predicate.Users {
-	return predicate.Users(sql.FieldGT(FieldPassword, v))
+// HashedPasswordGT applies the GT predicate on the "hashed_password" field.
+func HashedPasswordGT(v []byte) predicate.Users {
+	return predicate.Users(sql.FieldGT(FieldHashedPassword, v))
 }
 
-// PasswordGTE applies the GTE predicate on the "password" field.
-func PasswordGTE(v []byte) predicate.Users {
-	return predicate.Users(sql.FieldGTE(FieldPassword, v))
+// HashedPasswordGTE applies the GTE predicate on the "hashed_password" field.
+func HashedPasswordGTE(v []byte) predicate.Users {
+	return predicate.Users(sql.FieldGTE(FieldHashedPassword, v))
 }
 
-// PasswordLT applies the LT predicate on the "password" field.
-func PasswordLT(v []byte) predicate.Users {
-	return predicate.Users(sql.FieldLT(FieldPassword, v))
+// HashedPasswordLT applies the LT predicate on the "hashed_password" field.
+func HashedPasswordLT(v []byte) predicate.Users {
+	return predicate.Users(sql.FieldLT(FieldHashedPassword, v))
 }
 
-// PasswordLTE applies the LTE predicate on the "password" field.
-func PasswordLTE(v []byte) predicate.Users {
-	return predicate.Users(sql.FieldLTE(FieldPassword, v))
+// HashedPasswordLTE applies the LTE predicate on the "hashed_password" field.
+func HashedPasswordLTE(v []byte) predicate.Users {
+	return predicate.Users(sql.FieldLTE(FieldHashedPassword, v))
 }
 
 // And groups predicates with the AND operator between them.

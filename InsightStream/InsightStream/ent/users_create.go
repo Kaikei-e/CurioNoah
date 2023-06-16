@@ -26,9 +26,9 @@ func (uc *UsersCreate) SetUsername(s string) *UsersCreate {
 	return uc
 }
 
-// SetPassword sets the "password" field.
-func (uc *UsersCreate) SetPassword(b []byte) *UsersCreate {
-	uc.mutation.SetPassword(b)
+// SetHashedPassword sets the "hashed_password" field.
+func (uc *UsersCreate) SetHashedPassword(b []byte) *UsersCreate {
+	uc.mutation.SetHashedPassword(b)
 	return uc
 }
 
@@ -80,12 +80,12 @@ func (uc *UsersCreate) check() error {
 			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Users.username": %w`, err)}
 		}
 	}
-	if _, ok := uc.mutation.Password(); !ok {
-		return &ValidationError{Name: "password", err: errors.New(`ent: missing required field "Users.password"`)}
+	if _, ok := uc.mutation.HashedPassword(); !ok {
+		return &ValidationError{Name: "hashed_password", err: errors.New(`ent: missing required field "Users.hashed_password"`)}
 	}
-	if v, ok := uc.mutation.Password(); ok {
-		if err := users.PasswordValidator(v); err != nil {
-			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Users.password": %w`, err)}
+	if v, ok := uc.mutation.HashedPassword(); ok {
+		if err := users.HashedPasswordValidator(v); err != nil {
+			return &ValidationError{Name: "hashed_password", err: fmt.Errorf(`ent: validator failed for field "Users.hashed_password": %w`, err)}
 		}
 	}
 	return nil
@@ -133,9 +133,9 @@ func (uc *UsersCreate) createSpec() (*Users, *sqlgraph.CreateSpec) {
 		_spec.SetField(users.FieldUsername, field.TypeString, value)
 		_node.Username = value
 	}
-	if value, ok := uc.mutation.Password(); ok {
-		_spec.SetField(users.FieldPassword, field.TypeBytes, value)
-		_node.Password = value
+	if value, ok := uc.mutation.HashedPassword(); ok {
+		_spec.SetField(users.FieldHashedPassword, field.TypeBytes, value)
+		_node.HashedPassword = value
 	}
 	return _node, _spec
 }

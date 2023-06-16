@@ -112,7 +112,7 @@ var (
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "username", Type: field.TypeString},
-		{Name: "password", Type: field.TypeBytes},
+		{Name: "hashed_password", Type: field.TypeBytes},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

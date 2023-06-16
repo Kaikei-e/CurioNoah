@@ -17,7 +17,7 @@ func (Users) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.New()).Unique(),
 		field.String("username").NotEmpty(),
-		field.Bytes("password").NotEmpty(),
+		field.Bytes("hashed_password").NotEmpty(),
 	}
 }
 

@@ -2619,15 +2619,15 @@ func (m *FollowListMutation) ResetEdge(name string) error {
 // UsersMutation represents an operation that mutates the Users nodes in the graph.
 type UsersMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *uuid.UUID
-	username      *string
-	password      *[]byte
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Users, error)
-	predicates    []predicate.Users
+	op              Op
+	typ             string
+	id              *uuid.UUID
+	username        *string
+	hashed_password *[]byte
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Users, error)
+	predicates      []predicate.Users
 }
 
 var _ ent.Mutation = (*UsersMutation)(nil)
@@ -2770,40 +2770,40 @@ func (m *UsersMutation) ResetUsername() {
 	m.username = nil
 }
 
-// SetPassword sets the "password" field.
-func (m *UsersMutation) SetPassword(b []byte) {
-	m.password = &b
+// SetHashedPassword sets the "hashed_password" field.
+func (m *UsersMutation) SetHashedPassword(b []byte) {
+	m.hashed_password = &b
 }
 
-// Password returns the value of the "password" field in the mutation.
-func (m *UsersMutation) Password() (r []byte, exists bool) {
-	v := m.password
+// HashedPassword returns the value of the "hashed_password" field in the mutation.
+func (m *UsersMutation) HashedPassword() (r []byte, exists bool) {
+	v := m.hashed_password
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPassword returns the old "password" field's value of the Users entity.
+// OldHashedPassword returns the old "hashed_password" field's value of the Users entity.
 // If the Users object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UsersMutation) OldPassword(ctx context.Context) (v []byte, err error) {
+func (m *UsersMutation) OldHashedPassword(ctx context.Context) (v []byte, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPassword is only allowed on UpdateOne operations")
+		return v, errors.New("OldHashedPassword is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPassword requires an ID field in the mutation")
+		return v, errors.New("OldHashedPassword requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPassword: %w", err)
+		return v, fmt.Errorf("querying old value for OldHashedPassword: %w", err)
 	}
-	return oldValue.Password, nil
+	return oldValue.HashedPassword, nil
 }
 
-// ResetPassword resets all changes to the "password" field.
-func (m *UsersMutation) ResetPassword() {
-	m.password = nil
+// ResetHashedPassword resets all changes to the "hashed_password" field.
+func (m *UsersMutation) ResetHashedPassword() {
+	m.hashed_password = nil
 }
 
 // Where appends a list predicates to the UsersMutation builder.
@@ -2844,8 +2844,8 @@ func (m *UsersMutation) Fields() []string {
 	if m.username != nil {
 		fields = append(fields, users.FieldUsername)
 	}
-	if m.password != nil {
-		fields = append(fields, users.FieldPassword)
+	if m.hashed_password != nil {
+		fields = append(fields, users.FieldHashedPassword)
 	}
 	return fields
 }
@@ -2857,8 +2857,8 @@ func (m *UsersMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case users.FieldUsername:
 		return m.Username()
-	case users.FieldPassword:
-		return m.Password()
+	case users.FieldHashedPassword:
+		return m.HashedPassword()
 	}
 	return nil, false
 }
@@ -2870,8 +2870,8 @@ func (m *UsersMutation) OldField(ctx context.Context, name string) (ent.Value, e
 	switch name {
 	case users.FieldUsername:
 		return m.OldUsername(ctx)
-	case users.FieldPassword:
-		return m.OldPassword(ctx)
+	case users.FieldHashedPassword:
+		return m.OldHashedPassword(ctx)
 	}
 	return nil, fmt.Errorf("unknown Users field %s", name)
 }
@@ -2888,12 +2888,12 @@ func (m *UsersMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUsername(v)
 		return nil
-	case users.FieldPassword:
+	case users.FieldHashedPassword:
 		v, ok := value.([]byte)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPassword(v)
+		m.SetHashedPassword(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Users field %s", name)
@@ -2947,8 +2947,8 @@ func (m *UsersMutation) ResetField(name string) error {
 	case users.FieldUsername:
 		m.ResetUsername()
 		return nil
-	case users.FieldPassword:
-		m.ResetPassword()
+	case users.FieldHashedPassword:
+		m.ResetHashedPassword()
 		return nil
 	}
 	return fmt.Errorf("unknown Users field %s", name)

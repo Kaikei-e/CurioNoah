@@ -18,8 +18,8 @@ type Users struct {
 	ID uuid.UUID `json:"id,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
-	// Password holds the value of the "password" field.
-	Password []byte `json:"password,omitempty"`
+	// HashedPassword holds the value of the "hashed_password" field.
+	HashedPassword []byte `json:"hashed_password,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -27,7 +27,7 @@ func (*Users) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case users.FieldPassword:
+		case users.FieldHashedPassword:
 			values[i] = new([]byte)
 		case users.FieldUsername:
 			values[i] = new(sql.NullString)
@@ -60,11 +60,11 @@ func (u *Users) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.Username = value.String
 			}
-		case users.FieldPassword:
+		case users.FieldHashedPassword:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field password", values[i])
+				return fmt.Errorf("unexpected type %T for field hashed_password", values[i])
 			} else if value != nil {
-				u.Password = *value
+				u.HashedPassword = *value
 			}
 		}
 	}
@@ -97,8 +97,8 @@ func (u *Users) String() string {
 	builder.WriteString("username=")
 	builder.WriteString(u.Username)
 	builder.WriteString(", ")
-	builder.WriteString("password=")
-	builder.WriteString(fmt.Sprintf("%v", u.Password))
+	builder.WriteString("hashed_password=")
+	builder.WriteString(fmt.Sprintf("%v", u.HashedPassword))
 	builder.WriteByte(')')
 	return builder.String()
 }

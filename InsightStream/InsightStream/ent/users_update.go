@@ -33,9 +33,9 @@ func (uu *UsersUpdate) SetUsername(s string) *UsersUpdate {
 	return uu
 }
 
-// SetPassword sets the "password" field.
-func (uu *UsersUpdate) SetPassword(b []byte) *UsersUpdate {
-	uu.mutation.SetPassword(b)
+// SetHashedPassword sets the "hashed_password" field.
+func (uu *UsersUpdate) SetHashedPassword(b []byte) *UsersUpdate {
+	uu.mutation.SetHashedPassword(b)
 	return uu
 }
 
@@ -78,9 +78,9 @@ func (uu *UsersUpdate) check() error {
 			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Users.username": %w`, err)}
 		}
 	}
-	if v, ok := uu.mutation.Password(); ok {
-		if err := users.PasswordValidator(v); err != nil {
-			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Users.password": %w`, err)}
+	if v, ok := uu.mutation.HashedPassword(); ok {
+		if err := users.HashedPasswordValidator(v); err != nil {
+			return &ValidationError{Name: "hashed_password", err: fmt.Errorf(`ent: validator failed for field "Users.hashed_password": %w`, err)}
 		}
 	}
 	return nil
@@ -110,8 +110,8 @@ func (uu *UsersUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.Username(); ok {
 		_spec.SetField(users.FieldUsername, field.TypeString, value)
 	}
-	if value, ok := uu.mutation.Password(); ok {
-		_spec.SetField(users.FieldPassword, field.TypeBytes, value)
+	if value, ok := uu.mutation.HashedPassword(); ok {
+		_spec.SetField(users.FieldHashedPassword, field.TypeBytes, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -139,9 +139,9 @@ func (uuo *UsersUpdateOne) SetUsername(s string) *UsersUpdateOne {
 	return uuo
 }
 
-// SetPassword sets the "password" field.
-func (uuo *UsersUpdateOne) SetPassword(b []byte) *UsersUpdateOne {
-	uuo.mutation.SetPassword(b)
+// SetHashedPassword sets the "hashed_password" field.
+func (uuo *UsersUpdateOne) SetHashedPassword(b []byte) *UsersUpdateOne {
+	uuo.mutation.SetHashedPassword(b)
 	return uuo
 }
 
@@ -191,9 +191,9 @@ func (uuo *UsersUpdateOne) check() error {
 			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Users.username": %w`, err)}
 		}
 	}
-	if v, ok := uuo.mutation.Password(); ok {
-		if err := users.PasswordValidator(v); err != nil {
-			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Users.password": %w`, err)}
+	if v, ok := uuo.mutation.HashedPassword(); ok {
+		if err := users.HashedPasswordValidator(v); err != nil {
+			return &ValidationError{Name: "hashed_password", err: fmt.Errorf(`ent: validator failed for field "Users.hashed_password": %w`, err)}
 		}
 	}
 	return nil
@@ -240,8 +240,8 @@ func (uuo *UsersUpdateOne) sqlSave(ctx context.Context) (_node *Users, err error
 	if value, ok := uuo.mutation.Username(); ok {
 		_spec.SetField(users.FieldUsername, field.TypeString, value)
 	}
-	if value, ok := uuo.mutation.Password(); ok {
-		_spec.SetField(users.FieldPassword, field.TypeBytes, value)
+	if value, ok := uuo.mutation.HashedPassword(); ok {
+		_spec.SetField(users.FieldHashedPassword, field.TypeBytes, value)
 	}
 	_node = &Users{config: uuo.config}
 	_spec.Assign = _node.assignValues
