@@ -27,6 +27,18 @@ func (uu *UsersUpdate) Where(ps ...predicate.Users) *UsersUpdate {
 	return uu
 }
 
+// SetUsername sets the "username" field.
+func (uu *UsersUpdate) SetUsername(s string) *UsersUpdate {
+	uu.mutation.SetUsername(s)
+	return uu
+}
+
+// SetPassword sets the "password" field.
+func (uu *UsersUpdate) SetPassword(b []byte) *UsersUpdate {
+	uu.mutation.SetPassword(b)
+	return uu
+}
+
 // Mutation returns the UsersMutation object of the builder.
 func (uu *UsersUpdate) Mutation() *UsersMutation {
 	return uu.mutation
@@ -59,13 +71,31 @@ func (uu *UsersUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (uu *UsersUpdate) check() error {
+	if v, ok := uu.mutation.Username(); ok {
+		if err := users.UsernameValidator(v); err != nil {
+			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Users.username": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.Password(); ok {
+		if err := users.PasswordValidator(v); err != nil {
+			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Users.password": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (uu *UsersUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := uu.check(); err != nil {
+		return n, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   users.Table,
 			Columns: users.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: users.FieldID,
 			},
 		},
@@ -76,6 +106,12 @@ func (uu *UsersUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := uu.mutation.Username(); ok {
+		_spec.SetField(users.FieldUsername, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Password(); ok {
+		_spec.SetField(users.FieldPassword, field.TypeBytes, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -95,6 +131,18 @@ type UsersUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UsersMutation
+}
+
+// SetUsername sets the "username" field.
+func (uuo *UsersUpdateOne) SetUsername(s string) *UsersUpdateOne {
+	uuo.mutation.SetUsername(s)
+	return uuo
+}
+
+// SetPassword sets the "password" field.
+func (uuo *UsersUpdateOne) SetPassword(b []byte) *UsersUpdateOne {
+	uuo.mutation.SetPassword(b)
+	return uuo
 }
 
 // Mutation returns the UsersMutation object of the builder.
@@ -136,13 +184,31 @@ func (uuo *UsersUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (uuo *UsersUpdateOne) check() error {
+	if v, ok := uuo.mutation.Username(); ok {
+		if err := users.UsernameValidator(v); err != nil {
+			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Users.username": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.Password(); ok {
+		if err := users.PasswordValidator(v); err != nil {
+			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Users.password": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (uuo *UsersUpdateOne) sqlSave(ctx context.Context) (_node *Users, err error) {
+	if err := uuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   users.Table,
 			Columns: users.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: users.FieldID,
 			},
 		},
@@ -170,6 +236,12 @@ func (uuo *UsersUpdateOne) sqlSave(ctx context.Context) (_node *Users, err error
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := uuo.mutation.Username(); ok {
+		_spec.SetField(users.FieldUsername, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Password(); ok {
+		_spec.SetField(users.FieldPassword, field.TypeBytes, value)
 	}
 	_node = &Users{config: uuo.config}
 	_spec.Assign = _node.assignValues

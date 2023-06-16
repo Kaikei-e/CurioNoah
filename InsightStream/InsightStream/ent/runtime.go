@@ -7,6 +7,7 @@ import (
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/schema"
+	"insightstream/ent/users"
 	"time"
 
 	"github.com/google/uuid"
@@ -128,4 +129,14 @@ func init() {
 	followlistDescIsUpdated := followlistFields[17].Descriptor()
 	// followlist.DefaultIsUpdated holds the default value on creation for the is_updated field.
 	followlist.DefaultIsUpdated = followlistDescIsUpdated.Default.(bool)
+	usersFields := schema.Users{}.Fields()
+	_ = usersFields
+	// usersDescUsername is the schema descriptor for username field.
+	usersDescUsername := usersFields[1].Descriptor()
+	// users.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
+	users.UsernameValidator = usersDescUsername.Validators[0].(func(string) error)
+	// usersDescPassword is the schema descriptor for password field.
+	usersDescPassword := usersFields[2].Descriptor()
+	// users.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
+	users.PasswordValidator = usersDescPassword.Validators[0].(func([]byte) error)
 }

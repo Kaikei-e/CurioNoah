@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // UsersQuery is the builder for querying Users entities.
@@ -84,8 +85,8 @@ func (uq *UsersQuery) FirstX(ctx context.Context) *Users {
 
 // FirstID returns the first Users ID from the query.
 // Returns a *NotFoundError when no Users ID was found.
-func (uq *UsersQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (uq *UsersQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
+	var ids []uuid.UUID
 	if ids, err = uq.Limit(1).IDs(newQueryContext(ctx, TypeUsers, "FirstID")); err != nil {
 		return
 	}
@@ -97,7 +98,7 @@ func (uq *UsersQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (uq *UsersQuery) FirstIDX(ctx context.Context) int {
+func (uq *UsersQuery) FirstIDX(ctx context.Context) uuid.UUID {
 	id, err := uq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -135,8 +136,8 @@ func (uq *UsersQuery) OnlyX(ctx context.Context) *Users {
 // OnlyID is like Only, but returns the only Users ID in the query.
 // Returns a *NotSingularError when more than one Users ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (uq *UsersQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (uq *UsersQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
+	var ids []uuid.UUID
 	if ids, err = uq.Limit(2).IDs(newQueryContext(ctx, TypeUsers, "OnlyID")); err != nil {
 		return
 	}
@@ -152,7 +153,7 @@ func (uq *UsersQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (uq *UsersQuery) OnlyIDX(ctx context.Context) int {
+func (uq *UsersQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 	id, err := uq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -180,8 +181,8 @@ func (uq *UsersQuery) AllX(ctx context.Context) []*Users {
 }
 
 // IDs executes the query and returns a list of Users IDs.
-func (uq *UsersQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (uq *UsersQuery) IDs(ctx context.Context) ([]uuid.UUID, error) {
+	var ids []uuid.UUID
 	ctx = newQueryContext(ctx, TypeUsers, "IDs")
 	if err := uq.Select(users.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
@@ -190,7 +191,7 @@ func (uq *UsersQuery) IDs(ctx context.Context) ([]int, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (uq *UsersQuery) IDsX(ctx context.Context) []int {
+func (uq *UsersQuery) IDsX(ctx context.Context) []uuid.UUID {
 	ids, err := uq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -260,6 +261,18 @@ func (uq *UsersQuery) Clone() *UsersQuery {
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Username string `json:"username,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Users.Query().
+//		GroupBy(users.FieldUsername).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (uq *UsersQuery) GroupBy(field string, fields ...string) *UsersGroupBy {
 	uq.fields = append([]string{field}, fields...)
 	grbuild := &UsersGroupBy{build: uq}
@@ -271,6 +284,16 @@ func (uq *UsersQuery) GroupBy(field string, fields ...string) *UsersGroupBy {
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		Username string `json:"username,omitempty"`
+//	}
+//
+//	client.Users.Query().
+//		Select(users.FieldUsername).
+//		Scan(ctx, &v)
 func (uq *UsersQuery) Select(fields ...string) *UsersSelect {
 	uq.fields = append(uq.fields, fields...)
 	sbuild := &UsersSelect{UsersQuery: uq}
@@ -350,7 +373,7 @@ func (uq *UsersQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   users.Table,
 			Columns: users.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: users.FieldID,
 			},
 		},

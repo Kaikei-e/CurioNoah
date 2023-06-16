@@ -4,11 +4,13 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"insightstream/ent/users"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // UsersCreate is the builder for creating a Users entity.
@@ -16,6 +18,24 @@ type UsersCreate struct {
 	config
 	mutation *UsersMutation
 	hooks    []Hook
+}
+
+// SetUsername sets the "username" field.
+func (uc *UsersCreate) SetUsername(s string) *UsersCreate {
+	uc.mutation.SetUsername(s)
+	return uc
+}
+
+// SetPassword sets the "password" field.
+func (uc *UsersCreate) SetPassword(b []byte) *UsersCreate {
+	uc.mutation.SetPassword(b)
+	return uc
+}
+
+// SetID sets the "id" field.
+func (uc *UsersCreate) SetID(u uuid.UUID) *UsersCreate {
+	uc.mutation.SetID(u)
+	return uc
 }
 
 // Mutation returns the UsersMutation object of the builder.
@@ -52,6 +72,22 @@ func (uc *UsersCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UsersCreate) check() error {
+	if _, ok := uc.mutation.Username(); !ok {
+		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "Users.username"`)}
+	}
+	if v, ok := uc.mutation.Username(); ok {
+		if err := users.UsernameValidator(v); err != nil {
+			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Users.username": %w`, err)}
+		}
+	}
+	if _, ok := uc.mutation.Password(); !ok {
+		return &ValidationError{Name: "password", err: errors.New(`ent: missing required field "Users.password"`)}
+	}
+	if v, ok := uc.mutation.Password(); ok {
+		if err := users.PasswordValidator(v); err != nil {
+			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Users.password": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -66,8 +102,13 @@ func (uc *UsersCreate) sqlSave(ctx context.Context) (*Users, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
+			_node.ID = *id
+		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
+			return nil, err
+		}
+	}
 	uc.mutation.id = &_node.ID
 	uc.mutation.done = true
 	return _node, nil
@@ -79,11 +120,23 @@ func (uc *UsersCreate) createSpec() (*Users, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: users.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: users.FieldID,
 			},
 		}
 	)
+	if id, ok := uc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = &id
+	}
+	if value, ok := uc.mutation.Username(); ok {
+		_spec.SetField(users.FieldUsername, field.TypeString, value)
+		_node.Username = value
+	}
+	if value, ok := uc.mutation.Password(); ok {
+		_spec.SetField(users.FieldPassword, field.TypeBytes, value)
+		_node.Password = value
+	}
 	return _node, _spec
 }
 
@@ -127,10 +180,6 @@ func (ucb *UsersCreateBulk) Save(ctx context.Context) ([]*Users, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})
