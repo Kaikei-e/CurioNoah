@@ -78,35 +78,35 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 		newLinks = append(newLinks, newLink)
 	}
 
+	for _, oLink := range oldLinks {
+		sort.SliceStable(oLink.Links, func(i, j int) bool {
+			return oLink.Links[i] < oLink.Links[j]
+		})
+	}
+
+	for _, nLink := range newLinks {
+		sort.SliceStable(nLink.Links, func(i, j int) bool {
+			return nLink.Links[i] < nLink.Links[j]
+		})
+	}
+
+	//var sortedOldLinks []linksItem
 	//for _, oLink := range oldLinks {
-	//	sort.SliceStable(oLink.Links, func(i, j int) bool {
-	//		return oLink.Links[i] < oLink.Links[j]
-	//	})
+	//	sort.Sort(sort.StringSlice(oLink.Links))
+	//	sortedOldLinks = append(sortedOldLinks, oLink)
 	//}
 	//
+	//var sortedNewLinks []linksItem
 	//for _, nLink := range newLinks {
-	//	sort.SliceStable(nLink.Links, func(i, j int) bool {
-	//		return nLink.Links[i] < nLink.Links[j]
-	//	})
+	//	sort.Sort(sort.StringSlice(nLink.Links))
+	//	sortedNewLinks = append(sortedNewLinks, nLink)
 	//}
-
-	var sortedOldLinks []linksItem
-	for _, oLink := range oldLinks {
-		sort.Sort(sort.StringSlice(oLink.Links))
-		sortedOldLinks = append(sortedOldLinks, oLink)
-	}
-
-	var sortedNewLinks []linksItem
-	for _, nLink := range newLinks {
-		sort.Sort(sort.StringSlice(nLink.Links))
-		sortedNewLinks = append(sortedNewLinks, nLink)
-	}
 
 	// compare oldLinks and newLinks
 	var updateLinkList []string
-	for i, link := range sortedOldLinks {
+	for i, link := range oldLinks {
 		for i2, l := range link.Links {
-			if i2 < len(sortedNewLinks[i].Links) && cmp.Diff(l, sortedNewLinks[i].Links[i2]) != "" {
+			if i2 < len(newLinks[i].Links) && cmp.Diff(l, newLinks[i].Links[i2]) != "" {
 				updateLinkList = append(updateLinkList, fl[i].Link)
 				break
 			}
