@@ -21,6 +21,93 @@ type linksItem struct {
 	ID    int
 }
 
+func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
+
+	// convert existing ent struct to gofeed struct
+	feedExchanged, err := restorerss.FeedExchange(fl)
+	if err != nil {
+		return nil, nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
+	}
+
+	// list up target links
+	var targetLinks []string
+	for _, list := range fl {
+		targetLinks = append(targetLinks, list.Link)
+	}
+
+	fetchedFeeds, err := fetchFeedDomain.ParallelizeFetch(targetLinks)
+	if err != nil {
+		return nil, nil, errors.New(fmt.Sprintf("failed to fetch feed. error: %v", err))
+	}
+
+	var fetchedLinks []linksItem
+	for _, feed := range fetchedFeeds {
+		var sortedLink []string
+		var fetchedLink linksItem
+
+		for _, link := range feed.Links {
+			sortedLink = append(sortedLink, link)
+		}
+
+		sort.SliceStable(sortedLink, func(i, j int) bool {
+			return sortedLink[i] < sortedLink[j]
+		})
+
+		// you must identify the difference between the feed.Link and the feed.FeedLink
+		// feed.FeedLink is the URL of the RSS feed itself
+		fetchedLink.Links = append(fetchedLink.Links, sortedLink...)
+		fetchedLink.URL = feed.Link
+
+		fetchedLinks = append(fetchedLinks, fetchedLink)
+	}
+
+	var exchangedLinks []linksItem
+	for i, feed := range feedExchanged {
+		var sortedLink []string
+		var fetchedLink linksItem
+
+		for _, link := range feed.Links {
+			sortedLink = append(sortedLink, link)
+		}
+
+		sort.SliceStable(sortedLink, func(i, j int) bool {
+			return sortedLink[i] < sortedLink[j]
+		})
+
+		fetchedLink.Links = append(fetchedLink.Links, sortedLink...)
+		fetchedLink.URL = fetchedFeeds[i].Link
+
+		exchangedLinks = append(exchangedLinks, fetchedLink)
+
+	}
+
+	var updateLinkList []int
+	for _, fetchedLink := range fetchedLinks {
+		// We look for the corresponding item in exchangedLinks
+		for _, exchangedLink := range exchangedLinks {
+			found := false
+			if !cmp.Equal(fetchedLink.Links, exchangedLink.Links) {
+				for i, list := range fl {
+					if list.URL == fetchedLink.URL {
+						updateLinkList = append(updateLinkList, fl[i].ID)
+						found = true
+						break
+					}
+				}
+				if found {
+					break
+				}
+			}
+		}
+	}
+
+	sort.Ints(updateLinkList)
+	fmt.Println("updateLinkList: ", updateLinkList)
+
+	return updateLinkList, fetchedFeeds, nil
+
+}
+
 //func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 //	fmt.Printf("fl: %v \n", len(fl))
 //
@@ -129,90 +216,3 @@ type linksItem struct {
 //	return compactedIDList, newFeeds, nil
 //
 //}
-
-func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
-
-	// convert existing ent struct to gofeed struct
-	feedExchanged, err := restorerss.FeedExchange(fl)
-	if err != nil {
-		return nil, nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
-	}
-
-	// list up target links
-	var targetLinks []string
-	for _, list := range fl {
-		targetLinks = append(targetLinks, list.Link)
-	}
-
-	fetchedFeeds, err := fetchFeedDomain.ParallelizeFetch(targetLinks)
-	if err != nil {
-		return nil, nil, errors.New(fmt.Sprintf("failed to fetch feed. error: %v", err))
-	}
-
-	var fetchedLinks []linksItem
-	for _, feed := range fetchedFeeds {
-		var sortedLink []string
-		var fetchedLink linksItem
-
-		for _, link := range feed.Links {
-			sortedLink = append(sortedLink, link)
-		}
-
-		sort.SliceStable(sortedLink, func(i, j int) bool {
-			return sortedLink[i] < sortedLink[j]
-		})
-
-		// you must identify the difference between the feed.Link and the feed.FeedLink
-		// feed.FeedLink is the URL of the RSS feed itself
-		fetchedLink.Links = append(fetchedLink.Links, sortedLink...)
-		fetchedLink.URL = feed.Link
-
-		fetchedLinks = append(fetchedLinks, fetchedLink)
-	}
-
-	var exchangedLinks []linksItem
-	for i, feed := range feedExchanged {
-		var sortedLink []string
-		var fetchedLink linksItem
-
-		for _, link := range feed.Links {
-			sortedLink = append(sortedLink, link)
-		}
-
-		sort.SliceStable(sortedLink, func(i, j int) bool {
-			return sortedLink[i] < sortedLink[j]
-		})
-
-		fetchedLink.Links = append(fetchedLink.Links, sortedLink...)
-		fetchedLink.URL = fetchedFeeds[i].Link
-
-		exchangedLinks = append(exchangedLinks, fetchedLink)
-
-	}
-
-	var updateLinkList []int
-	for _, fetchedLink := range fetchedLinks {
-		// We look for the corresponding item in exchangedLinks
-		for _, exchangedLink := range exchangedLinks {
-			found := false
-			if !cmp.Equal(fetchedLink.Links, exchangedLink.Links) {
-				for i, list := range fl {
-					if list.URL == fetchedLink.URL {
-						updateLinkList = append(updateLinkList, fl[i].ID)
-						found = true
-						break
-					}
-				}
-				if found {
-					break
-				}
-			}
-		}
-	}
-
-	sort.Ints(updateLinkList)
-	fmt.Println("updateLinkList: ", updateLinkList)
-
-	return updateLinkList, fetchedFeeds, nil
-
-}
