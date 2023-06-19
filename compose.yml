@@ -177,6 +177,26 @@ services:
       app-network:
         ipv4_address: 192.168.100.10
 
+  oath_db:
+    # Database
+    build:
+      context: ./oath_db
+      dockerfile: Dockerfile
+    ports:
+      - '5432:5432'
+    tty: true
+    volumes:
+      - './oath_db/postgresql/data:/var/lib/postgresql/data'
+    environment:
+      timezone: 'Asia/Tokyo'
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: always
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.60
+
 networks:
   app-network:
     ipam:
