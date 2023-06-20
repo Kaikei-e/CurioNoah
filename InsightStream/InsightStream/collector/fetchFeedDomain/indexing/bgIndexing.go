@@ -93,6 +93,7 @@ func (s *StoreManager) mergeLists(result []*ent.FollowList, convertedFeeds []*en
 			}
 		}
 	}
+
 	return addingList
 }
 
