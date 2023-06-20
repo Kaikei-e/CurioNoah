@@ -16,8 +16,10 @@ func main() {
 	done := make(chan bool)
 
 	var wg sync.WaitGroup
-
 	cl := repository.InitConnection()
+
+	storeManager := indexing.NewStoreManager(cl)
+
 	go func() {
 		for {
 			wg.Add(1)
@@ -25,7 +27,8 @@ func main() {
 			case <-done:
 				return
 			case <-ticker.C:
-				err := indexing.Store(cl)
+				//err := indexing.Store(cl)
+				err := storeManager.Store()
 				if err != nil {
 					// TODO wil add logger
 					err := fmt.Sprintf("failed to store: %v", err)
