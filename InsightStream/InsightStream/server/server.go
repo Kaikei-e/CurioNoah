@@ -11,6 +11,7 @@ import (
 	"insightstream/restorerss"
 	"insightstream/restorerss/manageFeedsAmount"
 	"sort"
+	"strconv"
 )
 
 func Server(cl *ent.Client) {
@@ -50,10 +51,14 @@ func Server(cl *ent.Client) {
 			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				e.Logger.Info("stored-all api is called")
 
-				//feeds, err := fetchFeeds.ParallelizeFetch(testdata.FeedList)
-				//feedEnt, err := readfeed.QueryByTen(cl)
+				qpStr := c.QueryParam("page")
+				qp, err := strconv.Atoi(qpStr)
+				if err != nil {
+					e.Logger.Errorf("failed to convert string to int. error: %v", err)
+				}
+
 				// the twenty is the number of list to send the followList to Front
-				feedEnt, err := readfeed.QueryByTwenty(cl)
+				feedEnt, err := readfeed.QueryByTwenty(cl, qp)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
 					// TODO FIX: return error
@@ -98,7 +103,15 @@ func Server(cl *ent.Client) {
 
 				e.Logger.Info("response header is set")
 
-				return c.JSON(200, feedsFormatted)
+				res := struct {
+					Feeds   []gofeed.Feed `json:"feeds"`
+					HasMore bool          `json:"hasMore"`
+				}{
+					Feeds:   feedsFormatted,
+					HasMore: len(feedsFormatted) > 0,
+				}
+
+				return c.JSON(200, res)
 			})
 			if err != nil {
 				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
