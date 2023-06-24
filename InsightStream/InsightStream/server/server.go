@@ -108,7 +108,7 @@ func Server(cl *ent.Client) {
 					HasMore bool          `json:"hasMore"`
 				}{
 					Feeds:   feedsFormatted,
-					HasMore: len(feedsFormatted) > 0,
+					HasMore: qp > 0,
 				}
 
 				return c.JSON(200, res)

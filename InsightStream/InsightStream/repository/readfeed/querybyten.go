@@ -26,14 +26,17 @@ func QueryByTen(cl *ent.Client) ([]*ent.FollowList, error) {
 func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowList, error) {
 	ctx := context.Background()
 
-	limit := 20
+	const limit = 20
+	var limitAmout int
 	if queryParam > 0 {
-		limit = queryParam + limit
+		limitAmout = queryParam * 20
+	} else {
+		limitAmout = limit
 	}
 
 	fl, err := cl.FollowList.Query().
 		Order(ent.Desc("dt_updated")).
-		Limit(limit).
+		Limit(limitAmout).
 		All(ctx)
 
 	if err != nil {
