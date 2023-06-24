@@ -1,143 +1,143 @@
 export type Feed = {
-    title: string;
-    link: string;
-    feedLink: string;
-    links: string[];
-    updated: string;
-    updatedParsed: string;
-    published: string;
-    publishedParsed: string;
-    language: string;
-    image: Image;
-    copyright: string;
-    extensions: FeedExtensions;
-    items: Item[];
-    feedType: string;
-    feedVersion: string;
-}
+  title: string;
+  link: string;
+  feedLink: string;
+  links: string[];
+  updated: string;
+  updatedParsed: string;
+  published: string;
+  publishedParsed: string;
+  language: string;
+  image: Image;
+  copyright: string;
+  extensions: FeedExtensions;
+  items: Item[];
+  feedType: string;
+  feedVersion: string;
+};
 
 export type FeedExtensions = {
-    atom: PurpleAtom;
-}
+  atom: PurpleAtom;
+};
 
 export type PurpleAtom = {
-    link: PurpleLink[];
-}
+  link: PurpleLink[];
+};
 
 export type PurpleLink = {
-    name: LinkName;
-    value: string;
-    attrs: PurpleAttrs;
-    children: Children;
-}
+  name: LinkName;
+  value: string;
+  attrs: PurpleAttrs;
+  children: Children;
+};
 
 export type PurpleAttrs = {
-    href: string;
-    rel: string;
-    type: string;
-}
+  href: string;
+  rel: string;
+  type: string;
+};
 
-export type Children = {}
+export type Children = {};
 
 export enum LinkName {
-    Link = "link",
+  Link = "link",
 }
 
 export type Image = {
-    url: string;
-    title: string;
-}
+  url: string;
+  title: string;
+};
 
 export interface Item {
-    title: string;
-    description?: string;
-    link: string;
-    links: string[];
-    published: string;
-    publishedParsed: string;
-    author: Author;
-    authors: Author[];
-    guid: string;
-    dcExt: DcEXT;
-    extensions: ItemExtensions;
-    categories?: string[];
+  title: string;
+  description?: string;
+  link: string;
+  links: string[];
+  published: string;
+  publishedParsed: string;
+  author: Author;
+  authors: Author[];
+  guid: string;
+  dcExt: DcEXT;
+  extensions: ItemExtensions;
+  categories?: string[];
 }
 
 export type Author = {
-    name: string;
-}
+  name: string;
+};
 
 export type DcEXT = {
-    creator: string[];
-}
+  creator: string[];
+};
 
 export type ItemExtensions = {
-    atom: FluffyAtom;
-    dc: Dc;
-    media?: Media;
-}
+  atom: FluffyAtom;
+  dc: Dc;
+  media?: Media;
+};
 
 export type FluffyAtom = {
-    link: FluffyLink[];
-}
+  link: FluffyLink[];
+};
 
 export type FluffyLink = {
-    name: LinkName;
-    value: string;
-    attrs: FluffyAttrs;
-    children: Children;
-}
+  name: LinkName;
+  value: string;
+  attrs: FluffyAttrs;
+  children: Children;
+};
 
 export type FluffyAttrs = {
-    href: string;
-    rel: Rel;
-}
+  href: string;
+  rel: Rel;
+};
 
 export enum Rel {
-    Standout = "standout",
+  Standout = "standout",
 }
 
 export type Dc = {
-    creator: Creator[];
-}
+  creator: Creator[];
+};
 
 export type Creator = {
-    name: CreatorName;
-    value: string;
-    attrs: Children;
-    children: Children;
-}
+  name: CreatorName;
+  value: string;
+  attrs: Children;
+  children: Children;
+};
 
 export enum CreatorName {
-    Creator = "creator",
-    Credit = "credit",
-    Description = "description",
+  Creator = "creator",
+  Credit = "credit",
+  Description = "description",
 }
 
 export type Media = {
-    content: Content[];
-    credit?: Creator[];
-    description?: Creator[];
-}
+  content: Content[];
+  credit?: Creator[];
+  description?: Creator[];
+};
 
 export type Content = {
-    name: ContentName;
-    value: string;
-    attrs: ContentAttrs;
-    children: Children;
-}
+  name: ContentName;
+  value: string;
+  attrs: ContentAttrs;
+  children: Children;
+};
 
 export type ContentAttrs = {
-    height: string;
-    medium: Medium;
-    url: string;
-    width: string;
-}
+  height: string;
+  medium: Medium;
+  url: string;
+  width: string;
+};
 
 export enum Medium {
-    Image = "image",
+  Image = "image",
 }
 
 export enum ContentName {
-    Content = "content",
+  Content = "content",
 }
