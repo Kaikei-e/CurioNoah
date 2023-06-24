@@ -9,16 +9,14 @@ import { ExternalLinkIcon } from "@chakra-ui/icons";
 import React from "react";
 import { Feed, Item } from "../../lib/models/feedModel";
 import EachFeed from "./eachFeed";
-import { InfiniteScroll } from "react-infinite-scroller";
+import InfiniteScroll from "react-infinite-scroller";
 
-function Timeline(props: { data: Feed[] }) {
-  const [list, setList] = React.useState<Feed[]>([]);
-
-  const loadMoreFeeds = (feeds: Feed[]) => {
-    setList([...list, feeds]);
-  };
-
-  const loader = <CircularProgress isIndeterminate color="green.300" />;
+function Timeline(props: {
+  data: Feed[];
+  loadMoreFeeds: (page: number) => void;
+  hasMore: boolean;
+}) {
+    const loader = <CircularProgress isIndeterminate color="green.300" />;
 
   return (
     <Flex flexDirection={"column"} h={"100%"} w={"100%"} fontFamily="Jost">
@@ -38,7 +36,12 @@ function Timeline(props: { data: Feed[] }) {
           page.
         </Text>
       </Flex>
-      <InfiniteScroll loadMore={loadMoreFeeds} hasMore={true} loader={loader}>
+      <InfiniteScroll
+          pageStart={0}
+          loadMore={props.loadMoreFeeds}
+        hasMore={props.hasMore}
+        loader={loader}
+      >
         {props.data.map((feed: Feed, index: number) => {
           return <EachFeed feed={feed} index={index} />;
         })}

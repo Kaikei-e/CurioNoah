@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { Flex, Spinner } from "@chakra-ui/react";
 import Timeline from "./timeline/Timeline";
 import { Feed } from "../lib/models/feedModel";
@@ -10,29 +10,46 @@ const InsightStreamBase = () => {
   const [data, setData] = React.useState<Feed[]>([]);
   const [isLoading, setIsLoading] = React.useState<Boolean>(true);
   const [error, setError] = React.useState<Error>();
+  const [hasMore, setHasMore] = React.useState(true);
+  const [page, setPage] = useState(0);
 
-  useEffect(() => {
-    const feeds = async () => {
-      const response = await fetch(apiURL + "/fetch-feed/stored-all", {
+
+  const fetchMoreFeeds = async () => {
+    setIsLoading(true);
+    const response = await fetch(
+      `${apiURL}/fetch-feed/stored-all?page=${page}`,
+      {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          // 'Access-Control-Allow-Origin': '*',
           Origin: origin,
         },
-      });
-      const feeds = await response.json();
-
-      if (feeds == null) {
-        setError(new Error("No feeds found"));
       }
+    );
 
-      setData(feeds);
-      setIsLoading(false);
-    };
+    if (response.ok) {
+      const result = await response.json();
+      const feeds = result.feeds;
+      const newHasMore = result.hasMore;
 
-    feeds().catch((error) => {
+      if (!feeds || !Array.isArray(feeds)) {
+        setError(new Error("No feeds found"));
+        setHasMore(false);
+      } else {
+        setData((prevData) => [...prevData, ...feeds]);
+        setHasMore(newHasMore);
+        setPage(page + 1);
+      }
+    } else {
+      setError(new Error("Failed to fetch data"));
+      setHasMore(false);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchMoreFeeds().catch((error) => {
       setError(error);
       setIsLoading(false);
     });
@@ -40,12 +57,12 @@ const InsightStreamBase = () => {
 
   let displayData;
 
-  if (!isLoading) {
-    displayData = <Timeline data={data} />;
+  if (isLoading && data.length === 0) {
+    displayData = <FetchingFeeds />;
   } else if (error) {
     displayData = <div>Something went wrong ...</div>;
   } else {
-    displayData = <FetchingFeeds />;
+    displayData = <Timeline data={data} loadMoreFeeds={fetchMoreFeeds} hasMore={hasMore} />;
   }
 
   return (
