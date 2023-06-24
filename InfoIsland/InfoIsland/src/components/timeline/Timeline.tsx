@@ -16,7 +16,7 @@ function Timeline(props: {
   loadMoreFeeds: (page: number) => void;
   hasMore: boolean;
 }) {
-    const loader = <CircularProgress isIndeterminate color="green.300" />;
+  const loader = <CircularProgress isIndeterminate color="green.300" />;
 
   return (
     <Flex flexDirection={"column"} h={"100%"} w={"100%"} fontFamily="Jost">
@@ -37,8 +37,8 @@ function Timeline(props: {
         </Text>
       </Flex>
       <InfiniteScroll
-          pageStart={0}
-          loadMore={props.loadMoreFeeds}
+        pageStart={0}
+        loadMore={props.loadMoreFeeds}
         hasMore={props.hasMore}
         loader={loader}
       >

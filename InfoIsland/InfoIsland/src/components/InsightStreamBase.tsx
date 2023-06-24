@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Flex, Spinner } from "@chakra-ui/react";
 import Timeline from "./timeline/Timeline";
 import { Feed } from "../lib/models/feedModel";
+import EachFeed from "./timeline/eachFeed";
 
 const InsightStreamBase = () => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
@@ -13,8 +14,7 @@ const InsightStreamBase = () => {
   const [hasMore, setHasMore] = React.useState(true);
   const [page, setPage] = useState(0);
 
-
-  const fetchMoreFeeds = async () => {
+  const fetchMoreFeeds = async (page: number) => {
     setIsLoading(true);
     const response = await fetch(
       `${apiURL}/fetch-feed/stored-all?page=${page}`,
@@ -31,14 +31,13 @@ const InsightStreamBase = () => {
     if (response.ok) {
       const result = await response.json();
       const feeds = result.feeds;
-      const newHasMore = result.hasMore;
 
-      if (!feeds || !Array.isArray(feeds)) {
+      if (!feeds || !Array.isArray(feeds) || feeds.length === 0) {
         setError(new Error("No feeds found"));
         setHasMore(false);
       } else {
         setData((prevData) => [...prevData, ...feeds]);
-        setHasMore(newHasMore);
+        setHasMore(true);
         setPage(page + 1);
       }
     } else {
@@ -49,7 +48,7 @@ const InsightStreamBase = () => {
   };
 
   useEffect(() => {
-    fetchMoreFeeds().catch((error) => {
+    fetchMoreFeeds(page).catch((error) => {
       setError(error);
       setIsLoading(false);
     });
@@ -62,8 +61,28 @@ const InsightStreamBase = () => {
   } else if (error) {
     displayData = <div>Something went wrong ...</div>;
   } else {
-    displayData = <Timeline data={data} loadMoreFeeds={fetchMoreFeeds} hasMore={hasMore} />;
+    displayData = (
+      <Timeline
+        data={data}
+        loadMoreFeeds={() => fetchMoreFeeds(page)}
+        hasMore={hasMore}
+      />
+    );
   }
+
+  return (
+    <Flex
+      flexDirection={"column"}
+      w={"100%"}
+      h={"100%"}
+      bgColor={"#EAF2F8"}
+      rounded={"xl"}
+      overflow={"scroll"}
+      overflowX={"hidden"}
+    >
+      {displayData}
+    </Flex>
+  );
 
   return (
     <Flex
