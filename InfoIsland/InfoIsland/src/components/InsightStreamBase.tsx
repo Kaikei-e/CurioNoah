@@ -9,7 +9,7 @@ const InsightStreamBase = () => {
   const origin = import.meta.env.VITE_ORIGIN;
 
   const [data, setData] = React.useState<Feed[]>([]);
-  const [isLoading, setIsLoading] = React.useState<Boolean>(true);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<Error>();
   const [hasMore, setHasMore] = React.useState(true);
   const [page, setPage] = useState(0);
@@ -37,7 +37,6 @@ const InsightStreamBase = () => {
         setHasMore(false);
       } else {
         setData((prevData) => [...prevData, ...feeds]);
-        setHasMore(true);
         setPage(page + 1);
       }
     } else {
@@ -52,9 +51,10 @@ const InsightStreamBase = () => {
       setError(error);
       setIsLoading(false);
     });
-  }, []);
+  }, [page]);
 
   let displayData;
+
 
   if (isLoading && data.length === 0) {
     displayData = <FetchingFeeds />;
@@ -62,27 +62,14 @@ const InsightStreamBase = () => {
     displayData = <div>Something went wrong ...</div>;
   } else {
     displayData = (
-      <Timeline
-        data={data}
-        loadMoreFeeds={() => fetchMoreFeeds(page)}
-        hasMore={hasMore}
-      />
+        <Timeline
+            data={data}
+            hasMore={hasMore}
+            isLoading={isLoading}
+            fetchMoreFeeds={() => fetchMoreFeeds(page)}
+        />
     );
   }
-
-  return (
-    <Flex
-      flexDirection={"column"}
-      w={"100%"}
-      h={"100%"}
-      bgColor={"#EAF2F8"}
-      rounded={"xl"}
-      overflow={"scroll"}
-      overflowX={"hidden"}
-    >
-      {displayData}
-    </Flex>
-  );
 
   return (
     <Flex

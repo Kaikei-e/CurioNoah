@@ -1,4 +1,5 @@
 import {
+  Button,
   CircularProgress,
   Container,
   Flex,
@@ -9,15 +10,13 @@ import { ExternalLinkIcon } from "@chakra-ui/icons";
 import React from "react";
 import { Feed, Item } from "../../lib/models/feedModel";
 import EachFeed from "./eachFeed";
-import InfiniteScroll from "react-infinite-scroller";
 
 function Timeline(props: {
   data: Feed[];
-  loadMoreFeeds: (page: number) => void;
   hasMore: boolean;
+  isLoading: boolean;
+  fetchMoreFeeds: () => void;
 }) {
-  const loader = <CircularProgress isIndeterminate color="green.300" />;
-
   return (
     <Flex flexDirection={"column"} h={"100%"} w={"100%"} fontFamily="Jost">
       <Flex p={"2%"}>
@@ -36,16 +35,18 @@ function Timeline(props: {
           page.
         </Text>
       </Flex>
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={props.loadMoreFeeds}
-        hasMore={props.hasMore}
-        loader={loader}
-      >
+      <Flex flexDirection={"column"} h={"100%"} w={"100%"}>
         {props.data.map((feed: Feed, index: number) => {
           return <EachFeed feed={feed} index={index} />;
         })}
-      </InfiniteScroll>
+      </Flex>
+      {props.hasMore ? (
+        <Button onClick={props.fetchMoreFeeds} isLoading={props.isLoading}>
+          Go to next page
+        </Button>
+      ) : (
+        <Text>No more feeds</Text>
+      )}
     </Flex>
   );
 }
