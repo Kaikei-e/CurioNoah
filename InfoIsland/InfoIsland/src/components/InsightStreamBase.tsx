@@ -29,7 +29,7 @@ const InsightStreamBase = () => {
     if (response.ok) {
       const result = await response.json();
 
-      if( result.hadExceeded) {
+      if (result.hadExceeded) {
         setIsLoading(false);
         setError(new Error("No more feeds available"));
         return;
@@ -74,5 +74,14 @@ const InsightStreamBase = () => {
     </Flex>
   );
 };
+
+function arrayEquals(old: Feed[], newF: Feed[]) {
+  return (
+    Array.isArray(old) &&
+    Array.isArray(newF) &&
+    old.length === newF.length &&
+    old.every((val, index) => val === newF[index])
+  );
+}
 
 export default InsightStreamBase;

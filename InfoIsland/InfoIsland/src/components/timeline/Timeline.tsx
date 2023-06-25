@@ -45,7 +45,11 @@ function Timeline(props: {
         </Alert>
       )}
       <Flex h={"5%"} w={"100%"} justifyContent={"center"} alignItems={"center"}>
-        <Button onClick={props.fetchMoreFeeds} isLoading={props.isLoading} disabled={props.isLoading}>
+        <Button
+          onClick={props.fetchMoreFeeds}
+          isLoading={props.isLoading}
+          disabled={props.isLoading}
+        >
           Load more
         </Button>
       </Flex>
