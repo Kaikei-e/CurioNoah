@@ -14,18 +14,25 @@ const InsightStreamBase = () => {
 
   const fetchMoreFeeds = async () => {
     setIsLoading(true);
-    const response = await fetch(`${apiURL}/fetch-feed/stored-all?page=${page}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Origin: origin,
-      },
-    });
+    const response = await fetch(
+      `${apiURL}/fetch-feed/stored-all?page=${page}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Origin: origin,
+        },
+      }
+    );
 
     if (response.ok) {
       const result = await response.json();
-      if (result.feeds && Array.isArray(result.feeds) && result.feeds.length > 0) {
+      if (
+        result.feeds &&
+        Array.isArray(result.feeds) &&
+        result.feeds.length > 0
+      ) {
         setData((prevData) => [...prevData, ...result.feeds]);
         setPage(page + 1);
       } else {
@@ -43,22 +50,21 @@ const InsightStreamBase = () => {
   }, []);
 
   return (
-      <Flex
-          flexDirection={"column"}
-          w={"100%"}
-          h={"100%"}
-          bgColor={"#EAF2F8"}
-          rounded={"xl"}
-          overflow={"scroll"}
-          overflowX={"hidden"}
-      >
-        <Timeline
-            data={data}
-            isLoading={isLoading}
-            fetchMoreFeeds={fetchMoreFeeds}
-            error={error}
-        />
-      </Flex>
+    <Flex
+      flexDirection={"column"}
+      w={"100%"}
+      h={"100%"}
+      bgColor={"#EAF2F8"}
+      rounded={"xl"}
+      overflowX={"hidden"}
+    >
+      <Timeline
+        data={data}
+        isLoading={isLoading}
+        fetchMoreFeeds={fetchMoreFeeds}
+        error={error}
+      />
+    </Flex>
   );
 };
 
