@@ -58,7 +58,7 @@ func Server(cl *ent.Client) {
 				}
 
 				// the twenty is the number of list to send the followList to Front
-				feedEnt, hasMore, err := readfeed.QueryByTwenty(cl, qp)
+				feedEnt, hadExceeded, err := readfeed.QueryByTwenty(cl, qp)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
 					// TODO FIX: return error
@@ -69,6 +69,20 @@ func Server(cl *ent.Client) {
 					}
 				}
 
+				c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+				c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
+				c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
+
+				if feedEnt == nil && hadExceeded {
+					emptyRes := Response{
+						Feeds:       nil,
+						HadExceeded: hadExceeded,
+					}
+
+					e.Logger.Info("no more feeds")
+					return c.JSON(200, emptyRes)
+				}
+
 				feeds, err := restorerss.FeedExchange(feedEnt)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
@@ -76,7 +90,6 @@ func Server(cl *ent.Client) {
 					err := c.JSON(500, err)
 					if err != nil {
 						e.Logger.Errorf("error: %v. maybe sever is down", err)
-
 					}
 				}
 
@@ -97,18 +110,11 @@ func Server(cl *ent.Client) {
 					return feedsFormatted[i].UpdatedParsed.After(*feedsFormatted[j].UpdatedParsed)
 				})
 
-				c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
-				c.Response().Header().Set("Access-Control-Allow-Origin", c.Request().Header.Get("Origin"))
-				c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
-
 				e.Logger.Info("response header is set")
 
-				res := struct {
-					Feeds   []gofeed.Feed `json:"feeds"`
-					HasMore bool          `json:"hasMore"`
-				}{
-					Feeds:   feedsFormatted,
-					HasMore: hasMore,
+				res := Response{
+					Feeds:       feedsFormatted,
+					HadExceeded: hadExceeded,
 				}
 
 				return c.JSON(200, res)
@@ -146,4 +152,9 @@ func Server(cl *ent.Client) {
 	}
 
 	e.Logger.Fatal(e.Start(":9000"))
+}
+
+type Response struct {
+	Feeds       []gofeed.Feed `json:"feeds"`
+	HadExceeded bool          `json:"hadExceeded"`
 }
