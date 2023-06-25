@@ -29,8 +29,7 @@ const InsightStreamBase = () => {
     if (response.ok) {
       const result = await response.json();
 
-      if(result.feeds.length === data.length && result.hadExceeded) {
-        setData((prevData) => [...prevData, ...result.feeds]);
+      if( result.hadExceeded) {
         setIsLoading(false);
         setError(new Error("No more feeds available"));
         return;
