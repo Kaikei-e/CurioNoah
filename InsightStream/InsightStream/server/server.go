@@ -58,7 +58,7 @@ func Server(cl *ent.Client) {
 				}
 
 				// the twenty is the number of list to send the followList to Front
-				feedEnt, err := readfeed.QueryByTwenty(cl, qp)
+				feedEnt, hasMore, err := readfeed.QueryByTwenty(cl, qp)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
 					// TODO FIX: return error
@@ -108,7 +108,7 @@ func Server(cl *ent.Client) {
 					HasMore bool          `json:"hasMore"`
 				}{
 					Feeds:   feedsFormatted,
-					HasMore: qp > 0,
+					HasMore: hasMore,
 				}
 
 				return c.JSON(200, res)

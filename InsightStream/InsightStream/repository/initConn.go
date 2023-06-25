@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"entgo.io/ent/dialect"
 	"fmt"
 	"github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -12,6 +14,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+var CoreDatabae *sql.DB
 
 func InitConnection() *ent.Client {
 	jst, err := time.LoadLocation("Asia/Tokyo")
@@ -50,7 +54,12 @@ func InitConnection() *ent.Client {
 		Loc:                  jst,
 	}
 
-	client, err := ent.Open("mysql", c.FormatDSN())
+	CoreDatabae, err = sql.Open("mysql", c.FormatDSN())
+	if err != nil {
+		log.Fatalf("failed opening connection to mysql database: %v", err)
+	}
+
+	clt, err := ent.Open(dialect.MySQL, c.FormatDSN())
 	if err != nil {
 		log.Fatalf("failed opening connection to mysql database: %v", err)
 	}
@@ -59,11 +68,11 @@ func InitConnection() *ent.Client {
 
 	fmt.Println("connected to mysql database")
 
-	if err := client.Schema.Create(context.Background()); err != nil {
+	if err := clt.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
 	log.Println("created schema resources")
 
-	return client
+	return clt
 }
