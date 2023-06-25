@@ -27,7 +27,13 @@ function Timeline(props: {
           page.
         </Text>
       </Flex>
-      <Flex flexDirection={"column"} h={"90%"} w={"100%"} overflowY={"scroll"} borderY={"2px"}>
+      <Flex
+        flexDirection={"column"}
+        h={"90%"}
+        w={"100%"}
+        overflowY={"scroll"}
+        borderY={"2px"}
+      >
         {props.data.map((feed: Feed, index: number) => {
           return <EachFeed feed={feed} index={index} />;
         })}
@@ -38,13 +44,8 @@ function Timeline(props: {
           {props.error.message}
         </Alert>
       )}
-      <Flex
-        h={"5%"}
-        w={"100%"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <Button onClick={props.fetchMoreFeeds} isLoading={props.isLoading}>
+      <Flex h={"5%"} w={"100%"} justifyContent={"center"} alignItems={"center"}>
+        <Button onClick={props.fetchMoreFeeds} isLoading={props.isLoading} disabled={props.isLoading}>
           Load more
         </Button>
       </Flex>
