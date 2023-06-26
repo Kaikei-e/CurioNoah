@@ -48,7 +48,7 @@ func Server(cl *ent.Client) {
 		fetchFeed.Use()
 		{
 			// TODO will rotate the logics to small functions
-			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
+			fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				e.Logger.Info("stored-all api is called")
 
 				qpStr := c.QueryParam("page")
@@ -119,10 +119,6 @@ func Server(cl *ent.Client) {
 
 				return c.JSON(200, res)
 			})
-			if err != nil {
-				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
-			}
-
 		}
 
 		registerFeed := apiV1.Group("/register-feed")
@@ -134,14 +130,10 @@ func Server(cl *ent.Client) {
 		infiniteScroll := apiV1.Group("/infinite-scroll")
 		infiniteScroll.Use()
 		{
-			err := infiniteScroll.GET("/stored-all", func(c echo.Context) error {
+			infiniteScroll.GET("/stored-all", func(c echo.Context) error {
 				err := adaptor.InfiniteFetching(c, cl)
 				return err
 			})
-			if err != nil {
-				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
-
-			}
 		}
 	}
 
@@ -152,15 +144,10 @@ func Server(cl *ent.Client) {
 		fetchFeed := apiV2.Group("/fetch-feed")
 		fetchFeed.Use()
 		{
-			err := fetchFeed.GET("/stored-all", func(c echo.Context) error {
+			fetchFeed.GET("/stored-all", func(c echo.Context) error {
 				err := adaptor.CollectAll(c, cl)
 				return err
 			})
-
-			if err != nil {
-				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
-			}
-
 		}
 	}
 

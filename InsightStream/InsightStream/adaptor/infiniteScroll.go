@@ -20,24 +20,22 @@ func InfiniteFetching(c echo.Context, cl *ent.Client) error {
 	diFC := dependencyInversion.NewFeedCollection()
 	fds, hadExceeded, err := diFC.FetchInfinite(qp, cl)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusInternalServerError, err)
 	}
 
 	if hadExceeded {
 		err = c.JSON(200, response{fds, hadExceeded})
 		if err != nil {
-			return err
+			return c.JSON(http.StatusInternalServerError, err)
 		}
 	} else {
 		err = c.JSON(200, response{fds, false})
 		if err != nil {
-			return err
+			return c.JSON(http.StatusInternalServerError, err)
 		}
 	}
 
-	err = c.JSON(http.StatusInternalServerError, "failed to fetch feeds")
-
-	return err
+	return nil
 }
 
 type response struct {
