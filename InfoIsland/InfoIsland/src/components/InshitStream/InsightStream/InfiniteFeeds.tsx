@@ -64,7 +64,6 @@ const InfiniteFeeds: React.FC<Props> = () => {
       >
         {items.map((item, index) => (
           <div key={index}>
-            {/* Here you should use your component to display each feed */}
             {/* <FeedItem feed={item} /> */}
           </div>
         ))}
