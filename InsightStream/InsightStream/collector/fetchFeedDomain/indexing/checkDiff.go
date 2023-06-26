@@ -24,7 +24,7 @@ type linksItem struct {
 func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 
 	// convert existing ent struct to gofeed struct
-	feedExchanged, err := restorerss.FeedExchange(fl)
+	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(fl)
 	if err != nil {
 		return nil, nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
 	}
@@ -116,7 +116,7 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 //		links = append(links, list.Link)
 //	}
 //
-//	oldFeeds, err := restorerss.FeedExchange(fl)
+//	oldFeeds, err := restorerss.EntFollowListExchangeToGofeed(fl)
 //	if err != nil {
 //		return nil, nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
 //	}

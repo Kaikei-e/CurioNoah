@@ -37,16 +37,16 @@ func TestFeedExchange(t *testing.T) {
 	}
 
 	// Call the function being tested
-	feedList, err := FeedExchange(feedsEnt)
+	feedList, err := EntFollowListExchangeToGofeed(feedsEnt)
 
 	// Perform assertions
 	if err != nil {
-		t.Errorf("FeedExchange returned an error: %v", err)
+		t.Errorf("EntFollowListExchangeToGofeed returned an error: %v", err)
 	}
 
 	expectedFeedCount := len(feedsEnt)
 	if len(feedList) != expectedFeedCount {
-		t.Errorf("FeedExchange returned %d feeds, expected %d", len(feedList), expectedFeedCount)
+		t.Errorf("EntFollowListExchangeToGofeed returned %d feeds, expected %d", len(feedList), expectedFeedCount)
 	}
 
 	// Add more assertions based on your specific requirements

@@ -3,16 +3,17 @@ package restorerss
 import (
 	"github.com/mmcdole/gofeed"
 	"insightstream/ent"
+	"insightstream/models/feeds"
 )
 
-func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
+func EntFollowListExchangeToGofeed(followLists []*ent.FollowList) ([]*gofeed.Feed, error) {
 	// To reduce the amount of data fetched per feed, set a limit on the number of items to fetch per feed
 	const sendAmount = 3
 
 	// TODO will implement unit tests
 
 	var feedList []*gofeed.Feed
-	for _, feed := range feedsEnt {
+	for _, feed := range followLists {
 
 		var items []*gofeed.Item
 		var authors []*gofeed.Person
@@ -60,4 +61,25 @@ func FeedExchange(feedsEnt []*ent.FollowList) ([]*gofeed.Feed, error) {
 	}
 
 	return feedList, nil
+}
+
+func ExchangeEntFeedsToGofeeds(feedsEnt []*ent.Feeds) ([]feeds.EachFeed, error) {
+	var convertedFeeds []feeds.EachFeed
+
+	for _, feed := range feedsEnt {
+		convertedFeeds = append(convertedFeeds, feeds.EachFeed{
+			Id:          feed.ID,
+			SiteURL:     feed.SiteURL,
+			Title:       feed.Title,
+			Description: feed.Description,
+			FeedURL:     feed.FeedURL,
+			Language:    feed.Language,
+			DtCreated:   feed.DtCreated,
+			DtUpdated:   feed.DtUpdated,
+			Favorites:   0,
+		})
+	}
+
+	return convertedFeeds, nil
+
 }

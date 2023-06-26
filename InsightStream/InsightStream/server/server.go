@@ -83,7 +83,7 @@ func Server(cl *ent.Client) {
 					return c.JSON(200, emptyRes)
 				}
 
-				feeds, err := restorerss.FeedExchange(feedEnt)
+				feeds, err := restorerss.EntFollowListExchangeToGofeed(feedEnt)
 				if err != nil {
 					e.Logger.Errorf("error: %v. maybe sever is down", err)
 					// TODO FIX: return error
@@ -129,6 +129,19 @@ func Server(cl *ent.Client) {
 		registerFeed.Use()
 		{
 			register.RegisterHandler(registerFeed, cl)
+		}
+
+		infiniteScroll := apiV1.Group("/infinite-scroll")
+		infiniteScroll.Use()
+		{
+			err := infiniteScroll.GET("/stored-all", func(c echo.Context) error {
+				err := adaptor.InfiniteFetching(c, cl)
+				return err
+			})
+			if err != nil {
+				e.Logger.Errorf("failed to fetch feeds. error: %v.", err)
+
+			}
 		}
 	}
 
