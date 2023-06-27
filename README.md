@@ -98,16 +98,6 @@ DATABASE_URL="mysql://user1:testthisisatesttestestest@localhost:3306/curio_noah"
 docker compose up -d
 ```
 
-<br/>
-
-### Next, enter the InsightStream container and execute the following command
-
-```
-cd /usr/src/app
-go generate ./ent
-go run main.go
-```
-
 
 <br/>
 
