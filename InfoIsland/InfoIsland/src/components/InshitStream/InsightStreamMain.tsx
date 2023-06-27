@@ -13,6 +13,7 @@ import {
 import React from "react";
 import AddFeed from "./AddFeed";
 import StreamLine from "./InsightStream/StreamLine";
+import InfiniteFeeds from "./InsightStream/InfiniteFeeds";
 
 const InsightStreamMain = () => {
   return (
@@ -21,7 +22,6 @@ const InsightStreamMain = () => {
       w={"100vw"}
       minH={"100%"}
       minW={"100%"}
-      overflowX={"hidden"}
       flexDirection={"row"}
       fontFamily="Jost"
     >
@@ -112,9 +112,27 @@ const InsightStreamMain = () => {
           rounded={"xl"}
           p={"2%"}
         >
-          {/*<StreamLine/>*/}
-          <Flex>
-            <p>StreamLine Just text</p>
+          <Flex
+            width={"100%"}
+            height={"100%"}
+            overflowY={"scroll"}
+            sx={{
+              "&::-webkit-scrollbar": {
+                width: "10px",
+              },
+              "&::-webkit-scrollbar-track": {
+                background: "#f1f1f1",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                background: "#888",
+                borderRadius: "5px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                background: "#555",
+              },
+            }}
+          >
+            <InfiniteFeeds />
           </Flex>
         </Flex>
         <Flex

@@ -1,6 +1,6 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import { CircularProgress } from "@chakra-ui/react";
+import { CircularProgress, Flex } from "@chakra-ui/react";
 import { EachFeed, Feeds } from "../../../lib/models/eachFeed";
 
 type Props = {};
@@ -15,7 +15,7 @@ const InfiniteFeeds: React.FC<Props> = () => {
   const fetchFeeds = async (page: number): Promise<Feeds | null> => {
     try {
       const response = await fetch(
-        `${apiURL}/fetch-feed/stored-all?page=${page}`,
+        `${apiURL}/infinite-scroll/stored-all?page=${page}`,
         {
           method: "GET",
           headers: {
@@ -55,19 +55,26 @@ const InfiniteFeeds: React.FC<Props> = () => {
   const loader = <CircularProgress isIndeterminate color="green.300" />;
 
   return (
-    <div>
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={loadMore}
-        hasMore={hasMoreItems}
-        loader={loader}
-      >
+    <InfiniteScroll
+      pageStart={0}
+      loadMore={loadMore}
+      hasMore={hasMoreItems}
+      loader={loader}
+      useWindow={false}
+    >
+      <Flex flexDirection={"column"}>
         {items.map((item, index) => (
           <div key={index}>
-            {/* <FeedItem feed={item} /> */}
+            <h3>
+              <a href={item.feed_url} rel={"noopener"} target={"_blank"}>
+                {item.title}
+              </a>
+            </h3>
           </div>
         ))}
-      </InfiniteScroll>
-    </div>
+      </Flex>
+    </InfiniteScroll>
   );
 };
+
+export default InfiniteFeeds;
