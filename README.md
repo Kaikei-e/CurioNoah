@@ -56,6 +56,13 @@ MYSQL_ADDR="192.168.100.10:3306"
 NET_TYPE="tcp"
 ```
 
+<br/>
+
+/FeedHarmony/feed_harmony/.env
+
+```
+DATABASE_URL="mysql://user1:testthisisatesttestestest@localhost:3306/curio_noah"
+```
 
 <br/>
 
