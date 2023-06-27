@@ -15,6 +15,23 @@ CurioNoah is composed of several applications that are based on RSS feeds. Some 
 - FeedFlare: This will be an RSS feed search aid, and will focus on discovering new RSS feeds.
 - SlateFlex: This is a desire, but it is envisioned as a native application, and we would like to make it note-taking capable. I have absolutely no experience in native app development, so this is the lowest priority.
 
+<br/>
+
+## Activation and termination.
+
+After you've completed the following steps, you can launch the program by running ***activate.sh***, and terminate the Rust program running on port 5100 by using ***terminate_all.sh***. Please note: Before proceeding, make sure to first execute the command 
+```sh
+docker compose up -d.
+```
+and then you should add the permission 
+
+```bash
+sudo chmod +x EACH_FILE
+```
+
+to both shell files.
+
+<br/>
 
 ***Cloning and building the environment from scratch is too much work, so it will be improved.***
 
