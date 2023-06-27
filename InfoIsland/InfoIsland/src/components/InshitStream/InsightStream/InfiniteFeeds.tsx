@@ -1,6 +1,6 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import { CircularProgress, Flex } from "@chakra-ui/react";
+import {Box, CircularProgress, Flex, Link, Text} from "@chakra-ui/react";
 import { EachFeed, Feeds } from "../../../lib/models/eachFeed";
 
 type Props = {};
@@ -64,13 +64,29 @@ const InfiniteFeeds: React.FC<Props> = () => {
     >
       <Flex flexDirection={"column"}>
         {items.map((item, index) => (
-          <div key={index}>
-            <h3>
-              <a href={item.feed_url} rel={"noopener"} target={"_blank"}>
+            <Box
+                key={index}
+                p={5}
+                my={2}
+                bgColor={"teal.50"}
+                boxShadow="md"
+                borderWidth="1px"
+                borderRadius="lg"
+                overflow="hidden"
+                _hover={{
+                  boxShadow: "xl",
+                }}
+            >
+              <Link
+                  href={item.feed_url}
+                  isExternal
+                  fontSize="lg"
+                  fontWeight="bold"
+              >
                 {item.title}
-              </a>
-            </h3>
-          </div>
+              </Link>
+              <Text mt={2}>{item.description}</Text>
+            </Box>
         ))}
       </Flex>
     </InfiniteScroll>
@@ -78,3 +94,9 @@ const InfiniteFeeds: React.FC<Props> = () => {
 };
 
 export default InfiniteFeeds;
+
+const eachFeedStyle = {
+  borderBottom: {
+
+  }
+}

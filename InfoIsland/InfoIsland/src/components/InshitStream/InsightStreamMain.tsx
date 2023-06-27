@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import AddFeed from "./AddFeed";
-import StreamLine from "./InsightStream/StreamLine";
 import InfiniteFeeds from "./InsightStream/InfiniteFeeds";
 
 const InsightStreamMain = () => {
