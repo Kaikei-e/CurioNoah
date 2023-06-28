@@ -24,12 +24,12 @@ After you've completed the following steps, you can launch the program by runnin
 docker compose up -d.
 ```
 and then you should add the permission 
+to both shell files.
 
 ```bash
 sudo chmod +x EACH_FILE
 ```
 
-to both shell files.
 
 <br/>
 
