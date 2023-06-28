@@ -4,13 +4,16 @@
 INSIGHIT_STREAM_CONTAINER_NAME=curionoah-insight_stream-1
 INFO_ISLAND_CONTAINER_NAME=curionoah-info_island-1
 
+# get the current directory
+CURRENT_DIR=$(pwd)
 
 # terminate Insight Stream
-docker exec -d $INSIGHIT_STREAM_CONTAINER_NAME /bin/bash -c "kill $(cat /usr/src/app/pidfile.txt)" &&
+docker restart $INSIGHIT_STREAM_CONTAINER_NAME &&
+echo "container curionoah-insight_stream-1 is terminated" &&
 
 # terminate Info Island
-docker exec -d $INFO_ISLAND_CONTAINER_NAME /bin/bash -c "kill $(cat /usr/src/app/vite_pid.txt)" &&
-
+docker restart $INFO_ISLAND_CONTAINER_NAME &&
+echo "container curionoah-info_island-1 is terminated" &&
 
 # terminate FeedHarmony
 kill $(lsof -t -i:5100) &&
