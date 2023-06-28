@@ -17,11 +17,11 @@ CurioNoah is composed of several applications that are based on RSS feeds. Some 
 
 <br/>
 
-## Activation and termination.
+## Activation and termination. This is work around for development.
 
 After you've completed the following steps, you can launch the program by running ***activate.sh***, and terminate the Rust program running on port 5100 by using ***terminate_all.sh***. Please note: Before proceeding, make sure to first execute the command 
 ```sh
-docker compose up -d.
+docker compose up -d
 ```
 and then you should add the permission 
 to both shell files.
