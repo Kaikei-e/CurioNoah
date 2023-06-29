@@ -1,4 +1,9 @@
-export type Feed = {
+export type FollowingSiteFeedsList = {
+  feeds: FollowingSiteFeeds[];
+  hadExceeded: boolean;
+};
+
+export type FollowingSiteFeeds = {
   title: string;
   link: string;
   feedLink: string;

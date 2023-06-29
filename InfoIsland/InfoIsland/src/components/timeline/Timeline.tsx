@@ -1,14 +1,34 @@
-import { Alert, AlertIcon, Button, Flex, Link, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  Button,
+  CircularProgress,
+  Flex,
+  Link,
+  Text,
+} from "@chakra-ui/react";
 import React from "react";
-import { Feed } from "../../lib/models/feedModel";
+import { FollowingSiteFeeds } from "../../lib/models/feedModel";
 import EachFeed from "./eachFeed";
+import InfiniteScroll from "react-infinite-scroller";
+import { Simulate } from "react-dom/test-utils";
 
-function Timeline(props: {
-  data: Feed[];
+type Props = {
+  data: FollowingSiteFeeds[];
   isLoading: boolean;
-  fetchMoreFeeds: () => void;
-  error: Error | undefined;
-}) {
+  loadMore: (page: number) => Promise<void>;
+  hadExceeded: boolean;
+  loader: React.ReactNode;
+};
+
+const Timeline: React.FC<Props> = ({
+  data,
+  isLoading,
+  loadMore,
+  hadExceeded,
+}) => {
+  const loader = <CircularProgress isIndeterminate color="green.300" />;
+
   return (
     <Flex flexDirection={"column"} h={"100%"} w={"100%"} fontFamily="Jost">
       <Flex p={"2%"}>
@@ -29,32 +49,48 @@ function Timeline(props: {
       </Flex>
       <Flex
         flexDirection={"column"}
-        h={"90%"}
+        h={"85%"}
         w={"100%"}
         overflowY={"scroll"}
         borderY={"2px"}
+        sx={{
+          "&::-webkit-scrollbar": {
+            width: "10px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#f1f1f1",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#888",
+            borderRadius: "5px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555",
+          },
+        }}
       >
-        {props.data.map((feed: Feed, index: number) => {
-          return <EachFeed feed={feed} index={index} />;
-        })}
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={loadMore}
+          hasMore={hadExceeded}
+          loader={loader}
+          useWindow={false}
+        >
+          {data.map((feed: FollowingSiteFeeds, index: number) => {
+            return <EachFeed feed={feed} index={index} />;
+          })}
+        </InfiniteScroll>
       </Flex>
-      {props.error && (
+      {!hadExceeded && (
         <Alert status="error">
           <AlertIcon />
-          {props.error.message}
+          {hadExceeded
+            ? "Scroll down to load more feeds"
+            : "No more feeds to load"}
         </Alert>
       )}
-      <Flex h={"5%"} w={"100%"} justifyContent={"center"} alignItems={"center"}>
-        <Button
-          onClick={props.fetchMoreFeeds}
-          isLoading={props.isLoading}
-          disabled={props.isLoading}
-        >
-          Load more
-        </Button>
-      </Flex>
     </Flex>
   );
-}
+};
 
 export default Timeline;

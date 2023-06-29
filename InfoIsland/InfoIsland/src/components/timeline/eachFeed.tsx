@@ -1,10 +1,10 @@
 import { Container, Flex, Link, Text } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { Feed, Item } from "../../lib/models/feedModel";
+import { FollowingSiteFeeds, Item } from "../../lib/models/feedModel";
 import React from "react";
 
 type EachFeedProps = {
-  feed: Feed;
+  feed: FollowingSiteFeeds;
   index: number;
 };
 
