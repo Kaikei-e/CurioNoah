@@ -65,7 +65,6 @@ func Server(cl *ent.Client) {
 					err := c.JSON(500, err)
 					if err != nil {
 						e.Logger.Errorf("error: %v. maybe sever is down", err)
-
 					}
 				}
 
