@@ -72,11 +72,30 @@ func (f *FeedCollectionImpl) CompactFeeds(fds []feeds.EachFeed) ([]feeds.EachFee
 		return a.FeedURL < b.FeedURL
 	})
 
-	slices.Compact(fds)
+	uniqueFeeds, err := removeDuplicateFeeds(fds)
+	if err != nil {
+		return nil, err
+	}
 
-	slices.SortStableFunc(fds, func(a, b feeds.EachFeed) bool {
+	slices.SortStableFunc(uniqueFeeds, func(a, b feeds.EachFeed) bool {
 		return a.DtUpdated.After(b.DtUpdated)
 	})
 
-	return fds, nil
+	return uniqueFeeds, nil
+}
+
+func removeDuplicateFeeds(fds []feeds.EachFeed) ([]feeds.EachFeed, error) {
+	var uniqueFeeds []feeds.EachFeed
+
+	lastFeedURL := ""
+	for _, feed := range fds {
+		// If the current feed has a different FeedURL from the last one,
+		// add it to the unique feeds slice
+		if feed.FeedURL != lastFeedURL {
+			uniqueFeeds = append(uniqueFeeds, feed)
+			lastFeedURL = feed.FeedURL
+		}
+	}
+
+	return uniqueFeeds, nil
 }
