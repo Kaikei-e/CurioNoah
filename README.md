@@ -101,10 +101,9 @@ docker compose up -d
 
 <br/>
 
-## Why am I working on this project?
 
-It is solely to improve my overall development capabilities.
-This includes everything from bit infrastructures teritory such as Docker, DB, backend, and frontend development.
-In addition, this is an ambitious project that aims to reach out to QA and performance tuning. (Yeah, I get it. I'm not a genius, so these things will be very challenging.)
+## What is the motivation behind undertaking this project? 
+
+The primary objective is to enhance my comprehensive development skills encompassing various areas such as Docker, database management, backend and frontend development. Furthermore, this ambitious project strives to encompass quality assurance and performance optimization, acknowledging that these aspects may pose significant challenges even for someone like me who isn't a prodigy.
 
 <br>
