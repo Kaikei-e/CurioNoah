@@ -2,6 +2,7 @@ package dependencyInversion
 
 import (
 	"fmt"
+	"golang.org/x/exp/slices"
 	"insightstream/driver/parser"
 	"insightstream/ent"
 	"insightstream/models/feeds"
@@ -14,6 +15,7 @@ type (
 		FetchAll(cl *ent.Client) error
 		FetchSingle() error
 		FetchInfinite(page int, cl *ent.Client) ([]feeds.EachFeed, bool, error)
+		CompactFeeds([]feeds.EachFeed) ([]feeds.EachFeed, error)
 	}
 
 	FeedCollectionImpl struct {
@@ -42,7 +44,8 @@ func (f *FeedCollectionImpl) FetchInfinite(page int, cl *ent.Client) ([]feeds.Ea
 	for _, fd := range fds {
 		description, err := parser.HTMLToDoc(fd.Description)
 		if err != nil {
-			fmt.Errorf("failed to parse html: %v", err)
+			err := fmt.Errorf("failed to parse html: %v", err)
+			fmt.Println(err)
 			continue
 		}
 
@@ -55,5 +58,25 @@ func (f *FeedCollectionImpl) FetchInfinite(page int, cl *ent.Client) ([]feeds.Ea
 		return nil, false, err
 	}
 
-	return exchangedFeeds, hadExceeded, nil
+	compactedFeeds, err := f.CompactFeeds(exchangedFeeds)
+	if err != nil {
+		return nil, false, err
+	}
+
+	return compactedFeeds, hadExceeded, nil
+}
+
+func (f *FeedCollectionImpl) CompactFeeds(fds []feeds.EachFeed) ([]feeds.EachFeed, error) {
+
+	slices.SortStableFunc(fds, func(a, b feeds.EachFeed) bool {
+		return a.FeedURL < b.FeedURL
+	})
+
+	slices.Compact(fds)
+
+	slices.SortStableFunc(fds, func(a, b feeds.EachFeed) bool {
+		return a.DtUpdated.After(b.DtUpdated)
+	})
+
+	return fds, nil
 }
