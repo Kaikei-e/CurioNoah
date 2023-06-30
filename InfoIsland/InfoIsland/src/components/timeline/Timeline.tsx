@@ -89,6 +89,18 @@ const Timeline: React.FC<Props> = ({
             : "No more feeds to load"}
         </Alert>
       )}
+      {isLoading && (
+        <Text
+          textAlign={"center"}
+          fontSize={{
+            base: "2xl",
+            md: "xl",
+            lg: "2xl",
+          }}
+        >
+          Scroll down to load more feeds
+        </Text>
+      )}
     </Flex>
   );
 };
