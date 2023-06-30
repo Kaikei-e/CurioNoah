@@ -112,9 +112,11 @@ const InsightStreamMain = () => {
           p={"2%"}
         >
           <Flex
-            width={"100%"}
-            height={"100%"}
+            display={"flex"}
+            w={"100%"}
+            h={"100%"}
             overflowY={"scroll"}
+            flexDirection={"column"}
             sx={{
               "&::-webkit-scrollbar": {
                 width: "10px",
