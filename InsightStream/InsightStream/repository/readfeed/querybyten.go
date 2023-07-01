@@ -29,19 +29,14 @@ func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowList, bool, err
 	ctx := context.Background()
 
 	const limit = 20
-	var limitAmount int
-	if queryParam > 1 {
-		limitAmount = queryParam * 20
-	} else {
-		limitAmount = limit
-	}
+	offset := limit * (queryParam - 1)
 
 	rowAmount, err := CountFollowList()
 	if err != nil {
 		return nil, false, errors.New(fmt.Sprintf("failed to count the row: %v", err))
 	}
 
-	if rowAmount < limitAmount {
+	if rowAmount < limit {
 		hadExceeded = true
 	} else {
 		hadExceeded = false
@@ -50,19 +45,12 @@ func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowList, bool, err
 	fl, err := cl.FollowList.Query().
 		Order(ent.Desc("dt_updated")).
 		Order(ent.Desc("id")).
-		Limit(limitAmount).
-		Offset(limitAmount - 20).
+		Limit(limit).
+		Offset(offset).
 		All(ctx)
 	if err != nil {
 		return nil, false, errors.New(fmt.Sprintf("failed to query by ten: %v", err))
 	}
-
-	//// if limitAmount exceeds the length of fl, set limitAmount to the length of fl
-	//if limitAmount > len(fl) {
-	//	limitAmount = len(fl)
-	//}
-	//
-	//trimmedFL := trimFeedList(fl, limitAmount)
 
 	return fl, hadExceeded, nil
 }
