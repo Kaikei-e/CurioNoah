@@ -34,6 +34,25 @@ var (
 			},
 		},
 	}
+	// FeedAuditTrailsColumns holds the columns for the "feed_audit_trails" table.
+	FeedAuditTrailsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "action", Type: field.TypeString, Default: ""},
+	}
+	// FeedAuditTrailsTable holds the schema information for the "feed_audit_trails" table.
+	FeedAuditTrailsTable = &schema.Table{
+		Name:       "feed_audit_trails",
+		Columns:    FeedAuditTrailsColumns,
+		PrimaryKey: []*schema.Column{FeedAuditTrailsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "feedaudittrail_id",
+				Unique:  true,
+				Columns: []*schema.Column{FeedAuditTrailsColumns[0]},
+			},
+		},
+	}
 	// FeedsColumns holds the columns for the "feeds" table.
 	FeedsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -139,6 +158,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CooccurrenceNetworkPoolsTable,
+		FeedAuditTrailsTable,
 		FeedsTable,
 		FollowListsTable,
 		UsersTable,

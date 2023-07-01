@@ -4,6 +4,7 @@ package ent
 
 import (
 	"insightstream/ent/cooccurrencenetworkpool"
+	"insightstream/ent/feedaudittrail"
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/schema"
@@ -35,6 +36,20 @@ func init() {
 	cooccurrencenetworkpoolDescID := cooccurrencenetworkpoolFields[0].Descriptor()
 	// cooccurrencenetworkpool.DefaultID holds the default value on creation for the id field.
 	cooccurrencenetworkpool.DefaultID = cooccurrencenetworkpoolDescID.Default.(func() uuid.UUID)
+	feedaudittrailFields := schema.FeedAuditTrail{}.Fields()
+	_ = feedaudittrailFields
+	// feedaudittrailDescUpdatedAt is the schema descriptor for updated_at field.
+	feedaudittrailDescUpdatedAt := feedaudittrailFields[1].Descriptor()
+	// feedaudittrail.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	feedaudittrail.DefaultUpdatedAt = feedaudittrailDescUpdatedAt.Default.(func() time.Time)
+	// feedaudittrail.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	feedaudittrail.UpdateDefaultUpdatedAt = feedaudittrailDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// feedaudittrailDescAction is the schema descriptor for action field.
+	feedaudittrailDescAction := feedaudittrailFields[2].Descriptor()
+	// feedaudittrail.DefaultAction holds the default value on creation for the action field.
+	feedaudittrail.DefaultAction = feedaudittrailDescAction.Default.(string)
+	// feedaudittrail.ActionValidator is a validator for the "action" field. It is called by the builders before save.
+	feedaudittrail.ActionValidator = feedaudittrailDescAction.Validators[0].(func(string) error)
 	entfeedsFields := schema.Feeds{}.Fields()
 	_ = entfeedsFields
 	// entfeedsDescSiteURL is the schema descriptor for site_url field.

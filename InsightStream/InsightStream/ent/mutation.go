@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"insightstream/ent/cooccurrencenetworkpool"
+	"insightstream/ent/feedaudittrail"
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/predicate"
@@ -31,6 +32,7 @@ const (
 
 	// Node types.
 	TypeCooccurrenceNetworkPool = "CooccurrenceNetworkPool"
+	TypeFeedAuditTrail          = "FeedAuditTrail"
 	TypeFeeds                   = "Feeds"
 	TypeFollowList              = "FollowList"
 	TypeUsers                   = "Users"
@@ -506,6 +508,392 @@ func (m *CooccurrenceNetworkPoolMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *CooccurrenceNetworkPoolMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown CooccurrenceNetworkPool edge %s", name)
+}
+
+// FeedAuditTrailMutation represents an operation that mutates the FeedAuditTrail nodes in the graph.
+type FeedAuditTrailMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	updated_at    *time.Time
+	action        *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*FeedAuditTrail, error)
+	predicates    []predicate.FeedAuditTrail
+}
+
+var _ ent.Mutation = (*FeedAuditTrailMutation)(nil)
+
+// feedaudittrailOption allows management of the mutation configuration using functional options.
+type feedaudittrailOption func(*FeedAuditTrailMutation)
+
+// newFeedAuditTrailMutation creates new mutation for the FeedAuditTrail entity.
+func newFeedAuditTrailMutation(c config, op Op, opts ...feedaudittrailOption) *FeedAuditTrailMutation {
+	m := &FeedAuditTrailMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFeedAuditTrail,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFeedAuditTrailID sets the ID field of the mutation.
+func withFeedAuditTrailID(id int) feedaudittrailOption {
+	return func(m *FeedAuditTrailMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FeedAuditTrail
+		)
+		m.oldValue = func(ctx context.Context) (*FeedAuditTrail, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FeedAuditTrail.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFeedAuditTrail sets the old FeedAuditTrail of the mutation.
+func withFeedAuditTrail(node *FeedAuditTrail) feedaudittrailOption {
+	return func(m *FeedAuditTrailMutation) {
+		m.oldValue = func(context.Context) (*FeedAuditTrail, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FeedAuditTrailMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FeedAuditTrailMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FeedAuditTrail entities.
+func (m *FeedAuditTrailMutation) SetID(id int) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FeedAuditTrailMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FeedAuditTrailMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FeedAuditTrail.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *FeedAuditTrailMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *FeedAuditTrailMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the FeedAuditTrail entity.
+// If the FeedAuditTrail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedAuditTrailMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *FeedAuditTrailMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetAction sets the "action" field.
+func (m *FeedAuditTrailMutation) SetAction(s string) {
+	m.action = &s
+}
+
+// Action returns the value of the "action" field in the mutation.
+func (m *FeedAuditTrailMutation) Action() (r string, exists bool) {
+	v := m.action
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAction returns the old "action" field's value of the FeedAuditTrail entity.
+// If the FeedAuditTrail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedAuditTrailMutation) OldAction(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAction is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAction requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAction: %w", err)
+	}
+	return oldValue.Action, nil
+}
+
+// ResetAction resets all changes to the "action" field.
+func (m *FeedAuditTrailMutation) ResetAction() {
+	m.action = nil
+}
+
+// Where appends a list predicates to the FeedAuditTrailMutation builder.
+func (m *FeedAuditTrailMutation) Where(ps ...predicate.FeedAuditTrail) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FeedAuditTrailMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FeedAuditTrailMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FeedAuditTrail, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FeedAuditTrailMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FeedAuditTrailMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (FeedAuditTrail).
+func (m *FeedAuditTrailMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FeedAuditTrailMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.updated_at != nil {
+		fields = append(fields, feedaudittrail.FieldUpdatedAt)
+	}
+	if m.action != nil {
+		fields = append(fields, feedaudittrail.FieldAction)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FeedAuditTrailMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case feedaudittrail.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case feedaudittrail.FieldAction:
+		return m.Action()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FeedAuditTrailMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case feedaudittrail.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case feedaudittrail.FieldAction:
+		return m.OldAction(ctx)
+	}
+	return nil, fmt.Errorf("unknown FeedAuditTrail field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedAuditTrailMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case feedaudittrail.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case feedaudittrail.FieldAction:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAction(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FeedAuditTrail field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FeedAuditTrailMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FeedAuditTrailMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedAuditTrailMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown FeedAuditTrail numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FeedAuditTrailMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FeedAuditTrailMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FeedAuditTrailMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown FeedAuditTrail nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FeedAuditTrailMutation) ResetField(name string) error {
+	switch name {
+	case feedaudittrail.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case feedaudittrail.FieldAction:
+		m.ResetAction()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedAuditTrail field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FeedAuditTrailMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FeedAuditTrailMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FeedAuditTrailMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FeedAuditTrailMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FeedAuditTrailMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FeedAuditTrailMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FeedAuditTrailMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown FeedAuditTrail unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FeedAuditTrailMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown FeedAuditTrail edge %s", name)
 }
 
 // FeedsMutation represents an operation that mutates the Feeds nodes in the graph.

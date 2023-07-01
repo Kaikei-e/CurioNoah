@@ -11,6 +11,7 @@ import (
 	"insightstream/ent/migrate"
 
 	"insightstream/ent/cooccurrencenetworkpool"
+	"insightstream/ent/feedaudittrail"
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/users"
@@ -27,6 +28,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// CooccurrenceNetworkPool is the client for interacting with the CooccurrenceNetworkPool builders.
 	CooccurrenceNetworkPool *CooccurrenceNetworkPoolClient
+	// FeedAuditTrail is the client for interacting with the FeedAuditTrail builders.
+	FeedAuditTrail *FeedAuditTrailClient
 	// Feeds is the client for interacting with the Feeds builders.
 	Feeds *FeedsClient
 	// FollowList is the client for interacting with the FollowList builders.
@@ -47,6 +50,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.CooccurrenceNetworkPool = NewCooccurrenceNetworkPoolClient(c.config)
+	c.FeedAuditTrail = NewFeedAuditTrailClient(c.config)
 	c.Feeds = NewFeedsClient(c.config)
 	c.FollowList = NewFollowListClient(c.config)
 	c.Users = NewUsersClient(c.config)
@@ -84,6 +88,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:                     ctx,
 		config:                  cfg,
 		CooccurrenceNetworkPool: NewCooccurrenceNetworkPoolClient(cfg),
+		FeedAuditTrail:          NewFeedAuditTrailClient(cfg),
 		Feeds:                   NewFeedsClient(cfg),
 		FollowList:              NewFollowListClient(cfg),
 		Users:                   NewUsersClient(cfg),
@@ -107,6 +112,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:                     ctx,
 		config:                  cfg,
 		CooccurrenceNetworkPool: NewCooccurrenceNetworkPoolClient(cfg),
+		FeedAuditTrail:          NewFeedAuditTrailClient(cfg),
 		Feeds:                   NewFeedsClient(cfg),
 		FollowList:              NewFollowListClient(cfg),
 		Users:                   NewUsersClient(cfg),
@@ -139,6 +145,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.CooccurrenceNetworkPool.Use(hooks...)
+	c.FeedAuditTrail.Use(hooks...)
 	c.Feeds.Use(hooks...)
 	c.FollowList.Use(hooks...)
 	c.Users.Use(hooks...)
@@ -148,6 +155,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.CooccurrenceNetworkPool.Intercept(interceptors...)
+	c.FeedAuditTrail.Intercept(interceptors...)
 	c.Feeds.Intercept(interceptors...)
 	c.FollowList.Intercept(interceptors...)
 	c.Users.Intercept(interceptors...)
@@ -158,6 +166,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *CooccurrenceNetworkPoolMutation:
 		return c.CooccurrenceNetworkPool.mutate(ctx, m)
+	case *FeedAuditTrailMutation:
+		return c.FeedAuditTrail.mutate(ctx, m)
 	case *FeedsMutation:
 		return c.Feeds.mutate(ctx, m)
 	case *FollowListMutation:
@@ -283,6 +293,123 @@ func (c *CooccurrenceNetworkPoolClient) mutate(ctx context.Context, m *Cooccurre
 		return (&CooccurrenceNetworkPoolDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown CooccurrenceNetworkPool mutation op: %q", m.Op())
+	}
+}
+
+// FeedAuditTrailClient is a client for the FeedAuditTrail schema.
+type FeedAuditTrailClient struct {
+	config
+}
+
+// NewFeedAuditTrailClient returns a client for the FeedAuditTrail from the given config.
+func NewFeedAuditTrailClient(c config) *FeedAuditTrailClient {
+	return &FeedAuditTrailClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `feedaudittrail.Hooks(f(g(h())))`.
+func (c *FeedAuditTrailClient) Use(hooks ...Hook) {
+	c.hooks.FeedAuditTrail = append(c.hooks.FeedAuditTrail, hooks...)
+}
+
+// Use adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `feedaudittrail.Intercept(f(g(h())))`.
+func (c *FeedAuditTrailClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FeedAuditTrail = append(c.inters.FeedAuditTrail, interceptors...)
+}
+
+// Create returns a builder for creating a FeedAuditTrail entity.
+func (c *FeedAuditTrailClient) Create() *FeedAuditTrailCreate {
+	mutation := newFeedAuditTrailMutation(c.config, OpCreate)
+	return &FeedAuditTrailCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FeedAuditTrail entities.
+func (c *FeedAuditTrailClient) CreateBulk(builders ...*FeedAuditTrailCreate) *FeedAuditTrailCreateBulk {
+	return &FeedAuditTrailCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FeedAuditTrail.
+func (c *FeedAuditTrailClient) Update() *FeedAuditTrailUpdate {
+	mutation := newFeedAuditTrailMutation(c.config, OpUpdate)
+	return &FeedAuditTrailUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeedAuditTrailClient) UpdateOne(fat *FeedAuditTrail) *FeedAuditTrailUpdateOne {
+	mutation := newFeedAuditTrailMutation(c.config, OpUpdateOne, withFeedAuditTrail(fat))
+	return &FeedAuditTrailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeedAuditTrailClient) UpdateOneID(id int) *FeedAuditTrailUpdateOne {
+	mutation := newFeedAuditTrailMutation(c.config, OpUpdateOne, withFeedAuditTrailID(id))
+	return &FeedAuditTrailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FeedAuditTrail.
+func (c *FeedAuditTrailClient) Delete() *FeedAuditTrailDelete {
+	mutation := newFeedAuditTrailMutation(c.config, OpDelete)
+	return &FeedAuditTrailDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeedAuditTrailClient) DeleteOne(fat *FeedAuditTrail) *FeedAuditTrailDeleteOne {
+	return c.DeleteOneID(fat.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FeedAuditTrailClient) DeleteOneID(id int) *FeedAuditTrailDeleteOne {
+	builder := c.Delete().Where(feedaudittrail.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeedAuditTrailDeleteOne{builder}
+}
+
+// Query returns a query builder for FeedAuditTrail.
+func (c *FeedAuditTrailClient) Query() *FeedAuditTrailQuery {
+	return &FeedAuditTrailQuery{
+		config: c.config,
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FeedAuditTrail entity by its id.
+func (c *FeedAuditTrailClient) Get(ctx context.Context, id int) (*FeedAuditTrail, error) {
+	return c.Query().Where(feedaudittrail.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeedAuditTrailClient) GetX(ctx context.Context, id int) *FeedAuditTrail {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *FeedAuditTrailClient) Hooks() []Hook {
+	return c.hooks.FeedAuditTrail
+}
+
+// Interceptors returns the client interceptors.
+func (c *FeedAuditTrailClient) Interceptors() []Interceptor {
+	return c.inters.FeedAuditTrail
+}
+
+func (c *FeedAuditTrailClient) mutate(ctx context.Context, m *FeedAuditTrailMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FeedAuditTrailCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FeedAuditTrailUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FeedAuditTrailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FeedAuditTrailDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FeedAuditTrail mutation op: %q", m.Op())
 	}
 }
 

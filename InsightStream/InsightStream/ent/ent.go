@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"insightstream/ent/cooccurrencenetworkpool"
+	"insightstream/ent/feedaudittrail"
 	"reflect"
 
 	"entgo.io/ent"
@@ -43,6 +44,7 @@ type OrderFunc func(*sql.Selector)
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		cooccurrencenetworkpool.Table: cooccurrencenetworkpool.ValidColumn,
+		feedaudittrail.Table:          feedaudittrail.ValidColumn,
 		entfeeds.Table:                entfeeds.ValidColumn,
 		followlist.Table:              followlist.ValidColumn,
 		users.Table:                   users.ValidColumn,

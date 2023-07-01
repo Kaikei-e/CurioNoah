@@ -28,12 +28,14 @@ type config struct {
 type (
 	hooks struct {
 		CooccurrenceNetworkPool []ent.Hook
+		FeedAuditTrail          []ent.Hook
 		Feeds                   []ent.Hook
 		FollowList              []ent.Hook
 		Users                   []ent.Hook
 	}
 	inters struct {
 		CooccurrenceNetworkPool []ent.Interceptor
+		FeedAuditTrail          []ent.Interceptor
 		Feeds                   []ent.Interceptor
 		FollowList              []ent.Interceptor
 		Users                   []ent.Interceptor

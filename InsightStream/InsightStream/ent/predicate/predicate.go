@@ -9,6 +9,9 @@ import (
 // CooccurrenceNetworkPool is the predicate function for cooccurrencenetworkpool builders.
 type CooccurrenceNetworkPool func(*sql.Selector)
 
+// FeedAuditTrail is the predicate function for feedaudittrail builders.
+type FeedAuditTrail func(*sql.Selector)
+
 // Feeds is the predicate function for entfeeds builders.
 type Feeds func(*sql.Selector)
 
