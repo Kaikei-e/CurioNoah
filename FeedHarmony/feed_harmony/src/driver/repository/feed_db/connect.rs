@@ -10,6 +10,7 @@ use sqlx::Error as SqlxError;
 use sqlx::{MySql, Pool, Row};
 use std::fmt::Debug;
 use std::str::FromStr;
+use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone)]
 pub struct FeedRepository {
@@ -81,29 +82,18 @@ impl FeedConnection for FeedRepository {
             "SELECT id, updated_at, action FROM feed_audit_trail ORDER BY updated_at DESC LIMIT 1",
         )
         .fetch_one(&self.pool)
-        .await
-        .map_err(|e| anyhow::anyhow!(e));
+        .await?;
 
-        if let Err(e) = row {
-            println!("Failed to fetch all feeds: {}", e);
-            return Err(SqlxError::RowNotFound);
-        }
 
-        let latest_updated_at = row.get("updated_at");
+        let latest_updated_at : DateTime<Utc>  = row.try_get("updated_at")?;
 
         let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated > ?")
             .bind(latest_updated_at)
             .fetch_all(&self.pool)
-            .await
-            .map_err(|e| anyhow::anyhow!(e));
+            .await?;
 
-        if let Err(e) = maybe_rows {
-            println!("Failed to fetch all feeds: {}", e);
-            return Err(SqlxError::RowNotFound);
-        }
 
         let follow_list = maybe_rows
-            .unwrap()
             .iter()
             .map(|row| FollowList {
                 id: row.get("id"),
