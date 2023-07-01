@@ -12,19 +12,14 @@ func InfiniteScroll(cl *ent.Client, queryParam int) ([]*ent.Feeds, bool, error) 
 	ctx := context.Background()
 
 	const limit = 40
-	var limitAmount int
-	if queryParam > 1 {
-		limitAmount = queryParam * 40
-	} else {
-		limitAmount = limit
-	}
+	offset := limit * (queryParam - 1)
 
 	rowAmount, err := CountFeeds()
 	if err != nil {
 		return nil, false, err
 	}
 
-	if rowAmount < limitAmount {
+	if rowAmount < limit {
 		hadExceeded = true
 	} else {
 		hadExceeded = false
@@ -33,8 +28,8 @@ func InfiniteScroll(cl *ent.Client, queryParam int) ([]*ent.Feeds, bool, error) 
 	feeds, err := cl.Feeds.Query().
 		Order(ent.Desc("dt_updated")).
 		Order(ent.Desc("feed_url")).
-		Limit(limitAmount).
-		Offset(limitAmount - 40).
+		Limit(limit).
+		Offset(offset).
 		All(ctx)
 	if err != nil {
 		return nil, false, fmt.Errorf("failed to query by ten: %v", err)
