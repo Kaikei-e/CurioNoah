@@ -2,13 +2,13 @@ use crate::api_handler::handler::DatabasePool;
 use crate::domain::feed::FollowList;
 use crate::driver::repository::feed_db::connect::{FeedConnection, FeedRepository};
 
-pub async fn fetch_all_follow_list(pool: DatabasePool) -> anyhow::Result<Vec<FollowList>> {
+pub async fn fetch_latest_follow_list(pool: DatabasePool) -> anyhow::Result<Vec<FollowList>> {
     let feed_repository = FeedRepository::new(pool.clone());
 
-    match feed_repository.get_all_follow_list().await {
-        Ok(feeds) => {
+    match feed_repository.get_follow_list_by_time().await {
+        Ok(follow_list) => {
             println!("Fetched all feeds");
-            Ok(feeds)
+            Ok(follow_list)
         }
         Err(e) => {
             println!("Failed to fetch all feeds: {:?}", e);

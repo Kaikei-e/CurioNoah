@@ -29,6 +29,10 @@ pub async fn handler(pool: Pool<MySql>) {
             post(api_handler::v1::parse_and_store_all_feeds::parse_and_store),
         )
         .route(
+            "/api/v1/fetch_latest_follow_list",
+            post(api_handler::v1::parse_and_store_latest_feeds::parse_and_store_latest),
+        )
+        .route(
             "/api/v1/group_and_store_by_url",
             post(api_handler::v1::data_pool::update_word_pool::group_and_store_by_url),
         )

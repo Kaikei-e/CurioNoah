@@ -24,7 +24,8 @@ impl FeedRepository {
 
 #[async_trait]
 pub trait FeedConnection {
-    async fn get_all_feeds(&self) -> Result<Vec<FollowList>, SqlxError>;
+    async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError>;
+    async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError>;
     async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), SqlxError>;
 }
 
@@ -32,7 +33,7 @@ pub trait FeedConnection {
 #[async_trait]
 #[cfg_attr(test, automock)]
 impl FeedConnection for FeedRepository {
-    async fn get_all_feeds(&self) -> Result<Vec<FollowList>, SqlxError> {
+    async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError> {
         let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists")
             .fetch_all(&self.pool)
             .await
@@ -73,6 +74,64 @@ impl FeedConnection for FeedRepository {
             .collect();
 
         Ok(follow_lists)
+    }
+
+    async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError> {
+        let row = sqlx::query(
+            "SELECT id, updated_at, action FROM feed_audit_trail ORDER BY updated_at DESC LIMIT 1",
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| anyhow::anyhow!(e));
+
+        if let Err(e) = row {
+            println!("Failed to fetch all feeds: {}", e);
+            return Err(SqlxError::RowNotFound);
+        }
+
+        let latest_updated_at = row.get("updated_at");
+
+        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated > ?")
+            .bind(latest_updated_at)
+            .fetch_all(&self.pool)
+            .await
+            .map_err(|e| anyhow::anyhow!(e));
+
+        if let Err(e) = maybe_rows {
+            println!("Failed to fetch all feeds: {}", e);
+            return Err(SqlxError::RowNotFound);
+        }
+
+        let follow_list = maybe_rows
+            .unwrap()
+            .iter()
+            .map(|row| FollowList {
+                id: row.get("id"),
+                uuid: uuid::Uuid::from_str(&row.get::<String, _>("uuid")).unwrap(),
+                xml_version: row.get("xml_version"),
+                rss_version: row.get("rss_version"),
+                url: row.get("url"),
+                title: row.get("title"),
+                description: row.get("description"),
+                link: row.get("link"),
+                links: serde_json::from_str(&row.get::<Value, _>("links").to_string()).unwrap(),
+                item_description: serde_json::from_str::<OneFeed>(
+                    &row.get::<Value, _>("item_description").to_string(),
+                )
+                .unwrap(),
+                language: row.get("language"),
+                dt_created: row.get("dt_created"),
+                dt_updated: row.get("dt_updated"),
+                dt_last_inserted: row.get("dt_last_inserted"),
+                feed_category: row.get("feed_category"),
+                is_favorite: row.get("is_favorite"),
+                is_active: row.get("is_active"),
+                is_read: row.get("is_read"),
+                is_updated: row.get("is_updated"),
+            })
+            .collect();
+
+        Ok(follow_list)
     }
 
     async fn insert_all_feeds(&self, feeds: Vec<Feed>) -> Result<(), SqlxError> {
@@ -140,7 +199,7 @@ mod tests {
         let var = dotenvy::var("DATABASE_URL").unwrap();
         let pool = initialize_connection(var).await.unwrap();
         let feed_repository = FeedRepository::new(DatabasePool { pool });
-        let result = feed_repository.get_all_feeds().await;
+        let result = feed_repository.get_all_follow_list().await;
 
         assert!(result.is_ok());
     }
