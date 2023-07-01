@@ -3,6 +3,7 @@
 package migrate
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
@@ -70,6 +71,14 @@ var (
 				Name:    "feeds_id_dt_updated",
 				Unique:  true,
 				Columns: []*schema.Column{FeedsColumns[0], FeedsColumns[7]},
+			},
+			{
+				Name:    "idx_feeds_dt_updated_feed_url",
+				Unique:  false,
+				Columns: []*schema.Column{FeedsColumns[7], FeedsColumns[4]},
+				Annotation: &entsql.IndexAnnotation{
+					Desc: true,
+				},
 			},
 		},
 	}

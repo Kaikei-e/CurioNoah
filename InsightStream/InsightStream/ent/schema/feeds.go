@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/index"
 	"time"
 
@@ -37,6 +38,9 @@ func (Feeds) Indexes() []ent.Index {
 		index.Fields("site_url", "feed_url").Unique(),
 		index.Fields("id", "feed_url").Unique(),
 		index.Fields("id", "dt_updated").Unique(),
+		index.Fields("dt_updated", "feed_url").
+			Annotations(entsql.Desc()).
+			StorageKey("idx_feeds_dt_updated_feed_url"),
 	}
 }
 
