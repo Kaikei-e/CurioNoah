@@ -65,10 +65,15 @@ func (s *StoreManager) Store() error {
 		return errors.New("failed to update feeds")
 	}
 
-	err = PingToSync()
+	//err = PingToSync()
+	//if err != nil {
+	//	log.Errorf("failed to ping to sync: %v", err)
+	//	return err
+	//}
+
+	err = PingToSyncOnlyLatestFeeds()
 	if err != nil {
-		log.Errorf("failed to ping to sync: %v", err)
-		return err
+		log.Errorf("failed to ping to sync only latest feeds: %v", err)
 	}
 
 	return nil
