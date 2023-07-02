@@ -4,7 +4,8 @@ package ent
 
 import (
 	"insightstream/ent/cooccurrencenetworkpool"
-	"insightstream/ent/feedaudittrail"
+	"insightstream/ent/feedaudittrailaction"
+	"insightstream/ent/feedaudittraillog"
 	entfeeds "insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/schema"
@@ -36,20 +37,20 @@ func init() {
 	cooccurrencenetworkpoolDescID := cooccurrencenetworkpoolFields[0].Descriptor()
 	// cooccurrencenetworkpool.DefaultID holds the default value on creation for the id field.
 	cooccurrencenetworkpool.DefaultID = cooccurrencenetworkpoolDescID.Default.(func() uuid.UUID)
-	feedaudittrailFields := schema.FeedAuditTrail{}.Fields()
-	_ = feedaudittrailFields
-	// feedaudittrailDescUpdatedAt is the schema descriptor for updated_at field.
-	feedaudittrailDescUpdatedAt := feedaudittrailFields[1].Descriptor()
-	// feedaudittrail.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	feedaudittrail.DefaultUpdatedAt = feedaudittrailDescUpdatedAt.Default.(func() time.Time)
-	// feedaudittrail.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	feedaudittrail.UpdateDefaultUpdatedAt = feedaudittrailDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// feedaudittrailDescAction is the schema descriptor for action field.
-	feedaudittrailDescAction := feedaudittrailFields[2].Descriptor()
-	// feedaudittrail.DefaultAction holds the default value on creation for the action field.
-	feedaudittrail.DefaultAction = feedaudittrailDescAction.Default.(string)
-	// feedaudittrail.ActionValidator is a validator for the "action" field. It is called by the builders before save.
-	feedaudittrail.ActionValidator = feedaudittrailDescAction.Validators[0].(func(string) error)
+	feedaudittrailactionFields := schema.FeedAuditTrailAction{}.Fields()
+	_ = feedaudittrailactionFields
+	// feedaudittrailactionDescAction is the schema descriptor for action field.
+	feedaudittrailactionDescAction := feedaudittrailactionFields[1].Descriptor()
+	// feedaudittrailaction.ActionValidator is a validator for the "action" field. It is called by the builders before save.
+	feedaudittrailaction.ActionValidator = feedaudittrailactionDescAction.Validators[0].(func(string) error)
+	feedaudittraillogFields := schema.FeedAuditTrailLog{}.Fields()
+	_ = feedaudittraillogFields
+	// feedaudittraillogDescUpdatedAt is the schema descriptor for updated_at field.
+	feedaudittraillogDescUpdatedAt := feedaudittraillogFields[1].Descriptor()
+	// feedaudittraillog.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	feedaudittraillog.DefaultUpdatedAt = feedaudittraillogDescUpdatedAt.Default.(func() time.Time)
+	// feedaudittraillog.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	feedaudittraillog.UpdateDefaultUpdatedAt = feedaudittraillogDescUpdatedAt.UpdateDefault.(func() time.Time)
 	entfeedsFields := schema.Feeds{}.Fields()
 	_ = entfeedsFields
 	// entfeedsDescSiteURL is the schema descriptor for site_url field.

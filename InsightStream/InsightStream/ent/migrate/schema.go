@@ -34,22 +34,41 @@ var (
 			},
 		},
 	}
-	// FeedAuditTrailsColumns holds the columns for the "feed_audit_trails" table.
-	FeedAuditTrailsColumns = []*schema.Column{
+	// FeedAuditTrailActionsColumns holds the columns for the "feed_audit_trail_actions" table.
+	FeedAuditTrailActionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "action", Type: field.TypeString, Unique: true},
+	}
+	// FeedAuditTrailActionsTable holds the schema information for the "feed_audit_trail_actions" table.
+	FeedAuditTrailActionsTable = &schema.Table{
+		Name:       "feed_audit_trail_actions",
+		Columns:    FeedAuditTrailActionsColumns,
+		PrimaryKey: []*schema.Column{FeedAuditTrailActionsColumns[0]},
+	}
+	// FeedAuditTrailLogsColumns holds the columns for the "feed_audit_trail_logs" table.
+	FeedAuditTrailLogsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "action", Type: field.TypeString, Default: ""},
+		{Name: "action_id", Type: field.TypeInt},
 	}
-	// FeedAuditTrailsTable holds the schema information for the "feed_audit_trails" table.
-	FeedAuditTrailsTable = &schema.Table{
-		Name:       "feed_audit_trails",
-		Columns:    FeedAuditTrailsColumns,
-		PrimaryKey: []*schema.Column{FeedAuditTrailsColumns[0]},
+	// FeedAuditTrailLogsTable holds the schema information for the "feed_audit_trail_logs" table.
+	FeedAuditTrailLogsTable = &schema.Table{
+		Name:       "feed_audit_trail_logs",
+		Columns:    FeedAuditTrailLogsColumns,
+		PrimaryKey: []*schema.Column{FeedAuditTrailLogsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "feed_audit_trail_logs_feed_audit_trail_actions_action",
+				Columns:    []*schema.Column{FeedAuditTrailLogsColumns[2]},
+				RefColumns: []*schema.Column{FeedAuditTrailActionsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "feedaudittrail_id",
+				Name:    "feedaudittraillog_id",
 				Unique:  true,
-				Columns: []*schema.Column{FeedAuditTrailsColumns[0]},
+				Columns: []*schema.Column{FeedAuditTrailLogsColumns[0]},
 			},
 		},
 	}
@@ -158,7 +177,8 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CooccurrenceNetworkPoolsTable,
-		FeedAuditTrailsTable,
+		FeedAuditTrailActionsTable,
+		FeedAuditTrailLogsTable,
 		FeedsTable,
 		FollowListsTable,
 		UsersTable,
@@ -166,4 +186,5 @@ var (
 )
 
 func init() {
+	FeedAuditTrailLogsTable.ForeignKeys[0].RefTable = FeedAuditTrailActionsTable
 }

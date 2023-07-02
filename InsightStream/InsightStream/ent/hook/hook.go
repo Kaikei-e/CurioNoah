@@ -20,16 +20,28 @@ func (f CooccurrenceNetworkPoolFunc) Mutate(ctx context.Context, m ent.Mutation)
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CooccurrenceNetworkPoolMutation", m)
 }
 
-// The FeedAuditTrailFunc type is an adapter to allow the use of ordinary
-// function as FeedAuditTrail mutator.
-type FeedAuditTrailFunc func(context.Context, *ent.FeedAuditTrailMutation) (ent.Value, error)
+// The FeedAuditTrailActionFunc type is an adapter to allow the use of ordinary
+// function as FeedAuditTrailAction mutator.
+type FeedAuditTrailActionFunc func(context.Context, *ent.FeedAuditTrailActionMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f FeedAuditTrailFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.FeedAuditTrailMutation); ok {
+func (f FeedAuditTrailActionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FeedAuditTrailActionMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedAuditTrailMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedAuditTrailActionMutation", m)
+}
+
+// The FeedAuditTrailLogFunc type is an adapter to allow the use of ordinary
+// function as FeedAuditTrailLog mutator.
+type FeedAuditTrailLogFunc func(context.Context, *ent.FeedAuditTrailLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FeedAuditTrailLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FeedAuditTrailLogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedAuditTrailLogMutation", m)
 }
 
 // The FeedsFunc type is an adapter to allow the use of ordinary

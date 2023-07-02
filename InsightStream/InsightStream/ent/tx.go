@@ -14,8 +14,10 @@ type Tx struct {
 	config
 	// CooccurrenceNetworkPool is the client for interacting with the CooccurrenceNetworkPool builders.
 	CooccurrenceNetworkPool *CooccurrenceNetworkPoolClient
-	// FeedAuditTrail is the client for interacting with the FeedAuditTrail builders.
-	FeedAuditTrail *FeedAuditTrailClient
+	// FeedAuditTrailAction is the client for interacting with the FeedAuditTrailAction builders.
+	FeedAuditTrailAction *FeedAuditTrailActionClient
+	// FeedAuditTrailLog is the client for interacting with the FeedAuditTrailLog builders.
+	FeedAuditTrailLog *FeedAuditTrailLogClient
 	// Feeds is the client for interacting with the Feeds builders.
 	Feeds *FeedsClient
 	// FollowList is the client for interacting with the FollowList builders.
@@ -154,7 +156,8 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.CooccurrenceNetworkPool = NewCooccurrenceNetworkPoolClient(tx.config)
-	tx.FeedAuditTrail = NewFeedAuditTrailClient(tx.config)
+	tx.FeedAuditTrailAction = NewFeedAuditTrailActionClient(tx.config)
+	tx.FeedAuditTrailLog = NewFeedAuditTrailLogClient(tx.config)
 	tx.Feeds = NewFeedsClient(tx.config)
 	tx.FollowList = NewFollowListClient(tx.config)
 	tx.Users = NewUsersClient(tx.config)
