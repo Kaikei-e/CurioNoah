@@ -6,6 +6,7 @@ use crate::usecase::fetch_all_follow_list::fetch_all_follow_list;
 use crate::usecase::fetch_latest_follow_list::fetch_latest_follow_list;
 use anyhow::{Error, Result};
 use chrono::Utc;
+use crate::domain::audit_log_action::{AuditLog, AuditLogAction};
 
 pub async fn parse_and_store_all_feeds(pool: DatabasePool) -> Result<(), Error> {
     let follow_list = fetch_all_follow_list(pool.clone()).await;
@@ -93,8 +94,13 @@ pub async fn parse_and_store_latest_feeds(pool: DatabasePool) -> Result<(), Erro
         });
     }
 
+    let action = AuditLog{
+        action: AuditLogAction::Upsert,
+        updated_at: Utc::now(),
+    };
+
     let feed_repository = FeedRepository::new(pool.clone());
-    let result = feed_repository.insert_all_feeds(feed_list).await;
+    let result = feed_repository.insert_latest_feeds(feed_list, action).await;
     if let Err(e) = result {
         println!("Failed to insert all feeds: {:?}", e);
         return Err(e.into());

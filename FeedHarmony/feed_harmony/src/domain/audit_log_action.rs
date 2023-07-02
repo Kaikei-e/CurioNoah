@@ -16,7 +16,6 @@ impl AuditLogAction {
     }
 }
 
-
 pub struct AuditLog {
     pub action: AuditLogAction,
     pub updated_at: DateTime<Utc>,
