@@ -164,8 +164,16 @@ impl FeedConnection for FeedRepository {
                     VALUES (?, ?);",)
             .bind(audit_log.updated_at)
             .bind(audit_log.action.convert_to_string()),
-            AuditLogAction::Delete => todo!("Delete action is not implemented yet"),
-            AuditLogAction::Fail => todo!("Fail action is not implemented yet"),
+            AuditLogAction::Delete => sqlx::query(
+                "INSERT INTO feed_audit_trail (updated_at, action)
+                    VALUES (?, ?);",)
+            .bind(audit_log.updated_at)
+            .bind(audit_log.action.convert_to_string()),
+            AuditLogAction::Fail => sqlx::query(
+                "INSERT INTO feed_audit_trail (updated_at, action)
+                    VALUES (?, ?);",)
+            .bind(audit_log.updated_at)
+            .bind(audit_log.action.convert_to_string()),
         };
 
         let _row = row.execute(&mut tx).await?;
