@@ -1,5 +1,5 @@
 use crate::api_handler::handler::DatabasePool;
-use crate::domain::audit_log_action::AuditLogAction;
+use crate::domain::audit_log_action::{AuditLog, AuditLogAction};
 use crate::domain::feed::{FollowList, OneFeed};
 use crate::domain::Feed;
 use anyhow::Result;
@@ -29,10 +29,9 @@ pub trait FeedConnection {
     async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError>;
     async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError>;
     async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), SqlxError>;
-    // async fn insert_action_to_feed_audit_log_table(&self, action: AuditLogAction) -> Result<(), SqlxError>;
+    async fn insert_action_to_feed_audit_log_table(&self, action: AuditLog) -> Result<(), SqlxError>;
 }
 
-// TODO: need to think about using query builder
 #[async_trait]
 #[cfg_attr(test, automock)]
 impl FeedConnection for FeedRepository {
@@ -155,22 +154,25 @@ impl FeedConnection for FeedRepository {
         Ok(())
     }
 
-    // async fn insert_action_to_feed_audit_log_table(&self, action: AuditLogAction) -> Result<(), SqlxError> {
-    //     let mut tx = self.pool.begin().await?;
-    //
-    //     let which_action = match action {
-    //         AuditLogAction::Updated => {
-    //             sqlx::query("INSERT INTO feed_audit_trail_logs (updated_at, action_id) VALUES (?, )")
-    //
-    //         }
-    //
-    //     };
-    //
-    //
-    //     tx.commit().await?;
-    //
-    //     Ok(())
-    // }
+    async fn insert_action_to_feed_audit_log_table(&self, audit_log: AuditLog) -> Result<(), SqlxError> {
+        let mut tx = self.pool.begin().await?;
+
+
+        let row = match audit_log.action {
+            AuditLogAction::Upsert => sqlx::query(
+                "INSERT INTO feed_audit_trail (updated_at, action)
+                    VALUES (?, ?);",)
+            .bind(audit_log.updated_at)
+            .bind(audit_log.action.convert_to_string()),
+            AuditLogAction::Delete => todo!("Delete action is not implemented yet"),
+            AuditLogAction::Fail => todo!("Fail action is not implemented yet"),
+        };
+
+        let _row = row.execute(&mut tx).await?;
+        tx.commit().await?;
+
+        Ok(())
+    }
 }
 
 pub async fn initialize_connection(var: String) -> Result<Pool<MySql>, SqlxError> {
