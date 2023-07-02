@@ -1,8 +1,10 @@
 use crate::api_handler::handler::DatabasePool;
+use crate::domain::audit_log_action::AuditLogAction;
 use crate::domain::feed::{FollowList, OneFeed};
 use crate::domain::Feed;
 use anyhow::Result;
 use axum::async_trait;
+use chrono::{DateTime, Utc};
 use mockall::automock;
 use serde_json::Value;
 use sqlx::mysql::MySqlPoolOptions;
@@ -10,7 +12,6 @@ use sqlx::Error as SqlxError;
 use sqlx::{MySql, Pool, Row};
 use std::fmt::Debug;
 use std::str::FromStr;
-use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone)]
 pub struct FeedRepository {
@@ -28,6 +29,7 @@ pub trait FeedConnection {
     async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError>;
     async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError>;
     async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), SqlxError>;
+    // async fn insert_action_to_feed_audit_log_table(&self, action: AuditLogAction) -> Result<(), SqlxError>;
 }
 
 // TODO: need to think about using query builder
@@ -84,14 +86,12 @@ impl FeedConnection for FeedRepository {
         .fetch_one(&self.pool)
         .await?;
 
-
-        let latest_updated_at : DateTime<Utc>  = row.try_get("updated_at")?;
+        let latest_updated_at: DateTime<Utc> = row.try_get("updated_at")?;
 
         let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated > ?")
             .bind(latest_updated_at)
             .fetch_all(&self.pool)
             .await?;
-
 
         let follow_list = maybe_rows
             .iter()
@@ -154,6 +154,23 @@ impl FeedConnection for FeedRepository {
 
         Ok(())
     }
+
+    // async fn insert_action_to_feed_audit_log_table(&self, action: AuditLogAction) -> Result<(), SqlxError> {
+    //     let mut tx = self.pool.begin().await?;
+    //
+    //     let which_action = match action {
+    //         AuditLogAction::Updated => {
+    //             sqlx::query("INSERT INTO feed_audit_trail_logs (updated_at, action_id) VALUES (?, )")
+    //
+    //         }
+    //
+    //     };
+    //
+    //
+    //     tx.commit().await?;
+    //
+    //     Ok(())
+    // }
 }
 
 pub async fn initialize_connection(var: String) -> Result<Pool<MySql>, SqlxError> {
