@@ -42,28 +42,41 @@ func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowList) error {
 	return nil
 }
 
-func (s *StoreManager) Store() error {
+func (s *StoreManager) Store() (*sync.WaitGroup, error) {
+	var wg sync.WaitGroup
+
 	result, err := s.FetchFeeds()
 	if err != nil {
-		return errors.New("failed to query all feeds")
+		return nil, errors.New("failed to query all feeds")
 	}
 
 	idList, newFeeds, err := CheckDiff(result)
 	if err != nil {
-		return errors.New("failed to check diff")
+		return nil, errors.New("failed to check diff")
 	}
 
 	convertedFeeds := restorerss.ExchangeToEnt(newFeeds)
 	addingList := s.mergeLists(result, convertedFeeds, idList)
 
 	if len(addingList) == 0 {
-		return nil
+		return nil, nil
 	}
 
 	err = s.UpdateFeeds(addingList)
 	if err != nil {
-		return errors.New("failed to update feeds")
+		log.Errorf("failed to update feeds: %v", err)
+		return nil, errors.New("failed to update feeds")
 	}
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err = PingToSyncOnlyLatestFeeds()
+		if err != nil {
+			log.Errorf("failed to ping to sync only latest feeds: %v", err)
+			return
+		}
+	}()
 
 	//err = PingToSync()
 	//if err != nil {
@@ -71,12 +84,7 @@ func (s *StoreManager) Store() error {
 	//	return err
 	//}
 
-	err = PingToSyncOnlyLatestFeeds()
-	if err != nil {
-		log.Errorf("failed to ping to sync only latest feeds: %v", err)
-	}
-
-	return nil
+	return &wg, nil
 }
 
 func (s *StoreManager) mergeLists(result []*ent.FollowList, convertedFeeds []*ent.FollowList, idList []int) []*ent.FollowList {
