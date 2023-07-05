@@ -1,4 +1,5 @@
 use crate::api_handler::handler::DatabasePool;
+use crate::domain::audit_log_action::{AuditLog, AuditLogAction};
 use crate::domain::feed::FeedElement;
 use crate::domain::Feed;
 use crate::driver::repository::feed_db::connect::{FeedConnection, FeedRepository};
@@ -6,7 +7,6 @@ use crate::usecase::fetch_all_follow_list::fetch_all_follow_list;
 use crate::usecase::fetch_latest_follow_list::fetch_latest_follow_list;
 use anyhow::{Error, Result};
 use chrono::Utc;
-use crate::domain::audit_log_action::{AuditLog, AuditLogAction};
 
 pub async fn parse_and_store_all_feeds(pool: DatabasePool) -> Result<(), Error> {
     let follow_list = fetch_all_follow_list(pool.clone()).await;
@@ -57,15 +57,19 @@ pub async fn parse_and_store_all_feeds(pool: DatabasePool) -> Result<(), Error> 
 }
 
 pub async fn parse_and_store_latest_feeds(pool: DatabasePool) -> Result<(), Error> {
-    let follow_list = fetch_latest_follow_list(pool.clone()).await;
-    if let Err(e) = follow_list {
-        println!("Failed to fetch all follow list: {}", e);
-        return Err(e);
-    }
+    let follow_list = match fetch_latest_follow_list(pool.clone()).await {
+        Ok(follow_list) => follow_list,
+        Err(e) => {
+            println!("Failed to fetch all follow list: {}", e);
+            return Err(e);
+        }
+    };
 
+    let parsing_follow_list = follow_list.clone();
+    let target_follow_list = follow_list;
     let mut feed_list = Vec::<Feed>::new();
 
-    for feed in follow_list.unwrap() {
+    for feed in parsing_follow_list {
         feed.item_description.iter().for_each(|item| {
             let feed_element = FeedElement {
                 guid: item.guid.clone(),
@@ -94,7 +98,7 @@ pub async fn parse_and_store_latest_feeds(pool: DatabasePool) -> Result<(), Erro
         });
     }
 
-    let action = AuditLog{
+    let action = AuditLog {
         action: AuditLogAction::Upsert,
         updated_at: Utc::now(),
     };
@@ -105,6 +109,10 @@ pub async fn parse_and_store_latest_feeds(pool: DatabasePool) -> Result<(), Erro
         println!("Failed to insert all feeds: {:?}", e);
         return Err(e.into());
     }
+
+    let _result = feed_repository
+        .update_follow_list_uuid(target_follow_list)
+        .await;
 
     Ok(())
 }

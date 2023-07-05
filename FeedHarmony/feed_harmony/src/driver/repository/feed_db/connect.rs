@@ -4,6 +4,7 @@ use crate::domain::feed::{FollowList, OneFeed};
 use crate::domain::Feed;
 use anyhow::Result;
 use axum::async_trait;
+use chrono::format::Item::Error;
 use chrono::{DateTime, Duration, Utc};
 use mockall::automock;
 use serde_json::Value;
@@ -12,7 +13,6 @@ use sqlx::{Connection, Error as SqlxError};
 use sqlx::{MySql, Pool, Row};
 use std::fmt::Debug;
 use std::str::FromStr;
-use chrono::format::Item::Error;
 
 #[derive(Debug, Clone)]
 pub struct FeedRepository {
@@ -30,11 +30,17 @@ pub trait FeedConnection {
     async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError>;
     async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError>;
     async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), SqlxError>;
-    async fn insert_latest_feeds(&self, feed: Vec<Feed>, audit_log: AuditLog) -> Result<(), SqlxError>;
+    async fn insert_latest_feeds(
+        &self,
+        feed: Vec<Feed>,
+        audit_log: AuditLog,
+    ) -> Result<(), SqlxError>;
     async fn insert_action_to_feed_audit_log_table(
         &self,
         action: AuditLog,
     ) -> Result<(), SqlxError>;
+    async fn update_follow_list_uuid(&self, follow_lists: Vec<FollowList>)
+        -> Result<(), SqlxError>;
 }
 
 #[async_trait]
@@ -88,25 +94,15 @@ impl FeedConnection for FeedRepository {
             "SELECT id, updated_at, action_id FROM feed_audit_trail_logs ORDER BY updated_at DESC LIMIT 1",
         )
             .fetch_optional(&self.pool)
-        .await?;
+            .await?;
 
-        let maybe_rows: Vec<MySqlRow>;
-        let mut latest_updated_at: DateTime<Utc> = Default::default();
+        let latest_updated_at: DateTime<Utc> = if let Some(row) = row {
+            row.get("updated_at")
+        } else {
+            Utc::now() - Duration::days(1)
+        };
 
-        if row.is_none() {
-            let latest_updated_at = Utc::now() - Duration::days(1);;
-
-            maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated > ?")
-                .bind(latest_updated_at)
-                .fetch_all(&self.pool)
-                .await?;
-
-        }else {
-            latest_updated_at = row.unwrap().get("updated_at");
-        }
-
-
-        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated > ?")
+        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated < ?")
             .bind(latest_updated_at)
             .fetch_all(&self.pool)
             .await?;
@@ -173,7 +169,11 @@ impl FeedConnection for FeedRepository {
         Ok(())
     }
 
-    async fn insert_latest_feeds(&self, feeds: Vec<Feed>, audit_log: AuditLog) -> Result<(), SqlxError> {
+    async fn insert_latest_feeds(
+        &self,
+        feeds: Vec<Feed>,
+        audit_log: AuditLog,
+    ) -> Result<(), SqlxError> {
         let action_row = sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
             .bind(AuditLogAction::Upsert.convert_to_string())
             .fetch_one(&self.pool)
@@ -190,18 +190,18 @@ impl FeedConnection for FeedRepository {
             Err(_) => 0,
         };
 
-
         let now = Utc::now();
 
         if count == 0 {
             let mut tx = self.pool.begin().await?;
 
-            let _row =
-                sqlx::query("INSERT INTO feed_audit_trail_logs (updated_at, action_id) VALUES (?, ?)")
-                    .bind(now)
-                    .bind(action_id.clone())
-                    .execute(&mut tx)
-                    .await?;
+            let _row = sqlx::query(
+                "INSERT INTO feed_audit_trail_logs (updated_at, action_id) VALUES (?, ?)",
+            )
+            .bind(now)
+            .bind(action_id.clone())
+            .execute(&mut tx)
+            .await?;
 
             for one_feed in feeds {
                 let upserting_url = one_feed.feed_url.clone();
@@ -226,7 +226,7 @@ impl FeedConnection for FeedRepository {
             }
 
             tx.commit().await?;
-        }else {
+        } else {
             let mut tx = self.pool.begin().await?;
 
             for one_feed in feeds {
@@ -254,13 +254,12 @@ impl FeedConnection for FeedRepository {
             let _row = sqlx::query(
                 "INSERT INTO feed_audit_trail_logs (updated_at, action_id) VALUES (?, ?)",
             )
-                .bind(now)
-                .bind(action_id)
-                .execute(&mut tx)
-                .await?;
+            .bind(now)
+            .bind(action_id)
+            .execute(&mut tx)
+            .await?;
 
             tx.commit().await?;
-
         }
 
         Ok(())
@@ -294,6 +293,26 @@ impl FeedConnection for FeedRepository {
         };
 
         let _row = row.execute(&mut tx).await?;
+        tx.commit().await?;
+
+        Ok(())
+    }
+
+    async fn update_follow_list_uuid(
+        &self,
+        follow_lists: Vec<FollowList>,
+    ) -> Result<(), SqlxError> {
+        let mut tx = self.pool.begin().await?;
+        let now = Utc::now();
+
+        for follow_list in follow_lists {
+            let _row = sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE id = ?")
+                .bind(now)
+                .bind(follow_list.uuid)
+                .execute(&mut tx)
+                .await?;
+        }
+
         tx.commit().await?;
 
         Ok(())
