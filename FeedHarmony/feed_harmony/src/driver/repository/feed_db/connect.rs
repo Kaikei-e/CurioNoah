@@ -46,7 +46,6 @@ pub trait FeedConnection {
 }
 
 #[async_trait]
-#[cfg_attr(test, automock)]
 impl FeedConnection for FeedRepository {
     async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError> {
         let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists")
@@ -104,10 +103,17 @@ impl FeedConnection for FeedRepository {
             Utc::now()
         };
 
-        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated < ?")
-            .bind(latest_updated_at)
-            .fetch_all(&self.pool)
-            .await?;
+        let interval_days = 30;
+
+        let maybe_rows = sqlx::query(
+            "SELECT * FROM \
+        follow_lists WHERE dt_updated BETWEEN DATE_SUB(?, INTERVAL ? DAY) AND ?",
+        )
+        .bind(latest_updated_at)
+        .bind(interval_days)
+        .bind(latest_updated_at)
+        .fetch_all(&self.pool)
+        .await?;
 
         let follow_list = maybe_rows
             .iter()
@@ -201,7 +207,7 @@ impl FeedConnection for FeedRepository {
                 "INSERT INTO feed_audit_trail_logs (updated_at, action_id) VALUES (?, ?)",
             )
             .bind(now)
-            .bind(action_id.clone())
+            .bind(action_id)
             .execute(&mut tx)
             .await?;
 
@@ -308,7 +314,7 @@ impl FeedConnection for FeedRepository {
         let now = Utc::now();
 
         for follow_list in follow_lists {
-            let _row = sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE id = ?")
+            let _row = sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
                 .bind(now)
                 .bind(follow_list.uuid)
                 .execute(&mut tx)
