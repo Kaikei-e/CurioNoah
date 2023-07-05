@@ -99,7 +99,7 @@ impl FeedConnection for FeedRepository {
         let latest_updated_at: DateTime<Utc> = if let Some(row) = row {
             row.get("updated_at")
         } else {
-            Utc::now() - Duration::days(1)
+            Utc::now()
         };
 
         let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists WHERE dt_updated < ?")
