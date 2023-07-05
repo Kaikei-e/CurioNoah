@@ -68,21 +68,25 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 		return nil, errors.New("failed to update feeds")
 	}
 
+	//wg.Add(1)
+	//go func() {
+	//	defer wg.Done()
+	//	err = PingToSyncOnlyLatestFeeds()
+	//	if err != nil {
+	//		log.Errorf("failed to ping to sync only latest feeds: %v", err)
+	//		return
+	//	}
+	//}()
+
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err = PingToSyncOnlyLatestFeeds()
+		err = PingToSync()
 		if err != nil {
-			log.Errorf("failed to ping to sync only latest feeds: %v", err)
+			log.Errorf("failed to ping to sync all feeds: %v", err)
 			return
 		}
 	}()
-
-	//err = PingToSync()
-	//if err != nil {
-	//	log.Errorf("failed to ping to sync: %v", err)
-	//	return err
-	//}
 
 	return &wg, nil
 }
