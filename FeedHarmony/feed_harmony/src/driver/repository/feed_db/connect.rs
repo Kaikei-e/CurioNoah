@@ -4,11 +4,11 @@ use crate::domain::feed::{FollowList, OneFeed};
 use crate::domain::Feed;
 use anyhow::Result;
 use axum::async_trait;
-use chrono::format::Item::Error;
-use chrono::{DateTime, Duration, Utc};
-use mockall::automock;
+
+use chrono::{DateTime, Utc};
+
 use serde_json::Value;
-use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
+use sqlx::mysql::MySqlPoolOptions;
 use sqlx::{Connection, Error as SqlxError};
 use sqlx::{MySql, Pool, Row};
 use std::fmt::Debug;
@@ -39,8 +39,10 @@ pub trait FeedConnection {
         &self,
         action: AuditLog,
     ) -> Result<(), SqlxError>;
-    async fn update_follow_list_using_uuid(&self, follow_lists: Vec<FollowList>)
-                                           -> Result<(), SqlxError>;
+    async fn update_follow_list_using_uuid(
+        &self,
+        follow_lists: Vec<FollowList>,
+    ) -> Result<(), SqlxError>;
 }
 
 #[async_trait]
@@ -172,7 +174,7 @@ impl FeedConnection for FeedRepository {
     async fn insert_latest_feeds(
         &self,
         feeds: Vec<Feed>,
-        audit_log: AuditLog,
+        _audit_log: AuditLog,
     ) -> Result<(), SqlxError> {
         let action_row = sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
             .bind(AuditLogAction::Upsert.convert_to_string())
