@@ -39,7 +39,7 @@ pub trait FeedConnection {
         &self,
         action: AuditLog,
     ) -> Result<(), SqlxError>;
-    async fn update_follow_list_using_uuid(
+    async fn update_follow_list_by_using_uuid(
         &self,
         follow_lists: Vec<FollowList>,
     ) -> Result<(), SqlxError>;
@@ -103,7 +103,7 @@ impl FeedConnection for FeedRepository {
             Utc::now()
         };
 
-        let interval_days = 30;
+        let interval_days = 90;
 
         let maybe_rows = sqlx::query(
             "SELECT * FROM \
@@ -306,7 +306,7 @@ impl FeedConnection for FeedRepository {
         Ok(())
     }
 
-    async fn update_follow_list_using_uuid(
+    async fn update_follow_list_by_using_uuid(
         &self,
         follow_lists: Vec<FollowList>,
     ) -> Result<(), SqlxError> {
