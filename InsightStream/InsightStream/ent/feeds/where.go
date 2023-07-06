@@ -460,6 +460,16 @@ func DtCreatedLTE(v time.Time) predicate.Feeds {
 	return predicate.Feeds(sql.FieldLTE(FieldDtCreated, v))
 }
 
+// DtCreatedIsNil applies the IsNil predicate on the "dt_created" field.
+func DtCreatedIsNil() predicate.Feeds {
+	return predicate.Feeds(sql.FieldIsNull(FieldDtCreated))
+}
+
+// DtCreatedNotNil applies the NotNil predicate on the "dt_created" field.
+func DtCreatedNotNil() predicate.Feeds {
+	return predicate.Feeds(sql.FieldNotNull(FieldDtCreated))
+}
+
 // DtUpdatedEQ applies the EQ predicate on the "dt_updated" field.
 func DtUpdatedEQ(v time.Time) predicate.Feeds {
 	return predicate.Feeds(sql.FieldEQ(FieldDtUpdated, v))
@@ -498,6 +508,16 @@ func DtUpdatedLT(v time.Time) predicate.Feeds {
 // DtUpdatedLTE applies the LTE predicate on the "dt_updated" field.
 func DtUpdatedLTE(v time.Time) predicate.Feeds {
 	return predicate.Feeds(sql.FieldLTE(FieldDtUpdated, v))
+}
+
+// DtUpdatedIsNil applies the IsNil predicate on the "dt_updated" field.
+func DtUpdatedIsNil() predicate.Feeds {
+	return predicate.Feeds(sql.FieldIsNull(FieldDtUpdated))
+}
+
+// DtUpdatedNotNil applies the NotNil predicate on the "dt_updated" field.
+func DtUpdatedNotNil() predicate.Feeds {
+	return predicate.Feeds(sql.FieldNotNull(FieldDtUpdated))
 }
 
 // FavoritesEQ applies the EQ predicate on the "favorites" field.

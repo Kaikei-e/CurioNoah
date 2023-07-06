@@ -620,6 +620,16 @@ func DtCreatedLTE(v time.Time) predicate.FollowList {
 	return predicate.FollowList(sql.FieldLTE(FieldDtCreated, v))
 }
 
+// DtCreatedIsNil applies the IsNil predicate on the "dt_created" field.
+func DtCreatedIsNil() predicate.FollowList {
+	return predicate.FollowList(sql.FieldIsNull(FieldDtCreated))
+}
+
+// DtCreatedNotNil applies the NotNil predicate on the "dt_created" field.
+func DtCreatedNotNil() predicate.FollowList {
+	return predicate.FollowList(sql.FieldNotNull(FieldDtCreated))
+}
+
 // DtUpdatedEQ applies the EQ predicate on the "dt_updated" field.
 func DtUpdatedEQ(v time.Time) predicate.FollowList {
 	return predicate.FollowList(sql.FieldEQ(FieldDtUpdated, v))
@@ -660,6 +670,16 @@ func DtUpdatedLTE(v time.Time) predicate.FollowList {
 	return predicate.FollowList(sql.FieldLTE(FieldDtUpdated, v))
 }
 
+// DtUpdatedIsNil applies the IsNil predicate on the "dt_updated" field.
+func DtUpdatedIsNil() predicate.FollowList {
+	return predicate.FollowList(sql.FieldIsNull(FieldDtUpdated))
+}
+
+// DtUpdatedNotNil applies the NotNil predicate on the "dt_updated" field.
+func DtUpdatedNotNil() predicate.FollowList {
+	return predicate.FollowList(sql.FieldNotNull(FieldDtUpdated))
+}
+
 // DtLastInsertedEQ applies the EQ predicate on the "dt_last_inserted" field.
 func DtLastInsertedEQ(v time.Time) predicate.FollowList {
 	return predicate.FollowList(sql.FieldEQ(FieldDtLastInserted, v))
@@ -698,6 +718,16 @@ func DtLastInsertedLT(v time.Time) predicate.FollowList {
 // DtLastInsertedLTE applies the LTE predicate on the "dt_last_inserted" field.
 func DtLastInsertedLTE(v time.Time) predicate.FollowList {
 	return predicate.FollowList(sql.FieldLTE(FieldDtLastInserted, v))
+}
+
+// DtLastInsertedIsNil applies the IsNil predicate on the "dt_last_inserted" field.
+func DtLastInsertedIsNil() predicate.FollowList {
+	return predicate.FollowList(sql.FieldIsNull(FieldDtLastInserted))
+}
+
+// DtLastInsertedNotNil applies the NotNil predicate on the "dt_last_inserted" field.
+func DtLastInsertedNotNil() predicate.FollowList {
+	return predicate.FollowList(sql.FieldNotNull(FieldDtLastInserted))
 }
 
 // FeedCategoryEQ applies the EQ predicate on the "feed_category" field.

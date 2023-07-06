@@ -70,9 +70,25 @@ func (flc *FollowListCreate) SetURL(s string) *FollowListCreate {
 	return flc
 }
 
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (flc *FollowListCreate) SetNillableURL(s *string) *FollowListCreate {
+	if s != nil {
+		flc.SetURL(*s)
+	}
+	return flc
+}
+
 // SetTitle sets the "title" field.
 func (flc *FollowListCreate) SetTitle(s string) *FollowListCreate {
 	flc.mutation.SetTitle(s)
+	return flc
+}
+
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (flc *FollowListCreate) SetNillableTitle(s *string) *FollowListCreate {
+	if s != nil {
+		flc.SetTitle(*s)
+	}
 	return flc
 }
 
@@ -82,15 +98,39 @@ func (flc *FollowListCreate) SetDescription(s string) *FollowListCreate {
 	return flc
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (flc *FollowListCreate) SetNillableDescription(s *string) *FollowListCreate {
+	if s != nil {
+		flc.SetDescription(*s)
+	}
+	return flc
+}
+
 // SetLink sets the "link" field.
 func (flc *FollowListCreate) SetLink(s string) *FollowListCreate {
 	flc.mutation.SetLink(s)
 	return flc
 }
 
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (flc *FollowListCreate) SetNillableLink(s *string) *FollowListCreate {
+	if s != nil {
+		flc.SetLink(*s)
+	}
+	return flc
+}
+
 // SetLinks sets the "links" field.
 func (flc *FollowListCreate) SetLinks(fl feeds.FeedLink) *FollowListCreate {
 	flc.mutation.SetLinks(fl)
+	return flc
+}
+
+// SetNillableLinks sets the "links" field if the given value is not nil.
+func (flc *FollowListCreate) SetNillableLinks(fl *feeds.FeedLink) *FollowListCreate {
+	if fl != nil {
+		flc.SetLinks(*fl)
+	}
 	return flc
 }
 
@@ -103,6 +143,14 @@ func (flc *FollowListCreate) SetItemDescription(fi []feeds.FeedItem) *FollowList
 // SetLanguage sets the "language" field.
 func (flc *FollowListCreate) SetLanguage(s string) *FollowListCreate {
 	flc.mutation.SetLanguage(s)
+	return flc
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (flc *FollowListCreate) SetNillableLanguage(s *string) *FollowListCreate {
+	if s != nil {
+		flc.SetLanguage(*s)
+	}
 	return flc
 }
 
@@ -265,6 +313,30 @@ func (flc *FollowListCreate) defaults() {
 		v := followlist.DefaultRssVersion
 		flc.mutation.SetRssVersion(v)
 	}
+	if _, ok := flc.mutation.URL(); !ok {
+		v := followlist.DefaultURL
+		flc.mutation.SetURL(v)
+	}
+	if _, ok := flc.mutation.Title(); !ok {
+		v := followlist.DefaultTitle
+		flc.mutation.SetTitle(v)
+	}
+	if _, ok := flc.mutation.Description(); !ok {
+		v := followlist.DefaultDescription
+		flc.mutation.SetDescription(v)
+	}
+	if _, ok := flc.mutation.Link(); !ok {
+		v := followlist.DefaultLink
+		flc.mutation.SetLink(v)
+	}
+	if _, ok := flc.mutation.Links(); !ok {
+		v := followlist.DefaultLinks
+		flc.mutation.SetLinks(v)
+	}
+	if _, ok := flc.mutation.Language(); !ok {
+		v := followlist.DefaultLanguage
+		flc.mutation.SetLanguage(v)
+	}
 	if _, ok := flc.mutation.DtCreated(); !ok {
 		v := followlist.DefaultDtCreated
 		flc.mutation.SetDtCreated(v)
@@ -313,6 +385,11 @@ func (flc *FollowListCreate) check() error {
 	if _, ok := flc.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "FollowList.url"`)}
 	}
+	if v, ok := flc.mutation.URL(); ok {
+		if err := followlist.URLValidator(v); err != nil {
+			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "FollowList.url": %w`, err)}
+		}
+	}
 	if _, ok := flc.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "FollowList.title"`)}
 	}
@@ -331,14 +408,10 @@ func (flc *FollowListCreate) check() error {
 	if _, ok := flc.mutation.Language(); !ok {
 		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "FollowList.language"`)}
 	}
-	if _, ok := flc.mutation.DtCreated(); !ok {
-		return &ValidationError{Name: "dt_created", err: errors.New(`ent: missing required field "FollowList.dt_created"`)}
-	}
-	if _, ok := flc.mutation.DtUpdated(); !ok {
-		return &ValidationError{Name: "dt_updated", err: errors.New(`ent: missing required field "FollowList.dt_updated"`)}
-	}
-	if _, ok := flc.mutation.DtLastInserted(); !ok {
-		return &ValidationError{Name: "dt_last_inserted", err: errors.New(`ent: missing required field "FollowList.dt_last_inserted"`)}
+	if v, ok := flc.mutation.Language(); ok {
+		if err := followlist.LanguageValidator(v); err != nil {
+			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "FollowList.language": %w`, err)}
+		}
 	}
 	if _, ok := flc.mutation.FeedCategory(); !ok {
 		return &ValidationError{Name: "feed_category", err: errors.New(`ent: missing required field "FollowList.feed_category"`)}

@@ -994,9 +994,22 @@ func (m *FeedAuditTrailLogMutation) OldUpdatedAt(ctx context.Context) (v time.Ti
 	return oldValue.UpdatedAt, nil
 }
 
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (m *FeedAuditTrailLogMutation) ClearUpdatedAt() {
+	m.updated_at = nil
+	m.clearedFields[feedaudittraillog.FieldUpdatedAt] = struct{}{}
+}
+
+// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
+func (m *FeedAuditTrailLogMutation) UpdatedAtCleared() bool {
+	_, ok := m.clearedFields[feedaudittraillog.FieldUpdatedAt]
+	return ok
+}
+
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *FeedAuditTrailLogMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+	delete(m.clearedFields, feedaudittraillog.FieldUpdatedAt)
 }
 
 // SetActionID sets the "action" edge to the FeedAuditTrailAction entity by id.
@@ -1142,7 +1155,11 @@ func (m *FeedAuditTrailLogMutation) AddField(name string, value ent.Value) error
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *FeedAuditTrailLogMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(feedaudittraillog.FieldUpdatedAt) {
+		fields = append(fields, feedaudittraillog.FieldUpdatedAt)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1155,6 +1172,11 @@ func (m *FeedAuditTrailLogMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *FeedAuditTrailLogMutation) ClearField(name string) error {
+	switch name {
+	case feedaudittraillog.FieldUpdatedAt:
+		m.ClearUpdatedAt()
+		return nil
+	}
 	return fmt.Errorf("unknown FeedAuditTrailLog nullable field %s", name)
 }
 
@@ -1579,9 +1601,22 @@ func (m *FeedsMutation) OldDtCreated(ctx context.Context) (v time.Time, err erro
 	return oldValue.DtCreated, nil
 }
 
+// ClearDtCreated clears the value of the "dt_created" field.
+func (m *FeedsMutation) ClearDtCreated() {
+	m.dt_created = nil
+	m.clearedFields[entfeeds.FieldDtCreated] = struct{}{}
+}
+
+// DtCreatedCleared returns if the "dt_created" field was cleared in this mutation.
+func (m *FeedsMutation) DtCreatedCleared() bool {
+	_, ok := m.clearedFields[entfeeds.FieldDtCreated]
+	return ok
+}
+
 // ResetDtCreated resets all changes to the "dt_created" field.
 func (m *FeedsMutation) ResetDtCreated() {
 	m.dt_created = nil
+	delete(m.clearedFields, entfeeds.FieldDtCreated)
 }
 
 // SetDtUpdated sets the "dt_updated" field.
@@ -1615,9 +1650,22 @@ func (m *FeedsMutation) OldDtUpdated(ctx context.Context) (v time.Time, err erro
 	return oldValue.DtUpdated, nil
 }
 
+// ClearDtUpdated clears the value of the "dt_updated" field.
+func (m *FeedsMutation) ClearDtUpdated() {
+	m.dt_updated = nil
+	m.clearedFields[entfeeds.FieldDtUpdated] = struct{}{}
+}
+
+// DtUpdatedCleared returns if the "dt_updated" field was cleared in this mutation.
+func (m *FeedsMutation) DtUpdatedCleared() bool {
+	_, ok := m.clearedFields[entfeeds.FieldDtUpdated]
+	return ok
+}
+
 // ResetDtUpdated resets all changes to the "dt_updated" field.
 func (m *FeedsMutation) ResetDtUpdated() {
 	m.dt_updated = nil
+	delete(m.clearedFields, entfeeds.FieldDtUpdated)
 }
 
 // SetFavorites sets the "favorites" field.
@@ -1893,7 +1941,14 @@ func (m *FeedsMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *FeedsMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(entfeeds.FieldDtCreated) {
+		fields = append(fields, entfeeds.FieldDtCreated)
+	}
+	if m.FieldCleared(entfeeds.FieldDtUpdated) {
+		fields = append(fields, entfeeds.FieldDtUpdated)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1906,6 +1961,14 @@ func (m *FeedsMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *FeedsMutation) ClearField(name string) error {
+	switch name {
+	case entfeeds.FieldDtCreated:
+		m.ClearDtCreated()
+		return nil
+	case entfeeds.FieldDtUpdated:
+		m.ClearDtUpdated()
+		return nil
+	}
 	return fmt.Errorf("unknown Feeds nullable field %s", name)
 }
 
@@ -2567,9 +2630,22 @@ func (m *FollowListMutation) OldDtCreated(ctx context.Context) (v time.Time, err
 	return oldValue.DtCreated, nil
 }
 
+// ClearDtCreated clears the value of the "dt_created" field.
+func (m *FollowListMutation) ClearDtCreated() {
+	m.dt_created = nil
+	m.clearedFields[followlist.FieldDtCreated] = struct{}{}
+}
+
+// DtCreatedCleared returns if the "dt_created" field was cleared in this mutation.
+func (m *FollowListMutation) DtCreatedCleared() bool {
+	_, ok := m.clearedFields[followlist.FieldDtCreated]
+	return ok
+}
+
 // ResetDtCreated resets all changes to the "dt_created" field.
 func (m *FollowListMutation) ResetDtCreated() {
 	m.dt_created = nil
+	delete(m.clearedFields, followlist.FieldDtCreated)
 }
 
 // SetDtUpdated sets the "dt_updated" field.
@@ -2603,9 +2679,22 @@ func (m *FollowListMutation) OldDtUpdated(ctx context.Context) (v time.Time, err
 	return oldValue.DtUpdated, nil
 }
 
+// ClearDtUpdated clears the value of the "dt_updated" field.
+func (m *FollowListMutation) ClearDtUpdated() {
+	m.dt_updated = nil
+	m.clearedFields[followlist.FieldDtUpdated] = struct{}{}
+}
+
+// DtUpdatedCleared returns if the "dt_updated" field was cleared in this mutation.
+func (m *FollowListMutation) DtUpdatedCleared() bool {
+	_, ok := m.clearedFields[followlist.FieldDtUpdated]
+	return ok
+}
+
 // ResetDtUpdated resets all changes to the "dt_updated" field.
 func (m *FollowListMutation) ResetDtUpdated() {
 	m.dt_updated = nil
+	delete(m.clearedFields, followlist.FieldDtUpdated)
 }
 
 // SetDtLastInserted sets the "dt_last_inserted" field.
@@ -2639,9 +2728,22 @@ func (m *FollowListMutation) OldDtLastInserted(ctx context.Context) (v time.Time
 	return oldValue.DtLastInserted, nil
 }
 
+// ClearDtLastInserted clears the value of the "dt_last_inserted" field.
+func (m *FollowListMutation) ClearDtLastInserted() {
+	m.dt_last_inserted = nil
+	m.clearedFields[followlist.FieldDtLastInserted] = struct{}{}
+}
+
+// DtLastInsertedCleared returns if the "dt_last_inserted" field was cleared in this mutation.
+func (m *FollowListMutation) DtLastInsertedCleared() bool {
+	_, ok := m.clearedFields[followlist.FieldDtLastInserted]
+	return ok
+}
+
 // ResetDtLastInserted resets all changes to the "dt_last_inserted" field.
 func (m *FollowListMutation) ResetDtLastInserted() {
 	m.dt_last_inserted = nil
+	delete(m.clearedFields, followlist.FieldDtLastInserted)
 }
 
 // SetFeedCategory sets the "feed_category" field.
@@ -3225,7 +3327,17 @@ func (m *FollowListMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *FollowListMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(followlist.FieldDtCreated) {
+		fields = append(fields, followlist.FieldDtCreated)
+	}
+	if m.FieldCleared(followlist.FieldDtUpdated) {
+		fields = append(fields, followlist.FieldDtUpdated)
+	}
+	if m.FieldCleared(followlist.FieldDtLastInserted) {
+		fields = append(fields, followlist.FieldDtLastInserted)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3238,6 +3350,17 @@ func (m *FollowListMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *FollowListMutation) ClearField(name string) error {
+	switch name {
+	case followlist.FieldDtCreated:
+		m.ClearDtCreated()
+		return nil
+	case followlist.FieldDtUpdated:
+		m.ClearDtUpdated()
+		return nil
+	case followlist.FieldDtLastInserted:
+		m.ClearDtLastInserted()
+		return nil
+	}
 	return fmt.Errorf("unknown FollowList nullable field %s", name)
 }
 

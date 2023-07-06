@@ -48,7 +48,7 @@ var (
 	// FeedAuditTrailLogsColumns holds the columns for the "feed_audit_trail_logs" table.
 	FeedAuditTrailLogsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "datetime"}},
 		{Name: "action_id", Type: field.TypeInt},
 	}
 	// FeedAuditTrailLogsTable holds the schema information for the "feed_audit_trail_logs" table.
@@ -80,8 +80,8 @@ var (
 		{Name: "description", Type: field.TypeString, Size: 2147483647, Default: ""},
 		{Name: "feed_url", Type: field.TypeString, Default: ""},
 		{Name: "language", Type: field.TypeString, Default: ""},
-		{Name: "dt_created", Type: field.TypeTime},
-		{Name: "dt_updated", Type: field.TypeTime},
+		{Name: "dt_created", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "datetime"}},
+		{Name: "dt_updated", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "datetime"}},
 		{Name: "favorites", Type: field.TypeInt64, Default: 0},
 	}
 	// FeedsTable holds the schema information for the "feeds" table.
@@ -126,16 +126,16 @@ var (
 		{Name: "uuid", Type: field.TypeUUID},
 		{Name: "xml_version", Type: field.TypeInt8, Default: 1},
 		{Name: "rss_version", Type: field.TypeInt8, Default: 2},
-		{Name: "url", Type: field.TypeString},
-		{Name: "title", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString},
-		{Name: "link", Type: field.TypeString},
+		{Name: "url", Type: field.TypeString, Default: ""},
+		{Name: "title", Type: field.TypeString, Default: ""},
+		{Name: "description", Type: field.TypeString, Default: ""},
+		{Name: "link", Type: field.TypeString, Default: ""},
 		{Name: "links", Type: field.TypeJSON},
 		{Name: "item_description", Type: field.TypeJSON},
-		{Name: "language", Type: field.TypeString},
-		{Name: "dt_created", Type: field.TypeTime},
-		{Name: "dt_updated", Type: field.TypeTime},
-		{Name: "dt_last_inserted", Type: field.TypeTime},
+		{Name: "language", Type: field.TypeString, Default: ""},
+		{Name: "dt_created", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "datetime"}},
+		{Name: "dt_updated", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "datetime"}},
+		{Name: "dt_last_inserted", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "datetime"}},
 		{Name: "feed_category", Type: field.TypeInt, Default: 0},
 		{Name: "is_active", Type: field.TypeBool, Default: true},
 		{Name: "is_favorite", Type: field.TypeBool, Default: false},

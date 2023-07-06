@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/index"
 	"insightstream/models/feeds"
 	"time"
@@ -21,16 +22,28 @@ func (FollowList) Fields() []ent.Field {
 		field.UUID("uuid", uuid.UUID{}).Default(uuid.New),
 		field.Int8("xml_version").Default(1),
 		field.Int8("rss_version").Default(2),
-		field.String("url"),
-		field.String("title"),
-		field.String("description"),
-		field.String("link"),
-		field.JSON("links", feeds.FeedLink{}),
+		field.String("url").Default("").NotEmpty(),
+		field.String("title").Default(""),
+		field.String("description").Default(""),
+		field.String("link").Default(""),
+		field.JSON("links", feeds.FeedLink{}).Default(feeds.FeedLink{Link: []string{"{}"}}),
 		field.JSON("item_description", []feeds.FeedItem{}),
-		field.String("language"),
-		field.Time("dt_created").Default(time.Now()),
-		field.Time("dt_updated").Default(time.Now()),
-		field.Time("dt_last_inserted").Default(time.Now()),
+		field.String("language").Default("").NotEmpty(),
+		field.Time("dt_created").Default(time.Now()).
+			Optional().
+			SchemaType(map[string]string{
+				dialect.MySQL: "datetime",
+			}),
+		field.Time("dt_updated").Default(time.Now()).
+			Optional().
+			SchemaType(map[string]string{
+				dialect.MySQL: "datetime",
+			}),
+		field.Time("dt_last_inserted").Default(time.Now()).
+			Optional().
+			SchemaType(map[string]string{
+				dialect.MySQL: "datetime",
+			}),
 		field.Int("feed_category").Default(0),
 		field.Bool("is_active").Default(true),
 		field.Bool("is_favorite").Default(false),

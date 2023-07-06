@@ -112,6 +112,14 @@ func (fc *FeedsCreate) SetDtUpdated(t time.Time) *FeedsCreate {
 	return fc
 }
 
+// SetNillableDtUpdated sets the "dt_updated" field if the given value is not nil.
+func (fc *FeedsCreate) SetNillableDtUpdated(t *time.Time) *FeedsCreate {
+	if t != nil {
+		fc.SetDtUpdated(*t)
+	}
+	return fc
+}
+
 // SetFavorites sets the "favorites" field.
 func (fc *FeedsCreate) SetFavorites(i int64) *FeedsCreate {
 	fc.mutation.SetFavorites(i)
@@ -250,12 +258,6 @@ func (fc *FeedsCreate) check() error {
 		if err := entfeeds.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Feeds.language": %w`, err)}
 		}
-	}
-	if _, ok := fc.mutation.DtCreated(); !ok {
-		return &ValidationError{Name: "dt_created", err: errors.New(`ent: missing required field "Feeds.dt_created"`)}
-	}
-	if _, ok := fc.mutation.DtUpdated(); !ok {
-		return &ValidationError{Name: "dt_updated", err: errors.New(`ent: missing required field "Feeds.dt_updated"`)}
 	}
 	if _, ok := fc.mutation.Favorites(); !ok {
 		return &ValidationError{Name: "favorites", err: errors.New(`ent: missing required field "Feeds.favorites"`)}

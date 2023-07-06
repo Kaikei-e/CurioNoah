@@ -100,6 +100,16 @@ func UpdatedAtLTE(v time.Time) predicate.FeedAuditTrailLog {
 	return predicate.FeedAuditTrailLog(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
+// UpdatedAtIsNil applies the IsNil predicate on the "updated_at" field.
+func UpdatedAtIsNil() predicate.FeedAuditTrailLog {
+	return predicate.FeedAuditTrailLog(sql.FieldIsNull(FieldUpdatedAt))
+}
+
+// UpdatedAtNotNil applies the NotNil predicate on the "updated_at" field.
+func UpdatedAtNotNil() predicate.FeedAuditTrailLog {
+	return predicate.FeedAuditTrailLog(sql.FieldNotNull(FieldUpdatedAt))
+}
+
 // HasAction applies the HasEdge predicate on the "action" edge.
 func HasAction() predicate.FeedAuditTrailLog {
 	return predicate.FeedAuditTrailLog(func(s *sql.Selector) {

@@ -105,6 +105,12 @@ func (fu *FeedsUpdate) SetDtUpdated(t time.Time) *FeedsUpdate {
 	return fu
 }
 
+// ClearDtUpdated clears the value of the "dt_updated" field.
+func (fu *FeedsUpdate) ClearDtUpdated() *FeedsUpdate {
+	fu.mutation.ClearDtUpdated()
+	return fu
+}
+
 // SetFavorites sets the "favorites" field.
 func (fu *FeedsUpdate) SetFavorites(i int64) *FeedsUpdate {
 	fu.mutation.ResetFavorites()
@@ -161,7 +167,7 @@ func (fu *FeedsUpdate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fu *FeedsUpdate) defaults() {
-	if _, ok := fu.mutation.DtUpdated(); !ok {
+	if _, ok := fu.mutation.DtUpdated(); !ok && !fu.mutation.DtUpdatedCleared() {
 		v := entfeeds.UpdateDefaultDtUpdated()
 		fu.mutation.SetDtUpdated(v)
 	}
@@ -233,8 +239,14 @@ func (fu *FeedsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fu.mutation.Language(); ok {
 		_spec.SetField(entfeeds.FieldLanguage, field.TypeString, value)
 	}
+	if fu.mutation.DtCreatedCleared() {
+		_spec.ClearField(entfeeds.FieldDtCreated, field.TypeTime)
+	}
 	if value, ok := fu.mutation.DtUpdated(); ok {
 		_spec.SetField(entfeeds.FieldDtUpdated, field.TypeTime, value)
+	}
+	if fu.mutation.DtUpdatedCleared() {
+		_spec.ClearField(entfeeds.FieldDtUpdated, field.TypeTime)
 	}
 	if value, ok := fu.mutation.Favorites(); ok {
 		_spec.SetField(entfeeds.FieldFavorites, field.TypeInt64, value)
@@ -338,6 +350,12 @@ func (fuo *FeedsUpdateOne) SetDtUpdated(t time.Time) *FeedsUpdateOne {
 	return fuo
 }
 
+// ClearDtUpdated clears the value of the "dt_updated" field.
+func (fuo *FeedsUpdateOne) ClearDtUpdated() *FeedsUpdateOne {
+	fuo.mutation.ClearDtUpdated()
+	return fuo
+}
+
 // SetFavorites sets the "favorites" field.
 func (fuo *FeedsUpdateOne) SetFavorites(i int64) *FeedsUpdateOne {
 	fuo.mutation.ResetFavorites()
@@ -401,7 +419,7 @@ func (fuo *FeedsUpdateOne) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fuo *FeedsUpdateOne) defaults() {
-	if _, ok := fuo.mutation.DtUpdated(); !ok {
+	if _, ok := fuo.mutation.DtUpdated(); !ok && !fuo.mutation.DtUpdatedCleared() {
 		v := entfeeds.UpdateDefaultDtUpdated()
 		fuo.mutation.SetDtUpdated(v)
 	}
@@ -490,8 +508,14 @@ func (fuo *FeedsUpdateOne) sqlSave(ctx context.Context) (_node *Feeds, err error
 	if value, ok := fuo.mutation.Language(); ok {
 		_spec.SetField(entfeeds.FieldLanguage, field.TypeString, value)
 	}
+	if fuo.mutation.DtCreatedCleared() {
+		_spec.ClearField(entfeeds.FieldDtCreated, field.TypeTime)
+	}
 	if value, ok := fuo.mutation.DtUpdated(); ok {
 		_spec.SetField(entfeeds.FieldDtUpdated, field.TypeTime, value)
+	}
+	if fuo.mutation.DtUpdatedCleared() {
+		_spec.ClearField(entfeeds.FieldDtUpdated, field.TypeTime)
 	}
 	if value, ok := fuo.mutation.Favorites(); ok {
 		_spec.SetField(entfeeds.FieldFavorites, field.TypeInt64, value)

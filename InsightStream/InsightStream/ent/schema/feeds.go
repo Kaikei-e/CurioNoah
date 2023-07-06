@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/index"
 	"time"
@@ -24,8 +25,16 @@ func (Feeds) Fields() []ent.Field {
 		field.Text("description").Default("").NotEmpty(),
 		field.String("feed_url").Default("").NotEmpty(),
 		field.String("language").Default("").NotEmpty(),
-		field.Time("dt_created").Immutable().Default(time.Now),
-		field.Time("dt_updated").UpdateDefault(time.Now),
+		field.Time("dt_created").Immutable().Default(time.Now).
+			Optional().
+			SchemaType(map[string]string{
+				dialect.MySQL: "datetime",
+			}),
+		field.Time("dt_updated").UpdateDefault(time.Now).
+			Optional().
+			SchemaType(map[string]string{
+				dialect.MySQL: "datetime",
+			}),
 		field.Int64("favorites").Default(0),
 	}
 }

@@ -35,6 +35,12 @@ func (fatlu *FeedAuditTrailLogUpdate) SetUpdatedAt(t time.Time) *FeedAuditTrailL
 	return fatlu
 }
 
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (fatlu *FeedAuditTrailLogUpdate) ClearUpdatedAt() *FeedAuditTrailLogUpdate {
+	fatlu.mutation.ClearUpdatedAt()
+	return fatlu
+}
+
 // SetActionID sets the "action" edge to the FeedAuditTrailAction entity by ID.
 func (fatlu *FeedAuditTrailLogUpdate) SetActionID(id int) *FeedAuditTrailLogUpdate {
 	fatlu.mutation.SetActionID(id)
@@ -87,7 +93,7 @@ func (fatlu *FeedAuditTrailLogUpdate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fatlu *FeedAuditTrailLogUpdate) defaults() {
-	if _, ok := fatlu.mutation.UpdatedAt(); !ok {
+	if _, ok := fatlu.mutation.UpdatedAt(); !ok && !fatlu.mutation.UpdatedAtCleared() {
 		v := feedaudittraillog.UpdateDefaultUpdatedAt()
 		fatlu.mutation.SetUpdatedAt(v)
 	}
@@ -124,6 +130,9 @@ func (fatlu *FeedAuditTrailLogUpdate) sqlSave(ctx context.Context) (n int, err e
 	}
 	if value, ok := fatlu.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedaudittraillog.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if fatlu.mutation.UpdatedAtCleared() {
+		_spec.ClearField(feedaudittraillog.FieldUpdatedAt, field.TypeTime)
 	}
 	if fatlu.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -186,6 +195,12 @@ func (fatluo *FeedAuditTrailLogUpdateOne) SetUpdatedAt(t time.Time) *FeedAuditTr
 	return fatluo
 }
 
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (fatluo *FeedAuditTrailLogUpdateOne) ClearUpdatedAt() *FeedAuditTrailLogUpdateOne {
+	fatluo.mutation.ClearUpdatedAt()
+	return fatluo
+}
+
 // SetActionID sets the "action" edge to the FeedAuditTrailAction entity by ID.
 func (fatluo *FeedAuditTrailLogUpdateOne) SetActionID(id int) *FeedAuditTrailLogUpdateOne {
 	fatluo.mutation.SetActionID(id)
@@ -245,7 +260,7 @@ func (fatluo *FeedAuditTrailLogUpdateOne) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fatluo *FeedAuditTrailLogUpdateOne) defaults() {
-	if _, ok := fatluo.mutation.UpdatedAt(); !ok {
+	if _, ok := fatluo.mutation.UpdatedAt(); !ok && !fatluo.mutation.UpdatedAtCleared() {
 		v := feedaudittraillog.UpdateDefaultUpdatedAt()
 		fatluo.mutation.SetUpdatedAt(v)
 	}
@@ -299,6 +314,9 @@ func (fatluo *FeedAuditTrailLogUpdateOne) sqlSave(ctx context.Context) (_node *F
 	}
 	if value, ok := fatluo.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedaudittraillog.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if fatluo.mutation.UpdatedAtCleared() {
+		_spec.ClearField(feedaudittraillog.FieldUpdatedAt, field.TypeTime)
 	}
 	if fatluo.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{

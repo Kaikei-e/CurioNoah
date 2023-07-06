@@ -10,6 +10,7 @@ import (
 	"insightstream/ent/followlist"
 	"insightstream/ent/schema"
 	"insightstream/ent/users"
+	"insightstream/models/feeds"
 	"time"
 
 	"github.com/google/uuid"
@@ -113,6 +114,34 @@ func init() {
 	followlistDescRssVersion := followlistFields[2].Descriptor()
 	// followlist.DefaultRssVersion holds the default value on creation for the rss_version field.
 	followlist.DefaultRssVersion = followlistDescRssVersion.Default.(int8)
+	// followlistDescURL is the schema descriptor for url field.
+	followlistDescURL := followlistFields[3].Descriptor()
+	// followlist.DefaultURL holds the default value on creation for the url field.
+	followlist.DefaultURL = followlistDescURL.Default.(string)
+	// followlist.URLValidator is a validator for the "url" field. It is called by the builders before save.
+	followlist.URLValidator = followlistDescURL.Validators[0].(func(string) error)
+	// followlistDescTitle is the schema descriptor for title field.
+	followlistDescTitle := followlistFields[4].Descriptor()
+	// followlist.DefaultTitle holds the default value on creation for the title field.
+	followlist.DefaultTitle = followlistDescTitle.Default.(string)
+	// followlistDescDescription is the schema descriptor for description field.
+	followlistDescDescription := followlistFields[5].Descriptor()
+	// followlist.DefaultDescription holds the default value on creation for the description field.
+	followlist.DefaultDescription = followlistDescDescription.Default.(string)
+	// followlistDescLink is the schema descriptor for link field.
+	followlistDescLink := followlistFields[6].Descriptor()
+	// followlist.DefaultLink holds the default value on creation for the link field.
+	followlist.DefaultLink = followlistDescLink.Default.(string)
+	// followlistDescLinks is the schema descriptor for links field.
+	followlistDescLinks := followlistFields[7].Descriptor()
+	// followlist.DefaultLinks holds the default value on creation for the links field.
+	followlist.DefaultLinks = followlistDescLinks.Default.(feeds.FeedLink)
+	// followlistDescLanguage is the schema descriptor for language field.
+	followlistDescLanguage := followlistFields[9].Descriptor()
+	// followlist.DefaultLanguage holds the default value on creation for the language field.
+	followlist.DefaultLanguage = followlistDescLanguage.Default.(string)
+	// followlist.LanguageValidator is a validator for the "language" field. It is called by the builders before save.
+	followlist.LanguageValidator = followlistDescLanguage.Validators[0].(func(string) error)
 	// followlistDescDtCreated is the schema descriptor for dt_created field.
 	followlistDescDtCreated := followlistFields[10].Descriptor()
 	// followlist.DefaultDtCreated holds the default value on creation for the dt_created field.

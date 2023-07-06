@@ -3,6 +3,7 @@
 package followlist
 
 import (
+	"insightstream/models/feeds"
 	"time"
 
 	"github.com/google/uuid"
@@ -93,6 +94,22 @@ var (
 	DefaultXMLVersion int8
 	// DefaultRssVersion holds the default value on creation for the "rss_version" field.
 	DefaultRssVersion int8
+	// DefaultURL holds the default value on creation for the "url" field.
+	DefaultURL string
+	// URLValidator is a validator for the "url" field. It is called by the builders before save.
+	URLValidator func(string) error
+	// DefaultTitle holds the default value on creation for the "title" field.
+	DefaultTitle string
+	// DefaultDescription holds the default value on creation for the "description" field.
+	DefaultDescription string
+	// DefaultLink holds the default value on creation for the "link" field.
+	DefaultLink string
+	// DefaultLinks holds the default value on creation for the "links" field.
+	DefaultLinks feeds.FeedLink
+	// DefaultLanguage holds the default value on creation for the "language" field.
+	DefaultLanguage string
+	// LanguageValidator is a validator for the "language" field. It is called by the builders before save.
+	LanguageValidator func(string) error
 	// DefaultDtCreated holds the default value on creation for the "dt_created" field.
 	DefaultDtCreated time.Time
 	// DefaultDtUpdated holds the default value on creation for the "dt_updated" field.

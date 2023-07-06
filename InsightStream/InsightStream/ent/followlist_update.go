@@ -93,9 +93,25 @@ func (flu *FollowListUpdate) SetURL(s string) *FollowListUpdate {
 	return flu
 }
 
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (flu *FollowListUpdate) SetNillableURL(s *string) *FollowListUpdate {
+	if s != nil {
+		flu.SetURL(*s)
+	}
+	return flu
+}
+
 // SetTitle sets the "title" field.
 func (flu *FollowListUpdate) SetTitle(s string) *FollowListUpdate {
 	flu.mutation.SetTitle(s)
+	return flu
+}
+
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (flu *FollowListUpdate) SetNillableTitle(s *string) *FollowListUpdate {
+	if s != nil {
+		flu.SetTitle(*s)
+	}
 	return flu
 }
 
@@ -105,15 +121,39 @@ func (flu *FollowListUpdate) SetDescription(s string) *FollowListUpdate {
 	return flu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (flu *FollowListUpdate) SetNillableDescription(s *string) *FollowListUpdate {
+	if s != nil {
+		flu.SetDescription(*s)
+	}
+	return flu
+}
+
 // SetLink sets the "link" field.
 func (flu *FollowListUpdate) SetLink(s string) *FollowListUpdate {
 	flu.mutation.SetLink(s)
 	return flu
 }
 
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (flu *FollowListUpdate) SetNillableLink(s *string) *FollowListUpdate {
+	if s != nil {
+		flu.SetLink(*s)
+	}
+	return flu
+}
+
 // SetLinks sets the "links" field.
 func (flu *FollowListUpdate) SetLinks(fl feeds.FeedLink) *FollowListUpdate {
 	flu.mutation.SetLinks(fl)
+	return flu
+}
+
+// SetNillableLinks sets the "links" field if the given value is not nil.
+func (flu *FollowListUpdate) SetNillableLinks(fl *feeds.FeedLink) *FollowListUpdate {
+	if fl != nil {
+		flu.SetLinks(*fl)
+	}
 	return flu
 }
 
@@ -135,6 +175,14 @@ func (flu *FollowListUpdate) SetLanguage(s string) *FollowListUpdate {
 	return flu
 }
 
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (flu *FollowListUpdate) SetNillableLanguage(s *string) *FollowListUpdate {
+	if s != nil {
+		flu.SetLanguage(*s)
+	}
+	return flu
+}
+
 // SetDtCreated sets the "dt_created" field.
 func (flu *FollowListUpdate) SetDtCreated(t time.Time) *FollowListUpdate {
 	flu.mutation.SetDtCreated(t)
@@ -146,6 +194,12 @@ func (flu *FollowListUpdate) SetNillableDtCreated(t *time.Time) *FollowListUpdat
 	if t != nil {
 		flu.SetDtCreated(*t)
 	}
+	return flu
+}
+
+// ClearDtCreated clears the value of the "dt_created" field.
+func (flu *FollowListUpdate) ClearDtCreated() *FollowListUpdate {
+	flu.mutation.ClearDtCreated()
 	return flu
 }
 
@@ -163,6 +217,12 @@ func (flu *FollowListUpdate) SetNillableDtUpdated(t *time.Time) *FollowListUpdat
 	return flu
 }
 
+// ClearDtUpdated clears the value of the "dt_updated" field.
+func (flu *FollowListUpdate) ClearDtUpdated() *FollowListUpdate {
+	flu.mutation.ClearDtUpdated()
+	return flu
+}
+
 // SetDtLastInserted sets the "dt_last_inserted" field.
 func (flu *FollowListUpdate) SetDtLastInserted(t time.Time) *FollowListUpdate {
 	flu.mutation.SetDtLastInserted(t)
@@ -174,6 +234,12 @@ func (flu *FollowListUpdate) SetNillableDtLastInserted(t *time.Time) *FollowList
 	if t != nil {
 		flu.SetDtLastInserted(*t)
 	}
+	return flu
+}
+
+// ClearDtLastInserted clears the value of the "dt_last_inserted" field.
+func (flu *FollowListUpdate) ClearDtLastInserted() *FollowListUpdate {
+	flu.mutation.ClearDtLastInserted()
 	return flu
 }
 
@@ -286,7 +352,25 @@ func (flu *FollowListUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (flu *FollowListUpdate) check() error {
+	if v, ok := flu.mutation.URL(); ok {
+		if err := followlist.URLValidator(v); err != nil {
+			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "FollowList.url": %w`, err)}
+		}
+	}
+	if v, ok := flu.mutation.Language(); ok {
+		if err := followlist.LanguageValidator(v); err != nil {
+			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "FollowList.language": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (flu *FollowListUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := flu.check(); err != nil {
+		return n, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   followlist.Table,
@@ -348,11 +432,20 @@ func (flu *FollowListUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := flu.mutation.DtCreated(); ok {
 		_spec.SetField(followlist.FieldDtCreated, field.TypeTime, value)
 	}
+	if flu.mutation.DtCreatedCleared() {
+		_spec.ClearField(followlist.FieldDtCreated, field.TypeTime)
+	}
 	if value, ok := flu.mutation.DtUpdated(); ok {
 		_spec.SetField(followlist.FieldDtUpdated, field.TypeTime, value)
 	}
+	if flu.mutation.DtUpdatedCleared() {
+		_spec.ClearField(followlist.FieldDtUpdated, field.TypeTime)
+	}
 	if value, ok := flu.mutation.DtLastInserted(); ok {
 		_spec.SetField(followlist.FieldDtLastInserted, field.TypeTime, value)
+	}
+	if flu.mutation.DtLastInsertedCleared() {
+		_spec.ClearField(followlist.FieldDtLastInserted, field.TypeTime)
 	}
 	if value, ok := flu.mutation.FeedCategory(); ok {
 		_spec.SetField(followlist.FieldFeedCategory, field.TypeInt, value)
@@ -454,9 +547,25 @@ func (fluo *FollowListUpdateOne) SetURL(s string) *FollowListUpdateOne {
 	return fluo
 }
 
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (fluo *FollowListUpdateOne) SetNillableURL(s *string) *FollowListUpdateOne {
+	if s != nil {
+		fluo.SetURL(*s)
+	}
+	return fluo
+}
+
 // SetTitle sets the "title" field.
 func (fluo *FollowListUpdateOne) SetTitle(s string) *FollowListUpdateOne {
 	fluo.mutation.SetTitle(s)
+	return fluo
+}
+
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (fluo *FollowListUpdateOne) SetNillableTitle(s *string) *FollowListUpdateOne {
+	if s != nil {
+		fluo.SetTitle(*s)
+	}
 	return fluo
 }
 
@@ -466,15 +575,39 @@ func (fluo *FollowListUpdateOne) SetDescription(s string) *FollowListUpdateOne {
 	return fluo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fluo *FollowListUpdateOne) SetNillableDescription(s *string) *FollowListUpdateOne {
+	if s != nil {
+		fluo.SetDescription(*s)
+	}
+	return fluo
+}
+
 // SetLink sets the "link" field.
 func (fluo *FollowListUpdateOne) SetLink(s string) *FollowListUpdateOne {
 	fluo.mutation.SetLink(s)
 	return fluo
 }
 
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (fluo *FollowListUpdateOne) SetNillableLink(s *string) *FollowListUpdateOne {
+	if s != nil {
+		fluo.SetLink(*s)
+	}
+	return fluo
+}
+
 // SetLinks sets the "links" field.
 func (fluo *FollowListUpdateOne) SetLinks(fl feeds.FeedLink) *FollowListUpdateOne {
 	fluo.mutation.SetLinks(fl)
+	return fluo
+}
+
+// SetNillableLinks sets the "links" field if the given value is not nil.
+func (fluo *FollowListUpdateOne) SetNillableLinks(fl *feeds.FeedLink) *FollowListUpdateOne {
+	if fl != nil {
+		fluo.SetLinks(*fl)
+	}
 	return fluo
 }
 
@@ -496,6 +629,14 @@ func (fluo *FollowListUpdateOne) SetLanguage(s string) *FollowListUpdateOne {
 	return fluo
 }
 
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (fluo *FollowListUpdateOne) SetNillableLanguage(s *string) *FollowListUpdateOne {
+	if s != nil {
+		fluo.SetLanguage(*s)
+	}
+	return fluo
+}
+
 // SetDtCreated sets the "dt_created" field.
 func (fluo *FollowListUpdateOne) SetDtCreated(t time.Time) *FollowListUpdateOne {
 	fluo.mutation.SetDtCreated(t)
@@ -507,6 +648,12 @@ func (fluo *FollowListUpdateOne) SetNillableDtCreated(t *time.Time) *FollowListU
 	if t != nil {
 		fluo.SetDtCreated(*t)
 	}
+	return fluo
+}
+
+// ClearDtCreated clears the value of the "dt_created" field.
+func (fluo *FollowListUpdateOne) ClearDtCreated() *FollowListUpdateOne {
+	fluo.mutation.ClearDtCreated()
 	return fluo
 }
 
@@ -524,6 +671,12 @@ func (fluo *FollowListUpdateOne) SetNillableDtUpdated(t *time.Time) *FollowListU
 	return fluo
 }
 
+// ClearDtUpdated clears the value of the "dt_updated" field.
+func (fluo *FollowListUpdateOne) ClearDtUpdated() *FollowListUpdateOne {
+	fluo.mutation.ClearDtUpdated()
+	return fluo
+}
+
 // SetDtLastInserted sets the "dt_last_inserted" field.
 func (fluo *FollowListUpdateOne) SetDtLastInserted(t time.Time) *FollowListUpdateOne {
 	fluo.mutation.SetDtLastInserted(t)
@@ -535,6 +688,12 @@ func (fluo *FollowListUpdateOne) SetNillableDtLastInserted(t *time.Time) *Follow
 	if t != nil {
 		fluo.SetDtLastInserted(*t)
 	}
+	return fluo
+}
+
+// ClearDtLastInserted clears the value of the "dt_last_inserted" field.
+func (fluo *FollowListUpdateOne) ClearDtLastInserted() *FollowListUpdateOne {
+	fluo.mutation.ClearDtLastInserted()
 	return fluo
 }
 
@@ -654,7 +813,25 @@ func (fluo *FollowListUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (fluo *FollowListUpdateOne) check() error {
+	if v, ok := fluo.mutation.URL(); ok {
+		if err := followlist.URLValidator(v); err != nil {
+			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "FollowList.url": %w`, err)}
+		}
+	}
+	if v, ok := fluo.mutation.Language(); ok {
+		if err := followlist.LanguageValidator(v); err != nil {
+			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "FollowList.language": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (fluo *FollowListUpdateOne) sqlSave(ctx context.Context) (_node *FollowList, err error) {
+	if err := fluo.check(); err != nil {
+		return _node, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   followlist.Table,
@@ -733,11 +910,20 @@ func (fluo *FollowListUpdateOne) sqlSave(ctx context.Context) (_node *FollowList
 	if value, ok := fluo.mutation.DtCreated(); ok {
 		_spec.SetField(followlist.FieldDtCreated, field.TypeTime, value)
 	}
+	if fluo.mutation.DtCreatedCleared() {
+		_spec.ClearField(followlist.FieldDtCreated, field.TypeTime)
+	}
 	if value, ok := fluo.mutation.DtUpdated(); ok {
 		_spec.SetField(followlist.FieldDtUpdated, field.TypeTime, value)
 	}
+	if fluo.mutation.DtUpdatedCleared() {
+		_spec.ClearField(followlist.FieldDtUpdated, field.TypeTime)
+	}
 	if value, ok := fluo.mutation.DtLastInserted(); ok {
 		_spec.SetField(followlist.FieldDtLastInserted, field.TypeTime, value)
+	}
+	if fluo.mutation.DtLastInsertedCleared() {
+		_spec.ClearField(followlist.FieldDtLastInserted, field.TypeTime)
 	}
 	if value, ok := fluo.mutation.FeedCategory(); ok {
 		_spec.SetField(followlist.FieldFeedCategory, field.TypeInt, value)
