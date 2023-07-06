@@ -313,17 +313,22 @@ impl FeedConnection for FeedRepository {
         let mut tx = self.pool.begin().await?;
         let now = Utc::now();
 
+        println!("follow_lists's uuid: {:?}", follow_lists[0].uuid);
+        println!("now: {:?}", now);
+
         for follow_list in follow_lists {
             let _row = sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
-                .bind(now)
+                .bind(now.format("%Y-%m-%d %H:%M:%S").to_string())
                 .bind(follow_list.uuid)
                 .execute(&mut tx)
                 .await?;
         }
 
-        tx.commit().await?;
-
-        Ok(())
+        let result = tx.commit().await;
+        match result {
+            Ok(_) => Ok(()),
+            Err(e) => Err(SqlxError::Database(e.into_database_error().unwrap())),
+        }
     }
 }
 
