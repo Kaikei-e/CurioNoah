@@ -110,9 +110,14 @@ pub async fn parse_and_store_latest_feeds(pool: DatabasePool) -> Result<(), Erro
         return Err(e.into());
     }
 
-    let _result = feed_repository
+    let result = feed_repository
         .update_follow_list_by_using_uuid(target_follow_list)
         .await;
+
+    if let Err(e) = result {
+        println!("Failed to update follow list: {:?}", e);
+        return Err(e.into());
+    }
 
     Ok(())
 }
