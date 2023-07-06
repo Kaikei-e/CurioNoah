@@ -6,6 +6,7 @@ import (
 	"insightstream/domain/groupDataPool"
 	"insightstream/repository"
 	"insightstream/server"
+	"log"
 	"time"
 )
 
@@ -31,11 +32,15 @@ func main() {
 				} else if wg != nil {
 					wg.Wait() // wait for Store() to finish
 
+					log.Println("store finished")
+
 					err = groupDataPool.UpdateGroupDataPool()
 					if err != nil {
 						// TODO will add logger
 						fmt.Println(fmt.Sprintf("failed to update group data pool: %v", err))
 					}
+
+					log.Println("update group data pool finished")
 				}
 			}
 		}
