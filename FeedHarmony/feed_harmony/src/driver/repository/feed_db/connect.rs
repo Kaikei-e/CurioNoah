@@ -149,6 +149,8 @@ impl FeedConnection for FeedRepository {
     async fn insert_all_feeds(&self, feeds: Vec<Feed>) -> Result<(), SqlxError> {
         self.pool.begin().await?;
 
+        let mut result: Result<(), SqlxError> = Ok(());
+
         for one_feed in feeds {
             let upserting_url = one_feed.feed_url.clone();
 
@@ -171,10 +173,14 @@ impl FeedConnection for FeedRepository {
             .execute(&mut tx)
             .await?;
 
-            tx.commit().await?;
+            result = tx.commit().await;
         }
 
-        Ok(())
+        match result {
+            Ok(_) => Ok(()),
+            //TODO error handling
+            Err(e) => Err(SqlxError::Database(e.into_database_error().unwrap())),
+        }
     }
 
     async fn insert_latest_feeds(
@@ -182,10 +188,29 @@ impl FeedConnection for FeedRepository {
         feeds: Vec<Feed>,
         _audit_log: AuditLog,
     ) -> Result<(), SqlxError> {
-        let action_row = sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
+        let maybe_action_row = sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
             .bind(AuditLogAction::Upsert.convert_to_string())
             .fetch_one(&self.pool)
-            .await?;
+            .await;
+
+        let action_row = match maybe_action_row {
+            Ok(row) => row,
+            Err(_) => {
+                let mut tx = self.pool.begin().await?;
+
+                let _row = sqlx::query("INSERT INTO feed_audit_trail_actions (action) VALUES (?)")
+                    .bind(AuditLogAction::Upsert.convert_to_string())
+                    .execute(&mut tx)
+                    .await?;
+
+                tx.commit().await?;
+
+                sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
+                    .bind(AuditLogAction::Upsert.convert_to_string())
+                    .fetch_one(&self.pool)
+                    .await?
+            }
+        };
 
         let action_id = action_row.get::<i64, _>("id");
 
@@ -199,6 +224,8 @@ impl FeedConnection for FeedRepository {
         };
 
         let now = Utc::now();
+
+        let result: Result<(), SqlxError>;
 
         if count == 0 {
             let mut tx = self.pool.begin().await?;
@@ -232,8 +259,7 @@ impl FeedConnection for FeedRepository {
                     .execute(&mut tx)
                     .await?;
             }
-
-            tx.commit().await?;
+            result = tx.commit().await;
         } else {
             let mut tx = self.pool.begin().await?;
 
@@ -266,11 +292,14 @@ impl FeedConnection for FeedRepository {
             .bind(action_id)
             .execute(&mut tx)
             .await?;
-
-            tx.commit().await?;
+            result = tx.commit().await;
         }
 
-        Ok(())
+        match result {
+            Ok(_) => Ok(()),
+            //TODO error handling
+            Err(e) => Err(SqlxError::Database(e.into_database_error().unwrap())),
+        }
     }
 
     async fn insert_action_to_feed_audit_log_table(
@@ -301,9 +330,12 @@ impl FeedConnection for FeedRepository {
         };
 
         let _row = row.execute(&mut tx).await?;
-        tx.commit().await?;
-
-        Ok(())
+        let result = tx.commit().await;
+        match result {
+            Ok(_) => Ok(()),
+            //TODO error handling
+            Err(e) => Err(SqlxError::Database(e.into_database_error().unwrap())),
+        }
     }
 
     async fn update_follow_list_by_using_uuid(
@@ -313,20 +345,26 @@ impl FeedConnection for FeedRepository {
         let mut tx = self.pool.begin().await?;
         let now = Utc::now();
 
-        println!("follow_lists's uuid: {:?}", follow_lists[0].uuid);
         println!("now: {:?}", now);
+
+        let mut row_count = 0;
 
         for follow_list in follow_lists {
             let _row = sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
-                .bind(now.format("%Y-%m-%d %H:%M:%S").to_string())
+                .bind(now)
                 .bind(follow_list.uuid)
                 .execute(&mut tx)
                 .await?;
+
+            row_count += 1;
         }
+
+        println!("row_count: {:?}", row_count);
 
         let result = tx.commit().await;
         match result {
             Ok(_) => Ok(()),
+            //TODO error handling
             Err(e) => Err(SqlxError::Database(e.into_database_error().unwrap())),
         }
     }
