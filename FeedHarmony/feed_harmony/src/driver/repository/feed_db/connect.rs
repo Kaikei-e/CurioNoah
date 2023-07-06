@@ -97,11 +97,14 @@ impl FeedConnection for FeedRepository {
             .fetch_optional(&self.pool)
             .await?;
 
+
         let latest_updated_at: DateTime<Utc> = if let Some(row) = row {
             row.get("updated_at")
         } else {
             Utc::now()
         };
+
+        println!("latest_updated_at: {:?}", latest_updated_at);
 
         let interval_days = 90;
 
@@ -113,9 +116,14 @@ impl FeedConnection for FeedRepository {
         .bind(interval_days)
         .bind(latest_updated_at)
         .fetch_all(&self.pool)
-        .await?;
+        .await;
 
-        let follow_list = maybe_rows
+        if let Err(e) = maybe_rows {
+            println!("Failed to fetch all feeds: {}", e);
+            return Err(SqlxError::RowNotFound);
+        }
+
+        let follow_list: Vec<FollowList> = maybe_rows.unwrap()
             .iter()
             .map(|row| FollowList {
                 id: row.get("id"),
@@ -142,6 +150,8 @@ impl FeedConnection for FeedRepository {
                 is_updated: row.get("is_updated"),
             })
             .collect();
+
+        println!("follow_list_length: {}", follow_list.len());
 
         Ok(follow_list)
     }
