@@ -106,14 +106,12 @@ impl FeedConnection for FeedRepository {
 
         println!("latest_updated_at: {:?}", latest_updated_at);
 
-        let interval_days = 90;
+        // let interval_days = 90;
 
         let maybe_rows = sqlx::query(
             "SELECT * FROM \
-        follow_lists WHERE dt_updated BETWEEN DATE_SUB(?, INTERVAL ? DAY) AND ?",
+        follow_lists WHERE dt_updated < ?",
         )
-        .bind(latest_updated_at)
-        .bind(interval_days)
         .bind(latest_updated_at)
         .fetch_all(&self.pool)
         .await;
@@ -151,7 +149,7 @@ impl FeedConnection for FeedRepository {
             })
             .collect();
 
-        println!("follow_list_length: {}", follow_list.len());
+        println!("follow_list_length: {}", follow_list[0].dt_updated);
 
         Ok(follow_list)
     }
@@ -353,20 +351,33 @@ impl FeedConnection for FeedRepository {
         follow_lists: Vec<FollowList>,
     ) -> Result<(), SqlxError> {
         let mut tx = self.pool.begin().await?;
-        let now = Utc::now();
+        let now = Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string();
 
         println!("now: {:?}", now);
 
         let mut row_count = 0;
 
         for follow_list in follow_lists {
-            let _row = sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
-                .bind(now)
-                .bind(follow_list.uuid)
-                .execute(&mut tx)
-                .await?;
+            println!("follow_list_uuid: {:?}", follow_list.uuid);
 
-            row_count += 1;
+            match sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
+                .bind(now.clone())
+                .bind(follow_list.uuid.to_string())
+                .execute(&mut tx)
+                .await {
+                Ok(res) => {
+                    if res.rows_affected() > 0 {
+                        println!("Update was successful for uuid: {}", follow_list.uuid);
+                    } else {
+                        println!("Update didn't affect any rows for uuid: {}", follow_list.uuid);
+                    }
+                    row_count += res.rows_affected() as usize;
+                },
+                Err(e) => {
+                    println!("Update failed for uuid: {}. Error: {:?}", follow_list.uuid, e);
+                    // Depending on your use case you may want to return here
+                }
+            };
         }
 
         println!("row_count: {:?}", row_count);
@@ -374,7 +385,6 @@ impl FeedConnection for FeedRepository {
         let result = tx.commit().await;
         match result {
             Ok(_) => Ok(()),
-            //TODO error handling
             Err(e) => Err(SqlxError::Database(e.into_database_error().unwrap())),
         }
     }
