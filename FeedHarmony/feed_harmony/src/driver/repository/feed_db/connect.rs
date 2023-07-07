@@ -358,8 +358,6 @@ impl FeedConnection for FeedRepository {
         let mut row_count = 0;
 
         for follow_list in follow_lists {
-            println!("follow_list_uuid: {:?}", follow_list.uuid);
-
             match sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
                 .bind(now.clone())
                 .bind(follow_list.uuid.to_string())
