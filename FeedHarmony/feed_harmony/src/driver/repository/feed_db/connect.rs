@@ -39,6 +39,7 @@ pub trait FeedConnection {
         &self,
         action: AuditLog,
     ) -> Result<(), SqlxError>;
+    async fn update_all_follow_list(&self, follow_lists: Vec<FollowList>) -> Result<(), SqlxError>;
     async fn update_follow_list_by_using_uuid(
         &self,
         follow_lists: Vec<FollowList>,
@@ -97,7 +98,6 @@ impl FeedConnection for FeedRepository {
             .fetch_optional(&self.pool)
             .await?;
 
-
         let latest_updated_at: DateTime<Utc> = if let Some(row) = row {
             row.get("updated_at")
         } else {
@@ -121,7 +121,8 @@ impl FeedConnection for FeedRepository {
             return Err(SqlxError::RowNotFound);
         }
 
-        let follow_list: Vec<FollowList> = maybe_rows.unwrap()
+        let follow_list: Vec<FollowList> = maybe_rows
+            .unwrap()
             .iter()
             .map(|row| FollowList {
                 id: row.get("id"),
@@ -194,10 +195,11 @@ impl FeedConnection for FeedRepository {
         feeds: Vec<Feed>,
         _audit_log: AuditLog,
     ) -> Result<(), SqlxError> {
-        let maybe_action_row = sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
-            .bind(AuditLogAction::Upsert.convert_to_string())
-            .fetch_one(&self.pool)
-            .await;
+        let maybe_action_row =
+            sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
+                .bind(AuditLogAction::Upsert.convert_to_string())
+                .fetch_one(&self.pool)
+                .await;
 
         let action_row = match maybe_action_row {
             Ok(row) => row,
@@ -344,6 +346,47 @@ impl FeedConnection for FeedRepository {
         }
     }
 
+    async fn update_all_follow_list(&self, follow_lists: Vec<FollowList>) -> Result<(), SqlxError> {
+        let mut tx = self.pool.begin().await?;
+        let now = Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string();
+
+        println!("now: {:?}", now);
+
+        let mut row_count = 0;
+
+        for follow_list in follow_lists {
+            match sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
+                .bind(now.clone())
+                .bind(follow_list.uuid.to_string())
+                .execute(&mut tx)
+                .await
+            {
+                Ok(res) => {
+                    if res.rows_affected() > 0 {
+                        println!("Update was successful for uuid: {}", follow_list.uuid);
+                    } else {
+                        println!(
+                            "Update didn't affect any rows for uuid: {}",
+                            follow_list.uuid
+                        );
+                    }
+                    row_count += res.rows_affected();
+                }
+                Err(e) => {
+                    println!("Error: {}", e);
+                }
+            }
+        }
+
+        println!("row_count: {}", row_count);
+
+        if row_count > 0 {
+            tx.commit().await?;
+        }
+
+        Ok(())
+    }
+
     async fn update_follow_list_by_using_uuid(
         &self,
         follow_lists: Vec<FollowList>,
@@ -360,17 +403,24 @@ impl FeedConnection for FeedRepository {
                 .bind(now.clone())
                 .bind(follow_list.uuid.to_string())
                 .execute(&mut tx)
-                .await {
+                .await
+            {
                 Ok(res) => {
                     if res.rows_affected() > 0 {
                         println!("Update was successful for uuid: {}", follow_list.uuid);
                     } else {
-                        println!("Update didn't affect any rows for uuid: {}", follow_list.uuid);
+                        println!(
+                            "Update didn't affect any rows for uuid: {}",
+                            follow_list.uuid
+                        );
                     }
                     row_count += res.rows_affected() as usize;
-                },
+                }
                 Err(e) => {
-                    println!("Update failed for uuid: {}. Error: {:?}", follow_list.uuid, e);
+                    println!(
+                        "Update failed for uuid: {}. Error: {:?}",
+                        follow_list.uuid, e
+                    );
                     // Depending on your use case you may want to return here
                 }
             };
