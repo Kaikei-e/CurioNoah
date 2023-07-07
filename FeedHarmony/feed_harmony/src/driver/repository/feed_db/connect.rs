@@ -149,8 +149,6 @@ impl FeedConnection for FeedRepository {
             })
             .collect();
 
-        println!("follow_list_length: {}", follow_list[0].dt_updated);
-
         Ok(follow_list)
     }
 
