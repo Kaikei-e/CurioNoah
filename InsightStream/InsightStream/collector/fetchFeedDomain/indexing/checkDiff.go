@@ -22,7 +22,7 @@ type linksItem struct {
 	ID    int
 }
 
-func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
+func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 
 	// convert existing ent struct to gofeed struct
 	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(fl)

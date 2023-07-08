@@ -16,6 +16,8 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 
 	const partition = 5
 
+	m := &sync.Mutex{} // Mutex to protect critical section
+
 	for i := 0; i < len(storedList); i += partition {
 		end := i + partition
 		if end > len(storedList) {
@@ -30,7 +32,9 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 				errCh <- fmt.Errorf("failed to fetch feeds: %w", err)
 				return
 			}
+			m.Lock() // Locking
 			feedsCh <- feeds
+			m.Unlock() // Unlocking
 		}(storedList[i:end])
 	}
 

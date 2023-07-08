@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// 20 minute is not intentional value. Just for testing.
-	ticker := time.NewTicker(20 * time.Minute)
+	ticker := time.NewTicker(1 * time.Minute)
 	done := make(chan bool)
 
 	cl := repository.InitConnection()
@@ -25,7 +25,8 @@ func main() {
 			case <-done:
 				return
 			case <-ticker.C:
-				wg, err := storeManager.Store()
+				//wg, err := storeManager.Store()
+				wg, err := storeManager.StoreByDiff()
 				if err != nil {
 					// TODO will add logger
 					fmt.Println(fmt.Sprintf("failed to store: %v", err))

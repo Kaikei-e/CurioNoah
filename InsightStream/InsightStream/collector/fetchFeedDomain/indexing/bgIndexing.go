@@ -20,11 +20,11 @@ func NewStoreManager(client *ent.Client) *StoreManager {
 	return &StoreManager{client}
 }
 
-func (s *StoreManager) FetchFollowListss() ([]*ent.FollowLists, error) {
+func (s *StoreManager) FetchFollowList() ([]*ent.FollowList, error) {
 	return readfeed.QueryAll(s.client)
 }
 
-func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowLists) error {
+func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowList) error {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
@@ -47,7 +47,7 @@ func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowLists) error {
 func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 	var wg sync.WaitGroup
 
-	result, err := s.FetchFollowListss()
+	result, err := s.FetchFollowList()
 	if err != nil {
 		return nil, errors.New("failed to query all feeds")
 	}
@@ -96,7 +96,7 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 	var wg sync.WaitGroup
 
-	result, err := s.FetchFollowListss()
+	result, err := s.FetchFollowList()
 	if err != nil {
 		return nil, errors.New("failed to query all feeds")
 	}
@@ -158,8 +158,8 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 }
 
-func (s *StoreManager) mergeLists(result []*ent.FollowLists, convertedFeeds []*ent.FollowLists, idList []int) []*ent.FollowLists {
-	var addingList []*ent.FollowLists
+func (s *StoreManager) mergeLists(result []*ent.FollowList, convertedFeeds []*ent.FollowList, idList []int) []*ent.FollowList {
+	var addingList []*ent.FollowList
 	for _, id := range idList {
 		isAdded := false
 		for _, list := range result {
