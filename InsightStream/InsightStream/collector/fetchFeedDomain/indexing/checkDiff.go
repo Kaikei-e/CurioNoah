@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"github.com/mmcdole/gofeed"
+	"golang.org/x/exp/slices"
 	"insightstream/collector/fetchFeedDomain"
 	"insightstream/ent"
 	"insightstream/restorerss"
@@ -21,7 +22,7 @@ type linksItem struct {
 	ID    int
 }
 
-func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
+func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 
 	// convert existing ent struct to gofeed struct
 	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(fl)
@@ -108,7 +109,36 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 
 }
 
-//func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
+func CheckDiffByFeedItems(oldFeeds []*gofeed.Feed, newFeeds []*gofeed.Feed) ([]string, error) {
+	var feedLinkList []string
+
+	for _, oldOneFeed := range oldFeeds {
+		sort.SliceStable(oldOneFeed.Items, func(i, j int) bool {
+			return oldOneFeed.Items[i].Link < oldOneFeed.Items[j].Link
+		})
+
+		for _, newOneFeed := range newFeeds {
+			sort.SliceStable(newOneFeed.Items, func(i, j int) bool {
+				return newOneFeed.Items[i].Link < newOneFeed.Items[j].Link
+			})
+
+			if len(oldOneFeed.Items) != len(newOneFeed.Items) {
+				fmt.Println("length is different between oldOneFeed.Link and newOneFeed : ", oldOneFeed.Link)
+				feedLinkList = append(feedLinkList, oldOneFeed.FeedLink)
+
+				break
+			}
+
+		}
+
+	}
+
+	slices.Compact(feedLinkList)
+
+	return feedLinkList, nil
+}
+
+//func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 //	fmt.Printf("fl: %v \n", len(fl))
 //
 //	var links []string
@@ -116,7 +146,7 @@ func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
 //		links = append(links, list.Link)
 //	}
 //
-//	oldFeeds, err := restorerss.EntFollowListExchangeToGofeed(fl)
+//	oldFeeds, err := restorerss.EntFollowListsExchangeToGofeed(fl)
 //	if err != nil {
 //		return nil, nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
 //	}

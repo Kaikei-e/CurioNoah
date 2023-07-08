@@ -2,7 +2,9 @@ package indexing
 
 import (
 	"errors"
+	"fmt"
 	"github.com/labstack/gommon/log"
+	"insightstream/collector/fetchFeedDomain"
 	register "insightstream/collector/registerFeed"
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
@@ -18,11 +20,11 @@ func NewStoreManager(client *ent.Client) *StoreManager {
 	return &StoreManager{client}
 }
 
-func (s *StoreManager) FetchFeeds() ([]*ent.FollowList, error) {
+func (s *StoreManager) FetchFollowListss() ([]*ent.FollowLists, error) {
 	return readfeed.QueryAll(s.client)
 }
 
-func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowList) error {
+func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowLists) error {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
@@ -45,7 +47,7 @@ func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowList) error {
 func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 	var wg sync.WaitGroup
 
-	result, err := s.FetchFeeds()
+	result, err := s.FetchFollowListss()
 	if err != nil {
 		return nil, errors.New("failed to query all feeds")
 	}
@@ -91,8 +93,73 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 	return &wg, nil
 }
 
-func (s *StoreManager) mergeLists(result []*ent.FollowList, convertedFeeds []*ent.FollowList, idList []int) []*ent.FollowList {
-	var addingList []*ent.FollowList
+func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
+	var wg sync.WaitGroup
+
+	result, err := s.FetchFollowListss()
+	if err != nil {
+		return nil, errors.New("failed to query all feeds")
+	}
+
+	// convert existing ent struct to gofeed struct
+	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(result)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
+	}
+
+	// list up target links
+	var targetLinks []string
+	for _, list := range result {
+		targetLinks = append(targetLinks, list.Link)
+	}
+
+	fetchedFeeds, err := fetchFeedDomain.ParallelizeFetch(targetLinks)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to fetch feed. error: %v", err))
+	}
+
+	feedLinkList, err := CheckDiffByFeedItems(feedExchanged, fetchedFeeds)
+
+	var updateTargetIDList []int
+	for _, fll := range feedLinkList {
+		for _, list := range result {
+			if fll == list.Link {
+				updateTargetIDList = append(updateTargetIDList, list.ID)
+			}
+		}
+
+	}
+
+	// update feeds
+	fmt.Println("updateTargetIDList: ", updateTargetIDList)
+
+	if len(updateTargetIDList) == 0 {
+		return nil, nil
+	}
+	FollowLists := restorerss.ExchangeToEnt(fetchedFeeds)
+
+	err = s.UpdateFeeds(FollowLists)
+	if err != nil {
+		log.Errorf("failed to update feeds: %v", err)
+		return nil, errors.New("failed to update feeds")
+	}
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err = PingToSync()
+		if err != nil {
+			log.Errorf("failed to ping to sync all feeds: %v", err)
+			return
+		}
+	}()
+
+	return &wg, nil
+
+}
+
+func (s *StoreManager) mergeLists(result []*ent.FollowLists, convertedFeeds []*ent.FollowLists, idList []int) []*ent.FollowLists {
+	var addingList []*ent.FollowLists
 	for _, id := range idList {
 		isAdded := false
 		for _, list := range result {
@@ -138,10 +205,10 @@ func (s *StoreManager) mergeLists(result []*ent.FollowList, convertedFeeds []*en
 //		return newFeeds[i].Link < newFeeds[j].Link
 //	})
 //
-//	// convert gofeed.Feed to ent.FollowList
+//	// convert gofeed.Feed to ent.FollowLists
 //	convertedFeeds := restorerss.ExchangeToEnt(newFeeds)
 //
-//	var addingList []*ent.FollowList
+//	var addingList []*ent.FollowLists
 //	for _, id := range idList {
 //
 //		isAdded := false
