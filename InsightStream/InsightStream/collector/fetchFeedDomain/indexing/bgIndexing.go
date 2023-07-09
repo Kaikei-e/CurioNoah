@@ -173,7 +173,7 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err = PingToSync()
+		err = PingToSyncOnlyLatestFeeds()
 		if err != nil {
 			log.Errorf("failed to ping to sync all feeds: %v", err)
 			return
