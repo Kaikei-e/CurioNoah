@@ -25,8 +25,8 @@ func main() {
 			case <-done:
 				return
 			case <-ticker.C:
-				//wg, err := storeManager.Store()
-				wg, err := storeManager.StoreByDiff()
+				wg, err := storeManager.Store()
+				//wg, err := storeManager.StoreByDiff()
 				if err != nil {
 					// TODO will add logger
 					fmt.Println(fmt.Sprintf("failed to store: %v", err))
