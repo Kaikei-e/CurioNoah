@@ -47,6 +47,9 @@ MYSQL_ROOT_PASSWORD="testthisisatest"
 MYSQL_DATABASE="curio_noah"
 MYSQL_USER="userhogehoge"
 MYSQL_PASSWORD="testthisisatesttestestest"
+POSTGRES_PASSWORD="testtesttestthisisatestmustmodify"
+POSTGRES_USER="user1"
+POSTGRES_DB="oath_keepers_db"
 ```
 
 
