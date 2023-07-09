@@ -16,6 +16,11 @@ type StoreManager struct {
 	client *ent.Client
 }
 
+type updateList struct {
+	Link string
+	ID   int
+}
+
 func NewStoreManager(client *ent.Client) *StoreManager {
 	return &StoreManager{client}
 }
@@ -120,25 +125,46 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 	feedLinkList, err := CheckDiffByFeedItems(feedExchanged, fetchedFeeds)
 
-	var updateTargetIDList []int
+	var updateTargetList []updateList
 	for _, fll := range feedLinkList {
+
 		for _, list := range result {
+			var updateTargetItem updateList
+
 			if fll == list.Link {
-				updateTargetIDList = append(updateTargetIDList, list.ID)
+				updateTargetItem = updateList{
+					Link: list.Link,
+					ID:   list.ID,
+				}
+				fmt.Println("updateTargetItem: ", updateTargetItem)
+
+				updateTargetList = append(updateTargetList, updateTargetItem)
+				break
+
 			}
 		}
 
 	}
 
 	// update feeds
-	fmt.Println("updateTargetIDList: ", updateTargetIDList)
+	//fmt.Println("updateTargetIDList: ", updateTargetIDList)
 
-	if len(updateTargetIDList) == 0 {
+	if len(updateTargetList) == 0 {
 		return nil, nil
 	}
-	FollowLists := restorerss.ExchangeToEnt(fetchedFeeds)
 
-	err = s.UpdateFeeds(FollowLists)
+	followLists := restorerss.ExchangeToEnt(fetchedFeeds)
+
+	for i, list := range followLists {
+		for _, updateTarget := range updateTargetList {
+			if list.Link == updateTarget.Link {
+				followLists[i].ID = updateTarget.ID
+				break
+			}
+		}
+	}
+
+	err = s.UpdateFeeds(followLists)
 	if err != nil {
 		log.Errorf("failed to update feeds: %v", err)
 		return nil, errors.New("failed to update feeds")

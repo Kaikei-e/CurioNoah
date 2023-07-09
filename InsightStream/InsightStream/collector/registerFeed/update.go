@@ -2,6 +2,7 @@ package registerFeed
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"insightstream/ent"
 	"insightstream/models/feeds"
@@ -49,8 +50,7 @@ func Update(fds []*ent.FollowList, cl *ent.Client) error {
 
 		if err != nil {
 			fmt.Printf("failed to update: %v", err)
-			panic(err)
-			//			return errors.New(fmt.Sprintf("failed to update: %v", err))
+			return errors.New(fmt.Sprintf("failed to update: %v", err))
 		}
 	}
 

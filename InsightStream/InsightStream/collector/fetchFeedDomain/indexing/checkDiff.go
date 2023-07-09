@@ -123,7 +123,6 @@ func CheckDiffByFeedItems(oldFeeds []*gofeed.Feed, newFeeds []*gofeed.Feed) ([]s
 			})
 
 			if len(oldOneFeed.Items) != len(newOneFeed.Items) {
-				fmt.Println("length is different between oldOneFeed.Link and newOneFeed : ", oldOneFeed.Link)
 				feedLinkList = append(feedLinkList, oldOneFeed.FeedLink)
 
 				break
