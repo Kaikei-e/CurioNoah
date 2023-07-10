@@ -6,11 +6,10 @@ import (
 	"insightstream/models/feeds"
 )
 
+// TODO will implement unit tests
 func EntFollowListExchangeToGofeed(followLists []*ent.FollowList) ([]*gofeed.Feed, error) {
 	// To reduce the amount of data fetched per feed, set a limit on the number of items to fetch per feed
 	const sendAmount = 3
-
-	// TODO will implement unit tests
 
 	var feedList []*gofeed.Feed
 	for _, feed := range followLists {
