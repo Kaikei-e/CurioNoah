@@ -7,5 +7,5 @@ type FeedRegister struct {
 
 type FeedResponse struct {
 	IsSuccess bool `json:"is_success"`
-	// TODO think about the domain
+	// TODO think about the RESTful API
 }

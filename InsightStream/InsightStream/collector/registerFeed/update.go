@@ -14,6 +14,7 @@ func Update(fds []*ent.FollowList, cl *ent.Client) error {
 	n := time.Now()
 
 	// TODO this updating method is weak. also update one by one is not good.
+	// need to consider how to update all at once.
 	for _, fd := range fds {
 
 		var feedItems []feeds.FeedItem
