@@ -106,13 +106,14 @@ impl FeedConnection for FeedRepository {
 
         println!("latest_updated_at: {:?}", latest_updated_at);
 
-        // let interval_days = 90;
+        let interval_days = 90;
 
         let maybe_rows = sqlx::query(
             "SELECT * FROM \
-        follow_lists WHERE dt_updated <= ?",
+        follow_lists WHERE dt_updated > DATE_SUB(?, INTERVAL ? DAY)",
         )
         .bind(latest_updated_at)
+        .bind(interval_days)
         .fetch_all(&self.pool)
         .await;
 
@@ -149,6 +150,8 @@ impl FeedConnection for FeedRepository {
                 is_updated: row.get("is_updated"),
             })
             .collect();
+
+        println!("follow_list length: {}", follow_list.len());
 
         Ok(follow_list)
     }
@@ -206,17 +209,29 @@ impl FeedConnection for FeedRepository {
             Err(_) => {
                 let mut tx = self.pool.begin().await?;
 
-                let _row = sqlx::query("INSERT INTO feed_audit_trail_actions (action) VALUES (?)")
+                let row = sqlx::query("INSERT INTO feed_audit_trail_actions (action) VALUES (?)")
                     .bind(AuditLogAction::Upsert.convert_to_string())
                     .execute(&mut tx)
-                    .await?;
+                    .await;
 
-                tx.commit().await?;
+                match row {
+                    Ok(_) => {
+                        let row = sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
+                            .bind(AuditLogAction::Upsert.convert_to_string())
+                            .fetch_one(&mut tx).await?;
 
-                sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
-                    .bind(AuditLogAction::Upsert.convert_to_string())
-                    .fetch_one(&self.pool)
-                    .await?
+                        tx.commit().await?;
+
+                        row
+
+                    },
+                         Err(e) => {
+                        println!("Failed to insert action: {}", e);
+                        return Err(SqlxError::RowNotFound);
+                    }
+                }
+
+
             }
         };
 

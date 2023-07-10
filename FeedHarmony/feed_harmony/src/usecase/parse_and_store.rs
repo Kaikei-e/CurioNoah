@@ -110,6 +110,8 @@ pub async fn parse_and_store_latest_feeds(pool: DatabasePool) -> Result<(), Erro
         return Err(e.into());
     }
 
+    println!("target_follow_list's length: {}", target_follow_list.len());
+
     let result = feed_repository
         .update_follow_list_by_using_uuid(target_follow_list)
         .await;
