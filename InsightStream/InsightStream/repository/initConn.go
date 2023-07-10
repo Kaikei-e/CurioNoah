@@ -18,7 +18,7 @@ import (
 var CoreDatabae *sql.DB
 
 func InitConnection() *ent.Client {
-	jst, err := time.LoadLocation("Asia/Tokyo")
+	utc, err := time.LoadLocation("UTC")
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
 		panic(err)
@@ -51,7 +51,7 @@ func InitConnection() *ent.Client {
 		AllowNativePasswords: true,
 		ParseTime:            true,
 		Collation:            "utf8mb4_unicode_ci",
-		Loc:                  jst,
+		Loc:                  utc,
 	}
 
 	CoreDatabae, err = sql.Open("mysql", c.FormatDSN())
