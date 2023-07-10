@@ -8,7 +8,6 @@ import (
 )
 
 func CollectAll(c echo.Context, cl *ent.Client) error {
-	// TODO
 
 	if c == nil {
 		return errors.New("context is nil")
