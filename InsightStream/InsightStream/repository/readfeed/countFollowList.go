@@ -7,7 +7,7 @@ import (
 )
 
 func CountFollowList() (int, error) {
-	result, err := repository.CoreDatabae.Query("SELECT COUNT(*) FROM follow_lists")
+	result, err := repository.CoreDatabase.Query("SELECT COUNT(*) FROM follow_lists")
 	if err != nil {
 		log.Fatalln(err)
 		return -1, err
