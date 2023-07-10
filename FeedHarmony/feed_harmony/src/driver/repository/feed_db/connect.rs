@@ -110,7 +110,7 @@ impl FeedConnection for FeedRepository {
 
         let maybe_rows = sqlx::query(
             "SELECT * FROM \
-        follow_lists WHERE dt_updated < ?",
+        follow_lists WHERE dt_updated <= ?",
         )
         .bind(latest_updated_at)
         .fetch_all(&self.pool)
