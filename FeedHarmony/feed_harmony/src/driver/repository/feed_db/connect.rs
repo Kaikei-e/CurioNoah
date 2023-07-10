@@ -7,6 +7,7 @@ use axum::async_trait;
 
 use chrono::{DateTime, Utc};
 
+use mockall::Any;
 use serde_json::Value;
 use sqlx::mysql::MySqlPoolOptions;
 use sqlx::{Connection, Error as SqlxError};
@@ -216,22 +217,21 @@ impl FeedConnection for FeedRepository {
 
                 match row {
                     Ok(_) => {
-                        let row = sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
-                            .bind(AuditLogAction::Upsert.convert_to_string())
-                            .fetch_one(&mut tx).await?;
+                        let row =
+                            sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
+                                .bind(AuditLogAction::Upsert.convert_to_string())
+                                .fetch_one(&mut tx)
+                                .await?;
 
                         tx.commit().await?;
 
                         row
-
-                    },
-                         Err(e) => {
+                    }
+                    Err(e) => {
                         println!("Failed to insert action: {}", e);
                         return Err(SqlxError::RowNotFound);
                     }
                 }
-
-
             }
         };
 
@@ -422,7 +422,16 @@ impl FeedConnection for FeedRepository {
             {
                 Ok(res) => {
                     if res.rows_affected() > 0 {
-                        println!("Update was successful for uuid: {}", follow_list.uuid);
+                        println!(
+                            "Update was successful for uuid: {:?}",
+                            follow_list
+                                .uuid
+                                .to_string()
+                                .chars()
+                                .enumerate()
+                                .filter(|&(i, _)| i > 0 && i < 7)
+                                .fold("".to_string(), |s, (_, c)| format!("{}{}", s, c))
+                        );
                     } else {
                         println!(
                             "Update didn't affect any rows for uuid: {}",
