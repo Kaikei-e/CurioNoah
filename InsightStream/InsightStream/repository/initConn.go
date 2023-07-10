@@ -15,7 +15,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var CoreDatabae *sql.DB
+var CoreDatabase *sql.DB
 
 func InitConnection() *ent.Client {
 	utc, err := time.LoadLocation("UTC")
@@ -54,7 +54,7 @@ func InitConnection() *ent.Client {
 		Loc:                  utc,
 	}
 
-	CoreDatabae, err = sql.Open("mysql", c.FormatDSN())
+	CoreDatabase, err = sql.Open("mysql", c.FormatDSN())
 	if err != nil {
 		log.Fatalf("failed opening connection to mysql database: %v", err)
 	}
