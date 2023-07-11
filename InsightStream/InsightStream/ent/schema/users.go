@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
+	"time"
 )
 
 // Users holds the schema definition for the Users entity.
@@ -18,6 +19,8 @@ func (Users) Fields() []ent.Field {
 		field.UUID("id", uuid.New()).Unique(),
 		field.String("username").NotEmpty(),
 		field.Bytes("hashed_password").Sensitive().NotEmpty(),
+		field.Time("created_at").Immutable().Default(time.Now()),
+		field.Time("updated_at").Default(time.Now()),
 	}
 }
 
@@ -26,6 +29,7 @@ func (Users) Indexes() []ent.Index {
 	return []ent.Index{
 		// unique index
 		index.Fields("id").Unique(),
+		index.Fields("username").Unique(),
 	}
 }
 

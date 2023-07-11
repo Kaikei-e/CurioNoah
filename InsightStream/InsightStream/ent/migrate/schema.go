@@ -124,6 +124,7 @@ var (
 	FollowListsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "uuid", Type: field.TypeUUID},
+		{Name: "follower_id", Type: field.TypeUUID},
 		{Name: "xml_version", Type: field.TypeInt8, Default: 1},
 		{Name: "rss_version", Type: field.TypeInt8, Default: 2},
 		{Name: "url", Type: field.TypeString, Default: ""},
@@ -153,6 +154,11 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{FollowListsColumns[1]},
 			},
+			{
+				Name:    "followlist_uuid_follower_id_link",
+				Unique:  true,
+				Columns: []*schema.Column{FollowListsColumns[1], FollowListsColumns[2], FollowListsColumns[8]},
+			},
 		},
 	}
 	// UsersColumns holds the columns for the "users" table.
@@ -160,6 +166,8 @@ var (
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "username", Type: field.TypeString},
 		{Name: "hashed_password", Type: field.TypeBytes},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -171,6 +179,11 @@ var (
 				Name:    "users_id",
 				Unique:  true,
 				Columns: []*schema.Column{UsersColumns[0]},
+			},
+			{
+				Name:    "users_username",
+				Unique:  true,
+				Columns: []*schema.Column{UsersColumns[1]},
 			},
 		},
 	}
