@@ -73,8 +73,12 @@ const Login = () => {
                 onChange={(event) => setPassword(event.target.value)}
               />
             </FormControl>
-            <Button colorScheme="blue" mt={6} type="submit" width={"full"}
-                onSubmit={handleLogin}
+            <Button
+              colorScheme="blue"
+              mt={6}
+              type="submit"
+              width={"full"}
+              onSubmit={handleLogin}
             >
               Login
             </Button>
