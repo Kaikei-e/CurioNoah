@@ -37,6 +37,16 @@ Now, you can use it by accessing this
 http://curionoah.com:4173/
 ```
 
+<br />
+
+Basic auth is implementing right now.
+You can bypass by using below account.
+
+```
+user > admin
+password > admin
+```
+
 
 <br/>
 
