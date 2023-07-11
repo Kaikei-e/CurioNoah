@@ -6,6 +6,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./home/Home";
 import InsightStreamMain from "./components/InshitStream/InsightStreamMain";
+import Login from "./components/Login/Login";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "/insight-stream",
