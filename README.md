@@ -29,6 +29,13 @@ to both shell files.
 ```bash
 sudo chmod +x EACH_FILE
 ```
+<br/>
+
+Now, you can use it by accessing this
+
+```url
+http://curionoah.com:4173/
+```
 
 
 <br/>
