@@ -58,18 +58,20 @@ const Login = () => {
         <Box mt={4}>
           <form onSubmit={handleLogin}>
             <FormControl>
-              <FormLabel>Username</FormLabel>
+              <FormLabel fontFamily={"Jost"}>Username</FormLabel>
               <Input
                 type="text"
                 placeholder="Enter your username"
+                fontFamily={"Jost"}
                 onChange={(event) => setUsername(event.target.value)}
               />
             </FormControl>
             <FormControl mt={6}>
-              <FormLabel>Password</FormLabel>
+              <FormLabel fontFamily={"Jost"}>Password</FormLabel>
               <Input
                 type="password"
                 placeholder="Enter your password"
+                fontFamily={"Jost"}
                 onChange={(event) => setPassword(event.target.value)}
               />
             </FormControl>
@@ -78,6 +80,7 @@ const Login = () => {
               mt={6}
               type="submit"
               width={"full"}
+              fontFamily={"Jost"}
               onSubmit={handleLogin}
             >
               Login

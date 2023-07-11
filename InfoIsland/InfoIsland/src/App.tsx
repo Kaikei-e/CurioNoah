@@ -50,7 +50,7 @@ export const App = () => (
       </Stack>
       <Spacer />
       <Flex flexDir={"column"} justifyContent={"flex-end"} p="4%">
-        <Link href="/home">
+        <Link href="/login">
           <Button
             size={{ base: "lg", sm: "sm", md: "md", lg: "lg" }}
             variant="outline"
