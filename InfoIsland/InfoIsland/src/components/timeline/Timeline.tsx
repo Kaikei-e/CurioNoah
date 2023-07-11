@@ -12,6 +12,7 @@ import { FollowingSiteFeeds } from "../../lib/models/feedModel";
 import EachFeed from "./eachFeed";
 import InfiniteScroll from "react-infinite-scroller";
 import { Simulate } from "react-dom/test-utils";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   data: FollowingSiteFeeds[];
@@ -27,6 +28,7 @@ const Timeline: React.FC<Props> = ({
   loadMore,
   hadExceeded,
 }) => {
+  const navigate = useNavigate();
   const loader = <CircularProgress isIndeterminate color="green.300" />;
 
   return (
@@ -42,7 +44,9 @@ const Timeline: React.FC<Props> = ({
           You can find the latest feeds that you have collected here. Read more
           at{" "}
           <Text as="u">
-            <Link href={"/insight-stream"}>InsightStream</Link>
+            <Button onClick={() => navigate("/insight-stream")}>
+              InsightStream
+            </Button>
           </Text>{" "}
           page.
         </Text>

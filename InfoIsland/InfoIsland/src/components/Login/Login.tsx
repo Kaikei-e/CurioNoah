@@ -9,29 +9,35 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Auth/RequireAuth";
+import { User } from "../../lib/models/user";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
+  const auth = useAuth();
 
-  const handleLogin = (event: { preventDefault: () => void }) => {
+  function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // perform login logic here
+
+    let formData = new FormData(event.currentTarget);
+    let username = formData.get("username") as string;
+    let password = formData.get("password") as string;
 
     if (username === "" || password === "") {
       alert("Username or password cannot be empty");
       return;
     }
 
-    if (username === "admin" || password === "admin") {
-      navigate("/home");
-      return;
+    const user: User = { username: username, password: password };
+
+    if (auth !== null) {
+      auth.signin(user, () => {
+        navigate("/home");
+      });
+    } else {
+      navigate("/");
     }
-    console.log("Username: ", username);
-    console.log("Password: ", password);
-  };
+  }
 
   return (
     <Flex
@@ -60,31 +66,30 @@ const Login = () => {
             <FormControl>
               <FormLabel fontFamily={"Jost"}>Username</FormLabel>
               <Input
+                id={"username"}
+                name={"username"}
                 type="text"
                 placeholder="Enter your username"
                 fontFamily={"Jost"}
-                onChange={(event) => setUsername(event.target.value)}
               />
-            </FormControl>
-            <FormControl mt={6}>
               <FormLabel fontFamily={"Jost"}>Password</FormLabel>
               <Input
+                id={"password"}
+                name={"password"}
                 type="password"
                 placeholder="Enter your password"
                 fontFamily={"Jost"}
-                onChange={(event) => setPassword(event.target.value)}
               />
+              <Button
+                colorScheme="blue"
+                mt={6}
+                type="submit"
+                width={"full"}
+                fontFamily={"Jost"}
+              >
+                Login
+              </Button>
             </FormControl>
-            <Button
-              colorScheme="blue"
-              mt={6}
-              type="submit"
-              width={"full"}
-              fontFamily={"Jost"}
-              onSubmit={handleLogin}
-            >
-              Login
-            </Button>
           </form>
         </Box>
       </Box>
