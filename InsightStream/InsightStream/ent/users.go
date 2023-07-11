@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"insightstream/ent/users"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
@@ -20,6 +21,10 @@ type Users struct {
 	Username string `json:"username,omitempty"`
 	// HashedPassword holds the value of the "hashed_password" field.
 	HashedPassword []byte `json:"-"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -31,6 +36,8 @@ func (*Users) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case users.FieldUsername:
 			values[i] = new(sql.NullString)
+		case users.FieldCreatedAt, users.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		case users.FieldID:
 			values[i] = new(uuid.UUID)
 		default:
@@ -66,6 +73,18 @@ func (u *Users) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				u.HashedPassword = *value
 			}
+		case users.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				u.CreatedAt = value.Time
+			}
+		case users.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				u.UpdatedAt = value.Time
+			}
 		}
 	}
 	return nil
@@ -98,6 +117,12 @@ func (u *Users) String() string {
 	builder.WriteString(u.Username)
 	builder.WriteString(", ")
 	builder.WriteString("hashed_password=<sensitive>")
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

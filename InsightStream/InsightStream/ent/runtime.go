@@ -184,4 +184,12 @@ func init() {
 	usersDescHashedPassword := usersFields[2].Descriptor()
 	// users.HashedPasswordValidator is a validator for the "hashed_password" field. It is called by the builders before save.
 	users.HashedPasswordValidator = usersDescHashedPassword.Validators[0].(func([]byte) error)
+	// usersDescCreatedAt is the schema descriptor for created_at field.
+	usersDescCreatedAt := usersFields[3].Descriptor()
+	// users.DefaultCreatedAt holds the default value on creation for the created_at field.
+	users.DefaultCreatedAt = usersDescCreatedAt.Default.(time.Time)
+	// usersDescUpdatedAt is the schema descriptor for updated_at field.
+	usersDescUpdatedAt := usersFields[4].Descriptor()
+	// users.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	users.DefaultUpdatedAt = usersDescUpdatedAt.Default.(time.Time)
 }

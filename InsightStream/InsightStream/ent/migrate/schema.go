@@ -124,7 +124,6 @@ var (
 	FollowListsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "uuid", Type: field.TypeUUID},
-		{Name: "follower_id", Type: field.TypeUUID},
 		{Name: "xml_version", Type: field.TypeInt8, Default: 1},
 		{Name: "rss_version", Type: field.TypeInt8, Default: 2},
 		{Name: "url", Type: field.TypeString, Default: ""},
@@ -153,11 +152,6 @@ var (
 				Name:    "followlist_uuid",
 				Unique:  true,
 				Columns: []*schema.Column{FollowListsColumns[1]},
-			},
-			{
-				Name:    "followlist_uuid_follower_id_link",
-				Unique:  true,
-				Columns: []*schema.Column{FollowListsColumns[1], FollowListsColumns[2], FollowListsColumns[8]},
 			},
 		},
 	}

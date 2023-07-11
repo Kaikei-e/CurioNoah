@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"insightstream/ent/predicate"
 	"insightstream/ent/users"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -36,6 +37,20 @@ func (uu *UsersUpdate) SetUsername(s string) *UsersUpdate {
 // SetHashedPassword sets the "hashed_password" field.
 func (uu *UsersUpdate) SetHashedPassword(b []byte) *UsersUpdate {
 	uu.mutation.SetHashedPassword(b)
+	return uu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (uu *UsersUpdate) SetUpdatedAt(t time.Time) *UsersUpdate {
+	uu.mutation.SetUpdatedAt(t)
+	return uu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (uu *UsersUpdate) SetNillableUpdatedAt(t *time.Time) *UsersUpdate {
+	if t != nil {
+		uu.SetUpdatedAt(*t)
+	}
 	return uu
 }
 
@@ -113,6 +128,9 @@ func (uu *UsersUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.HashedPassword(); ok {
 		_spec.SetField(users.FieldHashedPassword, field.TypeBytes, value)
 	}
+	if value, ok := uu.mutation.UpdatedAt(); ok {
+		_spec.SetField(users.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{users.Label}
@@ -142,6 +160,20 @@ func (uuo *UsersUpdateOne) SetUsername(s string) *UsersUpdateOne {
 // SetHashedPassword sets the "hashed_password" field.
 func (uuo *UsersUpdateOne) SetHashedPassword(b []byte) *UsersUpdateOne {
 	uuo.mutation.SetHashedPassword(b)
+	return uuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (uuo *UsersUpdateOne) SetUpdatedAt(t time.Time) *UsersUpdateOne {
+	uuo.mutation.SetUpdatedAt(t)
+	return uuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (uuo *UsersUpdateOne) SetNillableUpdatedAt(t *time.Time) *UsersUpdateOne {
+	if t != nil {
+		uuo.SetUpdatedAt(*t)
+	}
 	return uuo
 }
 
@@ -242,6 +274,9 @@ func (uuo *UsersUpdateOne) sqlSave(ctx context.Context) (_node *Users, err error
 	}
 	if value, ok := uuo.mutation.HashedPassword(); ok {
 		_spec.SetField(users.FieldHashedPassword, field.TypeBytes, value)
+	}
+	if value, ok := uuo.mutation.UpdatedAt(); ok {
+		_spec.SetField(users.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &Users{config: uuo.config}
 	_spec.Assign = _node.assignValues

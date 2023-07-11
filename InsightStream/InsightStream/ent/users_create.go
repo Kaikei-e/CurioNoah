@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"insightstream/ent/users"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -32,6 +33,34 @@ func (uc *UsersCreate) SetHashedPassword(b []byte) *UsersCreate {
 	return uc
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (uc *UsersCreate) SetCreatedAt(t time.Time) *UsersCreate {
+	uc.mutation.SetCreatedAt(t)
+	return uc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (uc *UsersCreate) SetNillableCreatedAt(t *time.Time) *UsersCreate {
+	if t != nil {
+		uc.SetCreatedAt(*t)
+	}
+	return uc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (uc *UsersCreate) SetUpdatedAt(t time.Time) *UsersCreate {
+	uc.mutation.SetUpdatedAt(t)
+	return uc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (uc *UsersCreate) SetNillableUpdatedAt(t *time.Time) *UsersCreate {
+	if t != nil {
+		uc.SetUpdatedAt(*t)
+	}
+	return uc
+}
+
 // SetID sets the "id" field.
 func (uc *UsersCreate) SetID(u uuid.UUID) *UsersCreate {
 	uc.mutation.SetID(u)
@@ -45,6 +74,7 @@ func (uc *UsersCreate) Mutation() *UsersMutation {
 
 // Save creates the Users in the database.
 func (uc *UsersCreate) Save(ctx context.Context) (*Users, error) {
+	uc.defaults()
 	return withHooks[*Users, UsersMutation](ctx, uc.sqlSave, uc.mutation, uc.hooks)
 }
 
@@ -70,6 +100,18 @@ func (uc *UsersCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (uc *UsersCreate) defaults() {
+	if _, ok := uc.mutation.CreatedAt(); !ok {
+		v := users.DefaultCreatedAt
+		uc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := uc.mutation.UpdatedAt(); !ok {
+		v := users.DefaultUpdatedAt
+		uc.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (uc *UsersCreate) check() error {
 	if _, ok := uc.mutation.Username(); !ok {
@@ -87,6 +129,12 @@ func (uc *UsersCreate) check() error {
 		if err := users.HashedPasswordValidator(v); err != nil {
 			return &ValidationError{Name: "hashed_password", err: fmt.Errorf(`ent: validator failed for field "Users.hashed_password": %w`, err)}
 		}
+	}
+	if _, ok := uc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Users.created_at"`)}
+	}
+	if _, ok := uc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Users.updated_at"`)}
 	}
 	return nil
 }
@@ -137,6 +185,14 @@ func (uc *UsersCreate) createSpec() (*Users, *sqlgraph.CreateSpec) {
 		_spec.SetField(users.FieldHashedPassword, field.TypeBytes, value)
 		_node.HashedPassword = value
 	}
+	if value, ok := uc.mutation.CreatedAt(); ok {
+		_spec.SetField(users.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := uc.mutation.UpdatedAt(); ok {
+		_spec.SetField(users.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	return _node, _spec
 }
 
@@ -154,6 +210,7 @@ func (ucb *UsersCreateBulk) Save(ctx context.Context) ([]*Users, error) {
 	for i := range ucb.builders {
 		func(i int, root context.Context) {
 			builder := ucb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UsersMutation)
 				if !ok {

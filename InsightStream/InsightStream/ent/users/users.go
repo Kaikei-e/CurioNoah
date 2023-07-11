@@ -2,6 +2,10 @@
 
 package users
 
+import (
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the users type in the database.
 	Label = "users"
@@ -11,6 +15,10 @@ const (
 	FieldUsername = "username"
 	// FieldHashedPassword holds the string denoting the hashed_password field in the database.
 	FieldHashedPassword = "hashed_password"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the users in the database.
 	Table = "users"
 )
@@ -20,6 +28,8 @@ var Columns = []string{
 	FieldID,
 	FieldUsername,
 	FieldHashedPassword,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -37,4 +47,8 @@ var (
 	UsernameValidator func(string) error
 	// HashedPasswordValidator is a validator for the "hashed_password" field. It is called by the builders before save.
 	HashedPasswordValidator func([]byte) error
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt time.Time
 )
