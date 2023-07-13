@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { StarIcon, CopyIcon, CheckIcon } from "@chakra-ui/icons";
 
-const FeedCard = ({ feed }: { feed: Item }) => {
+export const FeedCard = ({ feed }: { feed: Item }) => {
   return (
     <Card maxW="md">
       <CardHeader>
@@ -51,4 +51,3 @@ const FeedCard = ({ feed }: { feed: Item }) => {
   );
 };
 
-export default FeedCard;

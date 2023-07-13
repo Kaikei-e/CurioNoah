@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Alert, AlertIcon, CircularProgress, Flex } from "@chakra-ui/react";
-import Timeline from "./timeline/Timeline";
+import {Timeline} from "./timeline/Timeline";
 import {
   FollowingSiteFeeds,
   FollowingSiteFeedsList,
 } from "../lib/models/feedModel";
 import { Feeds } from "../lib/models/eachFeed";
 
-const InsightStreamBase = () => {
+export const InsightStreamBase = () => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;
 
@@ -88,4 +88,3 @@ const InsightStreamBase = () => {
 //   );
 // }
 
-export default InsightStreamBase;

@@ -1,4 +1,4 @@
-async function ImageFetcher(imgURL: string): Promise<Blob> {
+export async function ImageFetcher(imgURL: string): Promise<Blob> {
   const imgBody = await fetch(imgURL, {
     method: "GET",
     headers: {
@@ -9,4 +9,3 @@ async function ImageFetcher(imgURL: string): Promise<Blob> {
   return await imgBody.blob();
 }
 
-export default ImageFetcher;

@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FollowingSiteFeeds } from "../../lib/models/feedModel";
-import EachFeed from "./eachFeed";
+import { EachFeed }  from "./eachFeed";
 import InfiniteScroll from "react-infinite-scroller";
 import { Simulate } from "react-dom/test-utils";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ type Props = {
   loader: React.ReactNode;
 };
 
-const Timeline: React.FC<Props> = ({
+export const Timeline: React.FC<Props> = ({
   data,
   isLoading,
   loadMore,
@@ -108,5 +108,3 @@ const Timeline: React.FC<Props> = ({
     </Flex>
   );
 };
-
-export default Timeline;

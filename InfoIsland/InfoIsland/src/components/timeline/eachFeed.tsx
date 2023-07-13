@@ -8,7 +8,7 @@ type EachFeedProps = {
   index: number;
 };
 
-const EachFeed = (props: EachFeedProps) => {
+export const EachFeed = (props: EachFeedProps) => {
   return (
     <Flex flexDirection={"row"} key={props.index} m={"1%"}>
       <Flex flexDirection={"row"} w={"100%"} h={"100%"}>
@@ -70,4 +70,3 @@ const EachFeed = (props: EachFeedProps) => {
   );
 };
 
-export default EachFeed;

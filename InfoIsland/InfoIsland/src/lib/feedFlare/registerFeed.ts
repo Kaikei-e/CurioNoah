@@ -1,6 +1,6 @@
-import registeredFeed from "../models/apiExchange/registeredFeed";
+import {registeredFeed } from "../models/apiExchange/registeredFeed";
 
-async function RegisterFeed(feedURL: string): Promise<registeredFeed> {
+export async function RegisterFeed(feedURL: string): Promise<registeredFeed> {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;
 
@@ -25,4 +25,3 @@ async function RegisterFeed(feedURL: string): Promise<registeredFeed> {
   return await JSON.parse(JSON.stringify(data));
 }
 
-export default RegisterFeed;

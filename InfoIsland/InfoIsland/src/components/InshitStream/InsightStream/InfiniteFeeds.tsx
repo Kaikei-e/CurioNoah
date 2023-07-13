@@ -5,7 +5,7 @@ import { EachFeed, Feeds } from "../../../lib/models/eachFeed";
 
 type Props = {};
 
-const InfiniteFeeds: React.FC<Props> = () => {
+export const InfiniteFeeds: React.FC<Props> = () => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;
 
@@ -93,4 +93,3 @@ const InfiniteFeeds: React.FC<Props> = () => {
   );
 };
 
-export default InfiniteFeeds;

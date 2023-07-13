@@ -1,5 +1,5 @@
 import { Flex, Spinner } from "@chakra-ui/react";
-import FeedCard from "./FeedCard";
+import {FeedCard }from "./FeedCard";
 import { Item } from "../../../lib/models/feedModel";
 import React from "react";
 import useSWR from "swr";
@@ -8,7 +8,7 @@ async function fetcher(key: string, init?: RequestInit) {
   return fetch(key, init).then((res) => res.json() as Promise<Item | null>);
 }
 
-const StreamLine = () => {
+export const StreamLine = () => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;
 
@@ -31,4 +31,3 @@ const StreamLine = () => {
   );
 };
 
-export default StreamLine;

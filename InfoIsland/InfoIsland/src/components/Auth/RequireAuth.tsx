@@ -15,7 +15,7 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export default function RequireAuth({
+export function RequireAuth({
   children,
 }: {
   children: React.ReactNode;

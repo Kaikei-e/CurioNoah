@@ -1,10 +1,10 @@
 import { Button, Flex, Text, Input } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
-import RegisterFeed from "../../lib/feedFlare/registerFeed";
+import {RegisterFeed} from "../../lib/feedFlare/registerFeed";
 import { useState } from "react";
-import registeredFeed from "../../lib/models/apiExchange/registeredFeed";
+import {registeredFeed} from "../../lib/models/apiExchange/registeredFeed";
 
-const AddFeed = () => {
+export const AddFeed = () => {
   const [feedUrl, setFeedUrl] = useState("");
 
   return (
@@ -61,4 +61,3 @@ const AddFeed = () => {
   );
 };
 
-export default AddFeed;

@@ -1,8 +1,8 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import InsightStreamBase from "../components/InsightStreamBase";
+import {InsightStreamBase } from "../components/InsightStreamBase";
 import React from "react";
 
-const Home = () => {
+export const Home = () => {
   return (
     <Flex
       bgColor={"#EAF2F8"}
@@ -117,4 +117,3 @@ const Home = () => {
   );
 };
 
-export default Home;
