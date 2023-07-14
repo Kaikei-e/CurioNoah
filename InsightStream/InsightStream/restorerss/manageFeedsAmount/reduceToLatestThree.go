@@ -9,6 +9,10 @@ func ReduceToLatestThreeItems(feeds []*gofeed.Feed) ([]gofeed.Feed, error) {
 	const trimNum = 3
 	var reducedFeeds []gofeed.Feed
 
+	if feeds == nil {
+		return nil, nil
+	}
+
 	sort.Slice(feeds, func(i, j int) bool {
 		return feeds[i].UpdatedParsed.After(*feeds[j].UpdatedParsed)
 	})
