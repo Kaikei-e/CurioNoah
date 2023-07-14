@@ -1,7 +1,9 @@
 package restorerss
 
 import (
+	"github.com/mmcdole/gofeed"
 	"insightstream/models/feeds"
+	"reflect"
 	"testing"
 
 	"insightstream/ent"
@@ -63,4 +65,56 @@ func TestFeedExchange(t *testing.T) {
 		t.Errorf("Item title is %s, expected %s", feedList[0].Items[0].Title, expectedItemTitle)
 	}
 
+}
+
+func TestEntFollowListExchangeToGofeed(t *testing.T) {
+	type args struct {
+		followLists []*ent.FollowList
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []*gofeed.Feed
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := EntFollowListExchangeToGofeed(tt.args.followLists)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("EntFollowListExchangeToGofeed() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("EntFollowListExchangeToGofeed() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestExchangeEntFeedsToGofeeds(t *testing.T) {
+	type args struct {
+		feedsEnt []*ent.Feeds
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []feeds.EachFeed
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ExchangeEntFeedsToGofeeds(tt.args.feedsEnt)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ExchangeEntFeedsToGofeeds() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ExchangeEntFeedsToGofeeds() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
