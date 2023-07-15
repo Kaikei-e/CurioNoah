@@ -186,6 +186,7 @@ services:
       - '5432:5432'
     tty: true
     volumes:
+      - './oath_db/init/create_oath_db.sql:/docker-entrypoint-initdb.d/create_oath_db.sql'
       - './oath_db/postgresql/data:/var/lib/postgresql/data'
     environment:
       timezone: 'Asia/Tokyo'
