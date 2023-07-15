@@ -1,1 +1,8 @@
-CREATE SCHEMA IF NOT EXISTS oauth_db;
+CREATE SCHEMA IF NOT EXISTS oath_db;
+CREATE TABLE IF NOT EXISTS oath_db.users (
+    id UUID NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
