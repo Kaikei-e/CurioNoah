@@ -15,32 +15,9 @@ class DataSourceConfig {
 
         return DataSourceBuilder.create()
             .url(dotenv["DB_URL"])
-            .username(dotenv["DB_USERNAME"])
-            .password(dotenv["DB_PASSWORD"])
+            .username(dotenv["DB_USER"])
+            .password(dotenv["DB_PASS"])
             .driverClassName("org.postgresql.Driver")
             .build()
     }
 }
-
-//public fun initializeConnection() {
-//    println("Initializing connection...")
-//
-//    val dotenv = dotenv()
-//    val host = dotenv["DB_HOST"]
-//    val port = dotenv["DB_PORT"]
-//    val database = dotenv["DB_NAME"]
-//    val user = dotenv["DB_USER"]
-//    val password = dotenv["DB_PASSWORD"]
-//
-//    val url = "jdbc:postgresql://$user:$password@$host:$port/$database"
-//
-//    println("Required information was loaded.")
-//    println("Connecting to database...")
-//
-//    val connection = java.sql.DriverManager.getConnection(url)
-//
-//    println("Connected to database.")
-//
-//    connection.close()
-//
-//}
