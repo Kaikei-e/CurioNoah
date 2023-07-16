@@ -1,14 +1,13 @@
 package schema
 
 import (
+	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
-	"entgo.io/ent/schema/index"
-	"time"
-
-	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
+	"time"
 )
 
 // Feeds holds the schema definition for the Feeds entity.
@@ -50,6 +49,12 @@ func (Feeds) Indexes() []ent.Index {
 		index.Fields("dt_updated", "feed_url").
 			Annotations(entsql.Desc()).
 			StorageKey("idx_feeds_dt_updated_feed_url"),
+		index.Fields("title").Annotations(
+			entsql.IndexTypes(map[string]string{
+				dialect.MySQL:    "FULLTEXT",
+				dialect.Postgres: "GIN",
+			}),
+		),
 	}
 }
 
