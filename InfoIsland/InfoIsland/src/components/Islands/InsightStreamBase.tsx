@@ -4,8 +4,8 @@ import {Timeline} from "./timeline/Timeline";
 import {
   FollowingSiteFeeds,
   FollowingSiteFeedsList,
-} from "../lib/models/feedModel";
-import { Feeds } from "../lib/models/eachFeed";
+} from "../../lib/models/feedModel";
+import { Feeds } from "../../lib/models/eachFeed";
 
 export const InsightStreamBase = () => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;

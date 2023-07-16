@@ -1,4 +1,4 @@
-import { Item } from "../../../lib/models/feedModel";
+import { Item } from "../../../../lib/models/feedModel";
 import {
   Card,
   CardHeader,

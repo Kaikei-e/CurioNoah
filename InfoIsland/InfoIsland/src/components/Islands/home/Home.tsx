@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import {InsightStreamBase } from "../components/InsightStreamBase";
+import {InsightStreamBase } from "../InsightStreamBase";
 import React from "react";
 
 export const Home = () => {

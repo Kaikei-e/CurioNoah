@@ -12,8 +12,8 @@ import {
   RouterProvider,
   Routes,
 } from "react-router-dom";
-import {Home} from "./home/Home";
-import {InsightStreamMain }from "./components/InshitStream/InsightStreamMain";
+import {Home} from "./components/Islands/home/Home";
+import {InsightStreamMain }from "./components/Islands/InshitStream/InsightStreamMain";
 import {Login }from "./components/Login/Login";
 import {RequireAuth, AuthProvider } from "./components/Auth/RequireAuth";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { Box, CircularProgress, Flex, Link, Text } from "@chakra-ui/react";
-import { EachFeed, Feeds } from "../../../lib/models/eachFeed";
+import { EachFeed, Feeds } from "../../../../lib/models/eachFeed";
 
 type Props = {};
 
