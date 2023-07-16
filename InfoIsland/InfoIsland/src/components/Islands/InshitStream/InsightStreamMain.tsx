@@ -11,8 +11,8 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import React from "react";
-import {AddFeed} from "./AddFeed";
-import {InfiniteFeeds} from "./InsightStream/InfiniteFeeds";
+import { AddFeed } from "./AddFeed";
+import { InfiniteFeeds } from "./InsightStream/InfiniteFeeds";
 
 export const InsightStreamMain = () => {
   return (
@@ -151,4 +151,3 @@ export const InsightStreamMain = () => {
     </Flex>
   );
 };
-

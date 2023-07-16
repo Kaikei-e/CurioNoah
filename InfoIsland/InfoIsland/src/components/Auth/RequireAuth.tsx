@@ -1,4 +1,4 @@
-import React, {useState, createContext, useContext, useEffect} from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { User } from "../../lib/models/user";
 
@@ -14,13 +14,12 @@ let AuthContext = createContext<AuthContextType | null>(null);
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
 
-
-export function RequireAuth({children}: {children: React.ReactNode;}) {
+export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, signin, signout, isAuthenticating } = useAuth();
   let location = useLocation();
   const navigate = useNavigate();
@@ -46,35 +45,37 @@ export const AuthProvider: React.VFC<Props> = (props) => {
   let [isAuthenticating, setAuthenticating] = useState(true);
 
   useEffect(() => {
-    const user = sessionStorage.getItem('user');
-    if(user) {
+    const user = sessionStorage.getItem("user");
+    if (user) {
       setUser(JSON.parse(user));
     }
     setAuthenticating(false); // Authentication check is finished.
   }, []);
 
-
   const signin = (user: User, callback: () => void) => {
     if (user.username === "admin" && user.password === "admin") {
       setUser({ username: "admin", password: "admin" });
-      sessionStorage.setItem('user', JSON.stringify({ username: "admin", password: "admin" }));
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ username: "admin", password: "admin" })
+      );
       callback();
     }
   };
 
   const signout = (callback: () => void) => {
     setUser(null);
-    sessionStorage.removeItem('user');
+    sessionStorage.removeItem("user");
     callback();
   };
 
   let value = { user, signin, signout, isAuthenticating };
 
   return (
-      <>
-        <AuthContext.Provider value={value}>
-          {props.children}
-        </AuthContext.Provider>
-      </>
+    <>
+      <AuthContext.Provider value={value}>
+        {props.children}
+      </AuthContext.Provider>
+    </>
   );
 };

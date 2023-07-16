@@ -1,5 +1,5 @@
 import { Flex, Spinner } from "@chakra-ui/react";
-import {FeedCard }from "./FeedCard";
+import { FeedCard } from "./FeedCard";
 import { Item } from "../../../../lib/models/feedModel";
 import React from "react";
 import useSWR from "swr";
@@ -30,4 +30,3 @@ export const StreamLine = () => {
     </Flex>
   );
 };
-

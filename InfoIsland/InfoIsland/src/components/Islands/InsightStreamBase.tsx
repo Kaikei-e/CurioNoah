@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, AlertIcon, CircularProgress, Flex } from "@chakra-ui/react";
-import {Timeline} from "./timeline/Timeline";
+import { Timeline } from "./timeline/Timeline";
 import {
   FollowingSiteFeeds,
   FollowingSiteFeedsList,
@@ -87,4 +87,3 @@ export const InsightStreamBase = () => {
 //     old.every((val, index) => val === newF[index])
 //   );
 // }
-

@@ -50,4 +50,3 @@ export const FeedCard = ({ feed }: { feed: Item }) => {
     </Card>
   );
 };
-

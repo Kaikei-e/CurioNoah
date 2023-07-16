@@ -1,4 +1,4 @@
-import {registeredFeed } from "../models/apiExchange/registeredFeed";
+import { registeredFeed } from "../models/apiExchange/registeredFeed";
 
 export async function RegisterFeed(feedURL: string): Promise<registeredFeed> {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
@@ -24,4 +24,3 @@ export async function RegisterFeed(feedURL: string): Promise<registeredFeed> {
   // TODO I have to change the API model tp return a boolean
   return await JSON.parse(JSON.stringify(data));
 }
-

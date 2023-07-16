@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FollowingSiteFeeds } from "../../../lib/models/feedModel";
-import { EachFeed }  from "./eachFeed";
+import { EachFeed } from "./eachFeed";
 import InfiniteScroll from "react-infinite-scroller";
 import { Simulate } from "react-dom/test-utils";
 import { useNavigate } from "react-router-dom";

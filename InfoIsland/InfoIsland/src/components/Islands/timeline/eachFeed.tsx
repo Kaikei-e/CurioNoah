@@ -69,4 +69,3 @@ export const EachFeed = (props: EachFeedProps) => {
     </Flex>
   );
 };
-

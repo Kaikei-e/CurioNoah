@@ -92,4 +92,3 @@ export const InfiniteFeeds: React.FC<Props> = () => {
     </InfiniteScroll>
   );
 };
-

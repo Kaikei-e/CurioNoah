@@ -74,4 +74,3 @@ export const App = () => (
     </Flex>
   </Box>
 );
-

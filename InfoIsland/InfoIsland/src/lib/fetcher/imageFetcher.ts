@@ -8,4 +8,3 @@ export async function ImageFetcher(imgURL: string): Promise<Blob> {
 
   return await imgBody.blob();
 }
-

@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import {InsightStreamBase } from "../InsightStreamBase";
+import { InsightStreamBase } from "../InsightStreamBase";
 import React from "react";
+import { FeedFlare } from "../FeedFlare/FeedFlare";
 
 export const Home = () => {
   return (
@@ -60,14 +61,20 @@ export const Home = () => {
               mr={"2%"}
               rounded={"xl"}
             >
-              <Flex justifyContent={"start"} alignItems={"start"}>
+              <Flex
+                justifyContent={"start"}
+                alignItems={"start"}
+                textAlign={"center"}
+                flexDirection={"column"}
+              >
                 <Text
                   fontWeight="regular"
                   fontSize={{ base: "xl", md: "2xl", lg: "2xl" }}
                   color="#000"
                 >
-                  FeedFlare: Feed Collector
+                  FeedFlare: Explore Stored Feeds
                 </Text>
+                <FeedFlare />
               </Flex>
             </Flex>
             <Flex
@@ -116,4 +123,3 @@ export const Home = () => {
     </Flex>
   );
 };
-
