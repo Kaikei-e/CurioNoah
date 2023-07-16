@@ -166,6 +166,7 @@ services:
     tty: true
     volumes:
       - './CoreDatabase/mysql/data:/var/lib/mysql'
+      - './CoreDatabase/init:/docker-entrypoint-initdb.d'
     environment:
       timezone: 'Asia/Tokyo'
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
