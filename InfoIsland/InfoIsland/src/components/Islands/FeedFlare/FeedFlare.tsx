@@ -14,7 +14,9 @@ export const FeedFlare = (props: Props) => {
     formState: { errors },
   } = useForm<Input>();
 
-  const onSubmit: SubmitHandler<Input> = (data: Input) => console.log(data);
+  const onSubmit: SubmitHandler<Input> = (data: Input) => {
+
+  }
   return (
     <div>
       <h3>FeedFlare</h3>
