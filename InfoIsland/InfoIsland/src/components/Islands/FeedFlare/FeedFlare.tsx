@@ -1,4 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
+import {insightStreamAPI} from "../../../lib/insightStream/InsightStreamAPI";
+import React from "react";
+import {EachFeed} from "../../../lib/models/eachFeed";
 
 type Props = {};
 
@@ -14,8 +17,19 @@ export const FeedFlare = (props: Props) => {
     formState: { errors },
   } = useForm<Input>();
 
-  const onSubmit: SubmitHandler<Input> = (data: Input) => {
+  const [items, setItems] = React.useState<EachFeed[]>([]);
 
+  const onSubmit: SubmitHandler<Input> = (data: Input) => {
+    const res = insightStreamAPI("GET", "/search/", data)
+        .then((res) => {
+            console.log(res);
+            setItems(res.feeds)
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
+    console.log(res);
   }
   return (
     <div>
@@ -24,6 +38,15 @@ export const FeedFlare = (props: Props) => {
         <input defaultValue="Go" {...register("searchKeyword")} />
         <input type="submit" />
       </form>
+
+      {items.map((item: EachFeed, index: number) => (
+          <div key={index}>
+            <h1>{item.title}</h1>
+            <p>{item.description}</p>
+            <p>{item.feed_url}</p>
+            <p>{item.dt_updated}</p>
+          </div>
+      ))}
     </div>
   );
 };

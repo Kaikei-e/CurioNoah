@@ -26,7 +26,9 @@ export const insightStreamAPI = async (inputAction: string, url: string, body?: 
 
     const wantedAction = action(inputAction as Method);
     if (wantedAction === Method.GET) {
-        const response = await fetch(apiURL + "/" + url, {
+        const queryParam = new URLSearchParams(body as URLSearchParams);
+
+        const response = await fetch(apiURL + url + queryParam, {
             method: wantedAction,
             headers: {
                 "Content-Type": "application/json",
@@ -39,7 +41,7 @@ export const insightStreamAPI = async (inputAction: string, url: string, body?: 
             return false;
         });
     }else if (wantedAction === Method.POST) {
-        const response = await fetch(apiURL + "/" + url, {
+        const response = await fetch(apiURL + url, {
             method: wantedAction,
             headers: {
                 "Content-Type": "application/json",
