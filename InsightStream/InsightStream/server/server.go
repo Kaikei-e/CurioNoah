@@ -134,6 +134,16 @@ func Server(cl *ent.Client) {
 				return err
 			})
 		}
+
+		search := apiV1.Group("/search")
+		search.Use()
+		{
+			search.GET("/feeds", func(c echo.Context) error {
+				err := adaptor.SearchFeeds(c, cl)
+				return err
+			})
+		}
+
 	}
 
 	// change the architecture to onion architecture like
