@@ -20,7 +20,7 @@ export const FeedFlare = (props: Props) => {
   const [items, setItems] = React.useState<EachFeed[]>([]);
 
   const onSubmit: SubmitHandler<Input> = (data: Input) => {
-    const res = insightStreamAPI("GET", "/search/", data)
+    const res = insightStreamAPI("GET", "/search/feeds", data)
         .then((res) => {
             console.log(res);
             setItems(res.feeds)
