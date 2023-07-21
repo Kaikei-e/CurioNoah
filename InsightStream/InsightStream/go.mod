@@ -13,6 +13,7 @@ require (
 	github.com/mmcdole/gofeed v1.1.3
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/exp v0.0.0-20230116083435-1de6713980de
+	golang.org/x/net v0.4.0
 )
 
 require (
@@ -39,7 +40,6 @@ require (
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	golang.org/x/crypto v0.2.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
 	golang.org/x/time v0.2.0 // indirect
