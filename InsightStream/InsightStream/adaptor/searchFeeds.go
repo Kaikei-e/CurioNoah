@@ -1,17 +1,28 @@
 package adaptor
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
+	"insightstream/domain/searchWord"
 	"insightstream/ent"
+	"insightstream/models/feeds"
+	"insightstream/usecase/searchUsecase"
 )
 
-func SearchFeeds(c echo.Context, cl *ent.Client) error {
+func SearchFeeds(c echo.Context, cl *ent.Client) ([]feeds.EachFeed, error) {
 
 	queryParams := c.QueryParams()
-	keyword := queryParams.Get("searchWord")
+	title := queryParams.Get("title")
+	description := queryParams.Get("description")
 
-	fmt.Println("keyword: ", keyword)
+	keyword := searchWord.SearchWord{
+		Title:       title,
+		Description: description,
+	}
 
-	return nil
+	titleOrDescription, err := searchUsecase.SearchByTitleOrDescription(keyword, cl)
+	if err != nil {
+		return nil, err
+	}
+
+	return titleOrDescription, nil
 }

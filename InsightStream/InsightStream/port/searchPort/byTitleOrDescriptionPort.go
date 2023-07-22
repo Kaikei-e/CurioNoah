@@ -24,7 +24,7 @@ func (s *Impl) SearchByTitleOrDescription(sw searchWord.SearchWord, cl *ent.Clie
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("feeds: ", feeds)
+	fmt.Println("feeds length is : ", len(feeds))
 
-	panic("implement me")
+	return feeds, nil
 }

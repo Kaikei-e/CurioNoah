@@ -10,6 +10,7 @@ import (
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
 	"insightstream/restorerss/manageFeedsAmount"
+	"log"
 	"sort"
 	"strconv"
 )
@@ -139,8 +140,12 @@ func Server(cl *ent.Client) {
 		search.Use()
 		{
 			search.GET("/feeds", func(c echo.Context) error {
-				err := adaptor.SearchFeeds(c, cl)
-				return err
+				searchedFeeds, err := adaptor.SearchFeeds(c, cl)
+				if err != nil {
+					log.Fatalln(err)
+				}
+
+				return c.JSON(200, searchedFeeds)
 			})
 		}
 
