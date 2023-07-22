@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 # Copy assets from the source directory to the destination directory
 
