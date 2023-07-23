@@ -6,7 +6,7 @@ import (
 )
 
 func CountFeeds() (int, error) {
-	result, err := repository.CoreDatabase.Query("SELECT COUNT(*) FROM baseFeeds")
+	result, err := repository.CoreDatabase.Query("SELECT COUNT(*) FROM feeds")
 	if err != nil {
 		return -1, err
 	}

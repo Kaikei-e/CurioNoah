@@ -5,6 +5,7 @@ import (
 	"insightstream/dependencyInversion"
 	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -20,17 +21,20 @@ func InfiniteFetching(c echo.Context, cl *ent.Client) error {
 	diFC := dependencyInversion.NewFeedCollection()
 	fds, hadExceeded, err := diFC.FetchInfinite(qp, cl)
 	if err != nil {
+		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
 	if hadExceeded {
 		err = c.JSON(200, response{fds, hadExceeded})
 		if err != nil {
+			log.Println(err)
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 	} else {
 		err = c.JSON(200, response{fds, false})
 		if err != nil {
+			log.Println(err)
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 	}
