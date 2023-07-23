@@ -79,7 +79,7 @@ func Server(cl *ent.Client) {
 						HadExceeded: hadExceeded,
 					}
 
-					e.Logger.Info("no more feeds")
+					e.Logger.Info("no more baseFeeds")
 					return c.JSON(200, emptyRes)
 				}
 
@@ -95,10 +95,10 @@ func Server(cl *ent.Client) {
 
 				reducedFeeds, err := manageFeedsAmount.ReduceToLatestThreeItems(feeds)
 				if err != nil {
-					e.Logger.Errorf("failed to reduce feeds. error: %v", err)
+					e.Logger.Errorf("failed to reduce baseFeeds. error: %v", err)
 				}
 
-				e.Logger.Infof("feeds were fetched: feed number is %v", len(reducedFeeds))
+				e.Logger.Infof("baseFeeds were fetched: feed number is %v", len(reducedFeeds))
 
 				var feedsFormatted []gofeed.Feed
 				for _, feed := range reducedFeeds {
@@ -139,7 +139,7 @@ func Server(cl *ent.Client) {
 		search := apiV1.Group("/search")
 		search.Use()
 		{
-			search.GET("/feeds", func(c echo.Context) error {
+			search.GET("/baseFeeds", func(c echo.Context) error {
 				searchedFeeds, err := adaptor.SearchFeeds(c, cl)
 				if err != nil {
 					log.Fatalln(err)
@@ -169,6 +169,6 @@ func Server(cl *ent.Client) {
 }
 
 type Response struct {
-	Feeds       []gofeed.Feed `json:"feeds"`
+	Feeds       []gofeed.Feed `json:"baseFeeds"`
 	HadExceeded bool          `json:"hadExceeded"`
 }

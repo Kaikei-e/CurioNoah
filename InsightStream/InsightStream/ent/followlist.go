@@ -5,8 +5,8 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent/followlist"
-	"insightstream/models/feeds"
 	"strings"
 	"time"
 
@@ -34,9 +34,9 @@ type FollowList struct {
 	// Link holds the value of the "link" field.
 	Link string `json:"link,omitempty"`
 	// Links holds the value of the "links" field.
-	Links feeds.FeedLink `json:"links,omitempty"`
+	Links baseFeeds.FeedLink `json:"links,omitempty"`
 	// ItemDescription holds the value of the "item_description" field.
-	ItemDescription []feeds.FeedItem `json:"item_description,omitempty"`
+	ItemDescription []baseFeeds.FeedItem `json:"item_description,omitempty"`
 	// Language holds the value of the "language" field.
 	Language string `json:"language,omitempty"`
 	// DtCreated holds the value of the "dt_created" field.

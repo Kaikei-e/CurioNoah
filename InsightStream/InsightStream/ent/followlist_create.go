@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent/followlist"
-	"insightstream/models/feeds"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -121,13 +121,13 @@ func (flc *FollowListCreate) SetNillableLink(s *string) *FollowListCreate {
 }
 
 // SetLinks sets the "links" field.
-func (flc *FollowListCreate) SetLinks(fl feeds.FeedLink) *FollowListCreate {
+func (flc *FollowListCreate) SetLinks(fl baseFeeds.FeedLink) *FollowListCreate {
 	flc.mutation.SetLinks(fl)
 	return flc
 }
 
 // SetNillableLinks sets the "links" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableLinks(fl *feeds.FeedLink) *FollowListCreate {
+func (flc *FollowListCreate) SetNillableLinks(fl *baseFeeds.FeedLink) *FollowListCreate {
 	if fl != nil {
 		flc.SetLinks(*fl)
 	}
@@ -135,7 +135,7 @@ func (flc *FollowListCreate) SetNillableLinks(fl *feeds.FeedLink) *FollowListCre
 }
 
 // SetItemDescription sets the "item_description" field.
-func (flc *FollowListCreate) SetItemDescription(fi []feeds.FeedItem) *FollowListCreate {
+func (flc *FollowListCreate) SetItemDescription(fi []baseFeeds.FeedItem) *FollowListCreate {
 	flc.mutation.SetItemDescription(fi)
 	return flc
 }

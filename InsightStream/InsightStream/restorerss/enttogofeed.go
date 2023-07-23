@@ -2,8 +2,8 @@ package restorerss
 
 import (
 	"github.com/mmcdole/gofeed"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
-	"insightstream/models/feeds"
 )
 
 // TODO will implement unit tests
@@ -62,11 +62,11 @@ func EntFollowListExchangeToGofeed(followLists []*ent.FollowList) ([]*gofeed.Fee
 	return feedList, nil
 }
 
-func ExchangeEntFeedsToGofeeds(feedsEnt []*ent.Feeds) ([]feeds.EachFeed, error) {
-	var convertedFeeds []feeds.EachFeed
+func ExchangeEntFeedsToGofeeds(feedsEnt []*ent.Feeds) ([]baseFeeds.EachFeed, error) {
+	var convertedFeeds []baseFeeds.EachFeed
 
 	for _, feed := range feedsEnt {
-		convertedFeeds = append(convertedFeeds, feeds.EachFeed{
+		convertedFeeds = append(convertedFeeds, baseFeeds.EachFeed{
 			Id:          feed.ID,
 			SiteURL:     feed.SiteURL,
 			Title:       feed.Title,

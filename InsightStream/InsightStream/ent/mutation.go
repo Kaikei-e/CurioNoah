@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent/cooccurrencenetworkpool"
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
@@ -13,7 +14,6 @@ import (
 	"insightstream/ent/followlist"
 	"insightstream/ent/predicate"
 	"insightstream/ent/users"
-	"insightstream/models/feeds"
 	"sync"
 	"time"
 
@@ -2067,9 +2067,9 @@ type FollowListMutation struct {
 	title                  *string
 	description            *string
 	link                   *string
-	links                  *feeds.FeedLink
-	item_description       *[]feeds.FeedItem
-	appenditem_description []feeds.FeedItem
+	links                  *baseFeeds.FeedLink
+	item_description       *[]baseFeeds.FeedItem
+	appenditem_description []baseFeeds.FeedItem
 	language               *string
 	dt_created             *time.Time
 	dt_updated             *time.Time
@@ -2477,12 +2477,12 @@ func (m *FollowListMutation) ResetLink() {
 }
 
 // SetLinks sets the "links" field.
-func (m *FollowListMutation) SetLinks(fl feeds.FeedLink) {
+func (m *FollowListMutation) SetLinks(fl baseFeeds.FeedLink) {
 	m.links = &fl
 }
 
 // Links returns the value of the "links" field in the mutation.
-func (m *FollowListMutation) Links() (r feeds.FeedLink, exists bool) {
+func (m *FollowListMutation) Links() (r baseFeeds.FeedLink, exists bool) {
 	v := m.links
 	if v == nil {
 		return
@@ -2493,7 +2493,7 @@ func (m *FollowListMutation) Links() (r feeds.FeedLink, exists bool) {
 // OldLinks returns the old "links" field's value of the FollowList entity.
 // If the FollowList object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldLinks(ctx context.Context) (v feeds.FeedLink, err error) {
+func (m *FollowListMutation) OldLinks(ctx context.Context) (v baseFeeds.FeedLink, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLinks is only allowed on UpdateOne operations")
 	}
@@ -2513,13 +2513,13 @@ func (m *FollowListMutation) ResetLinks() {
 }
 
 // SetItemDescription sets the "item_description" field.
-func (m *FollowListMutation) SetItemDescription(fi []feeds.FeedItem) {
+func (m *FollowListMutation) SetItemDescription(fi []baseFeeds.FeedItem) {
 	m.item_description = &fi
 	m.appenditem_description = nil
 }
 
 // ItemDescription returns the value of the "item_description" field in the mutation.
-func (m *FollowListMutation) ItemDescription() (r []feeds.FeedItem, exists bool) {
+func (m *FollowListMutation) ItemDescription() (r []baseFeeds.FeedItem, exists bool) {
 	v := m.item_description
 	if v == nil {
 		return
@@ -2530,7 +2530,7 @@ func (m *FollowListMutation) ItemDescription() (r []feeds.FeedItem, exists bool)
 // OldItemDescription returns the old "item_description" field's value of the FollowList entity.
 // If the FollowList object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []feeds.FeedItem, err error) {
+func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []baseFeeds.FeedItem, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldItemDescription is only allowed on UpdateOne operations")
 	}
@@ -2545,12 +2545,12 @@ func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []feeds.
 }
 
 // AppendItemDescription adds fi to the "item_description" field.
-func (m *FollowListMutation) AppendItemDescription(fi []feeds.FeedItem) {
+func (m *FollowListMutation) AppendItemDescription(fi []baseFeeds.FeedItem) {
 	m.appenditem_description = append(m.appenditem_description, fi...)
 }
 
 // AppendedItemDescription returns the list of values that were appended to the "item_description" field in this mutation.
-func (m *FollowListMutation) AppendedItemDescription() ([]feeds.FeedItem, bool) {
+func (m *FollowListMutation) AppendedItemDescription() ([]baseFeeds.FeedItem, bool) {
 	if len(m.appenditem_description) == 0 {
 		return nil, false
 	}
@@ -3183,14 +3183,14 @@ func (m *FollowListMutation) SetField(name string, value ent.Value) error {
 		m.SetLink(v)
 		return nil
 	case followlist.FieldLinks:
-		v, ok := value.(feeds.FeedLink)
+		v, ok := value.(baseFeeds.FeedLink)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLinks(v)
 		return nil
 	case followlist.FieldItemDescription:
-		v, ok := value.([]feeds.FeedItem)
+		v, ok := value.([]baseFeeds.FeedItem)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

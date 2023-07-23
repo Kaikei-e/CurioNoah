@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent/cooccurrencenetworkpool"
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
@@ -10,7 +11,6 @@ import (
 	"insightstream/ent/followlist"
 	"insightstream/ent/schema"
 	"insightstream/ent/users"
-	"insightstream/models/feeds"
 	"time"
 
 	"github.com/google/uuid"
@@ -135,7 +135,7 @@ func init() {
 	// followlistDescLinks is the schema descriptor for links field.
 	followlistDescLinks := followlistFields[7].Descriptor()
 	// followlist.DefaultLinks holds the default value on creation for the links field.
-	followlist.DefaultLinks = followlistDescLinks.Default.(feeds.FeedLink)
+	followlist.DefaultLinks = followlistDescLinks.Default.(baseFeeds.FeedLink)
 	// followlistDescLanguage is the schema descriptor for language field.
 	followlistDescLanguage := followlistFields[9].Descriptor()
 	// followlist.DefaultLanguage holds the default value on creation for the language field.

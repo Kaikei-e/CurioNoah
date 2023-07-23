@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/predicate"
-	"insightstream/models/feeds"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -144,13 +144,13 @@ func (flu *FollowListUpdate) SetNillableLink(s *string) *FollowListUpdate {
 }
 
 // SetLinks sets the "links" field.
-func (flu *FollowListUpdate) SetLinks(fl feeds.FeedLink) *FollowListUpdate {
+func (flu *FollowListUpdate) SetLinks(fl baseFeeds.FeedLink) *FollowListUpdate {
 	flu.mutation.SetLinks(fl)
 	return flu
 }
 
 // SetNillableLinks sets the "links" field if the given value is not nil.
-func (flu *FollowListUpdate) SetNillableLinks(fl *feeds.FeedLink) *FollowListUpdate {
+func (flu *FollowListUpdate) SetNillableLinks(fl *baseFeeds.FeedLink) *FollowListUpdate {
 	if fl != nil {
 		flu.SetLinks(*fl)
 	}
@@ -158,13 +158,13 @@ func (flu *FollowListUpdate) SetNillableLinks(fl *feeds.FeedLink) *FollowListUpd
 }
 
 // SetItemDescription sets the "item_description" field.
-func (flu *FollowListUpdate) SetItemDescription(fi []feeds.FeedItem) *FollowListUpdate {
+func (flu *FollowListUpdate) SetItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdate {
 	flu.mutation.SetItemDescription(fi)
 	return flu
 }
 
 // AppendItemDescription appends fi to the "item_description" field.
-func (flu *FollowListUpdate) AppendItemDescription(fi []feeds.FeedItem) *FollowListUpdate {
+func (flu *FollowListUpdate) AppendItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdate {
 	flu.mutation.AppendItemDescription(fi)
 	return flu
 }
@@ -598,13 +598,13 @@ func (fluo *FollowListUpdateOne) SetNillableLink(s *string) *FollowListUpdateOne
 }
 
 // SetLinks sets the "links" field.
-func (fluo *FollowListUpdateOne) SetLinks(fl feeds.FeedLink) *FollowListUpdateOne {
+func (fluo *FollowListUpdateOne) SetLinks(fl baseFeeds.FeedLink) *FollowListUpdateOne {
 	fluo.mutation.SetLinks(fl)
 	return fluo
 }
 
 // SetNillableLinks sets the "links" field if the given value is not nil.
-func (fluo *FollowListUpdateOne) SetNillableLinks(fl *feeds.FeedLink) *FollowListUpdateOne {
+func (fluo *FollowListUpdateOne) SetNillableLinks(fl *baseFeeds.FeedLink) *FollowListUpdateOne {
 	if fl != nil {
 		fluo.SetLinks(*fl)
 	}
@@ -612,13 +612,13 @@ func (fluo *FollowListUpdateOne) SetNillableLinks(fl *feeds.FeedLink) *FollowLis
 }
 
 // SetItemDescription sets the "item_description" field.
-func (fluo *FollowListUpdateOne) SetItemDescription(fi []feeds.FeedItem) *FollowListUpdateOne {
+func (fluo *FollowListUpdateOne) SetItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdateOne {
 	fluo.mutation.SetItemDescription(fi)
 	return fluo
 }
 
 // AppendItemDescription appends fi to the "item_description" field.
-func (fluo *FollowListUpdateOne) AppendItemDescription(fi []feeds.FeedItem) *FollowListUpdateOne {
+func (fluo *FollowListUpdateOne) AppendItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdateOne {
 	fluo.mutation.AppendItemDescription(fi)
 	return fluo
 }

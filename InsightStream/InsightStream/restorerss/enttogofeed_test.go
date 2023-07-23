@@ -2,7 +2,7 @@ package restorerss
 
 import (
 	"github.com/mmcdole/gofeed"
-	"insightstream/models/feeds"
+	baseFeeds2 "insightstream/domain/baseFeeds"
 	"reflect"
 	"testing"
 
@@ -19,9 +19,9 @@ func TestFeedExchange(t *testing.T) {
 			URL:         "https://example.com/feed1",
 			Link:        "https://example.com",
 			Language:    "en",
-			ItemDescription: []feeds.FeedItem{
+			ItemDescription: []baseFeeds2.FeedItem{
 				// Create FeedItem objects with mock data
-				feeds.FeedItem{
+				baseFeeds2.FeedItem{
 					ItemTitle:       "Item 1",
 					ItemLink:        "https://example.com/item1",
 					ItemDescription: "Item description 1",
@@ -48,7 +48,7 @@ func TestFeedExchange(t *testing.T) {
 
 	expectedFeedCount := len(feedsEnt)
 	if len(feedList) != expectedFeedCount {
-		t.Errorf("EntFollowListExchangeToGofeed returned %d feeds, expected %d", len(feedList), expectedFeedCount)
+		t.Errorf("EntFollowListExchangeToGofeed returned %d baseFeeds, expected %d", len(feedList), expectedFeedCount)
 	}
 
 	// Add more assertions based on your specific requirements
@@ -100,7 +100,7 @@ func TestExchangeEntFeedsToGofeeds(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    []feeds.EachFeed
+		want    []baseFeeds2.EachFeed
 		wantErr bool
 	}{
 		// TODO: Add test cases.

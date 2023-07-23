@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	// Label holds the string label denoting the feeds type in the database.
-	Label = "feeds"
+	// Label holds the string label denoting the baseFeeds type in the database.
+	Label = "baseFeeds"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
 	// FieldSiteURL holds the string denoting the site_url field in the database.
@@ -29,11 +29,11 @@ const (
 	FieldDtUpdated = "dt_updated"
 	// FieldFavorites holds the string denoting the favorites field in the database.
 	FieldFavorites = "favorites"
-	// Table holds the table name of the feeds in the database.
-	Table = "feeds"
+	// Table holds the table name of the baseFeeds in the database.
+	Table = "baseFeeds"
 )
 
-// Columns holds all SQL columns for feeds fields.
+// Columns holds all SQL columns for baseFeeds fields.
 var Columns = []string{
 	FieldID,
 	FieldSiteURL,

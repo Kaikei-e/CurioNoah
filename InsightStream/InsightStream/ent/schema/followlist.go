@@ -3,7 +3,7 @@ package schema
 import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/index"
-	"insightstream/models/feeds"
+	"insightstream/domain/baseFeeds"
 	"time"
 
 	"entgo.io/ent"
@@ -26,8 +26,8 @@ func (FollowList) Fields() []ent.Field {
 		field.String("title").Default(""),
 		field.String("description").Default(""),
 		field.String("link").Default(""),
-		field.JSON("links", feeds.FeedLink{}).Default(feeds.FeedLink{Link: []string{"{}"}}),
-		field.JSON("item_description", []feeds.FeedItem{}),
+		field.JSON("links", baseFeeds.FeedLink{}).Default(baseFeeds.FeedLink{Link: []string{"{}"}}),
+		field.JSON("item_description", []baseFeeds.FeedItem{}),
 		field.String("language").Default("").NotEmpty(),
 		field.Time("dt_created").Default(time.Now()).
 			Optional().

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/mmcdole/gofeed"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
-	"insightstream/models/feeds"
 )
 
 // TODO will implement unit tests
@@ -17,17 +17,17 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 	var links []string
 	links = append(links, feed.Links...)
 
-	var linksJson feeds.FeedLink
+	var linksJson baseFeeds.FeedLink
 	linksJson.Link = links
 
-	var fis []feeds.FeedItem
+	var fis []baseFeeds.FeedItem
 	for _, item := range feed.Items {
 		var authors []string
 		for _, author := range item.Authors {
 			authors = append(authors, author.Name)
 		}
 
-		fis = append(fis, feeds.FeedItem{
+		fis = append(fis, baseFeeds.FeedItem{
 			Id:              uuid.New(),
 			ItemDescription: item.Title,
 			ItemLink:        item.Link,

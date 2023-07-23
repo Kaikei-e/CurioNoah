@@ -3,7 +3,7 @@
 package followlist
 
 import (
-	"insightstream/models/feeds"
+	"insightstream/domain/baseFeeds"
 	"time"
 
 	"github.com/google/uuid"
@@ -105,7 +105,7 @@ var (
 	// DefaultLink holds the default value on creation for the "link" field.
 	DefaultLink string
 	// DefaultLinks holds the default value on creation for the "links" field.
-	DefaultLinks feeds.FeedLink
+	DefaultLinks baseFeeds.FeedLink
 	// DefaultLanguage holds the default value on creation for the "language" field.
 	DefaultLanguage string
 	// LanguageValidator is a validator for the "language" field. It is called by the builders before save.

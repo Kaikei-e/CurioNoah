@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
-	"insightstream/models/feeds"
 	"time"
 )
 
@@ -17,9 +17,9 @@ func Update(fds []*ent.FollowList, cl *ent.Client) error {
 	// need to consider how to update all at once.
 	for _, fd := range fds {
 
-		var feedItems []feeds.FeedItem
+		var feedItems []baseFeeds.FeedItem
 		for _, item := range fd.ItemDescription {
-			feedItems = append(feedItems, feeds.FeedItem{
+			feedItems = append(feedItems, baseFeeds.FeedItem{
 				ItemTitle:       item.ItemTitle,
 				ItemLink:        item.ItemLink,
 				ItemDescription: item.ItemDescription,
@@ -37,7 +37,7 @@ func Update(fds []*ent.FollowList, cl *ent.Client) error {
 			links = append(links, item.ItemLink)
 		}
 
-		var linksJson feeds.FeedLink
+		var linksJson baseFeeds.FeedLink
 		linksJson.Link = links
 
 		_, err := cl.FollowList.UpdateOneID(fd.ID).

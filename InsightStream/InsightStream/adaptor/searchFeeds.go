@@ -3,12 +3,12 @@ package adaptor
 import (
 	"github.com/labstack/echo/v4"
 	"insightstream/domain/searchWord"
+	"insightstream/domain/searchedFeed"
 	"insightstream/ent"
-	"insightstream/models/feeds"
 	"insightstream/usecase/searchUsecase"
 )
 
-func SearchFeeds(c echo.Context, cl *ent.Client) ([]feeds.EachFeed, error) {
+func SearchFeeds(c echo.Context, cl *ent.Client) ([]searchedFeed.ByTitleOrDescription, error) {
 
 	queryParams := c.QueryParams()
 	title := queryParams.Get("title")
