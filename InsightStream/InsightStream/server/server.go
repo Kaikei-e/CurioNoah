@@ -169,6 +169,6 @@ func Server(cl *ent.Client) {
 }
 
 type Response struct {
-	Feeds       []gofeed.Feed `json:"baseFeeds"`
+	Feeds       []gofeed.Feed `json:"feeds"`
 	HadExceeded bool          `json:"hadExceeded"`
 }
