@@ -3,13 +3,13 @@ package searchUsecase
 import (
 	"context"
 	"insightstream/domain/searchWord"
+	"insightstream/domain/searchedFeed"
 	"insightstream/ent"
-	"insightstream/models/feeds"
 	"insightstream/port/searchPort"
-	"insightstream/restorerss"
+	"insightstream/restorerss/convertToResponse"
 )
 
-func SearchByTitleOrDescription(searchWord searchWord.SearchWord, cl *ent.Client) ([]feeds.EachFeed, error) {
+func SearchByTitleOrDescription(searchWord searchWord.SearchWord, cl *ent.Client) ([]searchedFeed.ByTitleOrDescription, error) {
 	ctx := context.Background()
 
 	searchImpl := searchPort.Impl{}
@@ -18,9 +18,10 @@ func SearchByTitleOrDescription(searchWord searchWord.SearchWord, cl *ent.Client
 		return nil, err
 	}
 
-	gfs, err := restorerss.ExchangeEntFeedsToGofeeds(searchedFeeds)
+	toSearchWord, err := convertToResponse.ToSearchWord(searchedFeeds)
 	if err != nil {
 		return nil, err
 	}
-	return gfs, nil
+
+	return toSearchWord, nil
 }

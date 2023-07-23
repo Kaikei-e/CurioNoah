@@ -3,8 +3,8 @@ package adaptor
 import (
 	"github.com/labstack/echo/v4"
 	"insightstream/dependencyInversion"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
-	"insightstream/models/feeds"
 	"net/http"
 	"strconv"
 )
@@ -39,6 +39,6 @@ func InfiniteFetching(c echo.Context, cl *ent.Client) error {
 }
 
 type response struct {
-	Feeds       []feeds.EachFeed `json:"feeds"`
-	HadExceeded bool             `json:"hadExceeded"`
+	Feeds       []baseFeeds.EachFeed `json:"feeds"`
+	HadExceeded bool                 `json:"hadExceeded"`
 }

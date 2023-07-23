@@ -2,8 +2,8 @@ package restorerss
 
 import (
 	"github.com/mmcdole/gofeed"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
-	"insightstream/models/feeds"
 )
 
 func ExchangeToEnt(gFeeds []*gofeed.Feed) []*ent.FollowList {
@@ -11,11 +11,11 @@ func ExchangeToEnt(gFeeds []*gofeed.Feed) []*ent.FollowList {
 
 	for _, feed := range gFeeds {
 
-		var feedLinks feeds.FeedLink
+		var feedLinks baseFeeds.FeedLink
 
-		var feedItems []feeds.FeedItem
+		var feedItems []baseFeeds.FeedItem
 		for _, item := range feed.Items {
-			var itemEnt feeds.FeedItem
+			var itemEnt baseFeeds.FeedItem
 			itemEnt.ItemTitle = item.Title
 			itemEnt.ItemLink = item.Link
 			itemEnt.ItemDescription = item.Description

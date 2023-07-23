@@ -4,13 +4,12 @@ package ent
 
 import (
 	"context"
+	"insightstream/ent/feeds"
 	"insightstream/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-
-	entfeeds "insightstream/ent/feeds"
 )
 
 // FeedsDelete is the builder for deleting a Feeds entity.
@@ -43,10 +42,10 @@ func (fd *FeedsDelete) ExecX(ctx context.Context) int {
 func (fd *FeedsDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: entfeeds.Table,
+			Table: feeds.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: entfeeds.FieldID,
+				Column: feeds.FieldID,
 			},
 		},
 	}
@@ -77,7 +76,7 @@ func (fdo *FeedsDeleteOne) Exec(ctx context.Context) error {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{entfeeds.Label}
+		return &NotFoundError{feeds.Label}
 	default:
 		return nil
 	}

@@ -6,13 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/ent/feeds"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-
-	entfeeds "insightstream/ent/feeds"
 )
 
 // FeedsCreate is the builder for creating a Feeds entity.
@@ -184,35 +183,35 @@ func (fc *FeedsCreate) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (fc *FeedsCreate) defaults() {
 	if _, ok := fc.mutation.SiteURL(); !ok {
-		v := entfeeds.DefaultSiteURL
+		v := feeds.DefaultSiteURL
 		fc.mutation.SetSiteURL(v)
 	}
 	if _, ok := fc.mutation.Title(); !ok {
-		v := entfeeds.DefaultTitle
+		v := feeds.DefaultTitle
 		fc.mutation.SetTitle(v)
 	}
 	if _, ok := fc.mutation.Description(); !ok {
-		v := entfeeds.DefaultDescription
+		v := feeds.DefaultDescription
 		fc.mutation.SetDescription(v)
 	}
 	if _, ok := fc.mutation.FeedURL(); !ok {
-		v := entfeeds.DefaultFeedURL
+		v := feeds.DefaultFeedURL
 		fc.mutation.SetFeedURL(v)
 	}
 	if _, ok := fc.mutation.Language(); !ok {
-		v := entfeeds.DefaultLanguage
+		v := feeds.DefaultLanguage
 		fc.mutation.SetLanguage(v)
 	}
 	if _, ok := fc.mutation.DtCreated(); !ok {
-		v := entfeeds.DefaultDtCreated()
+		v := feeds.DefaultDtCreated()
 		fc.mutation.SetDtCreated(v)
 	}
 	if _, ok := fc.mutation.Favorites(); !ok {
-		v := entfeeds.DefaultFavorites
+		v := feeds.DefaultFavorites
 		fc.mutation.SetFavorites(v)
 	}
 	if _, ok := fc.mutation.ID(); !ok {
-		v := entfeeds.DefaultID()
+		v := feeds.DefaultID()
 		fc.mutation.SetID(v)
 	}
 }
@@ -223,7 +222,7 @@ func (fc *FeedsCreate) check() error {
 		return &ValidationError{Name: "site_url", err: errors.New(`ent: missing required field "Feeds.site_url"`)}
 	}
 	if v, ok := fc.mutation.SiteURL(); ok {
-		if err := entfeeds.SiteURLValidator(v); err != nil {
+		if err := feeds.SiteURLValidator(v); err != nil {
 			return &ValidationError{Name: "site_url", err: fmt.Errorf(`ent: validator failed for field "Feeds.site_url": %w`, err)}
 		}
 	}
@@ -231,7 +230,7 @@ func (fc *FeedsCreate) check() error {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Feeds.title"`)}
 	}
 	if v, ok := fc.mutation.Title(); ok {
-		if err := entfeeds.TitleValidator(v); err != nil {
+		if err := feeds.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Feeds.title": %w`, err)}
 		}
 	}
@@ -239,7 +238,7 @@ func (fc *FeedsCreate) check() error {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Feeds.description"`)}
 	}
 	if v, ok := fc.mutation.Description(); ok {
-		if err := entfeeds.DescriptionValidator(v); err != nil {
+		if err := feeds.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Feeds.description": %w`, err)}
 		}
 	}
@@ -247,7 +246,7 @@ func (fc *FeedsCreate) check() error {
 		return &ValidationError{Name: "feed_url", err: errors.New(`ent: missing required field "Feeds.feed_url"`)}
 	}
 	if v, ok := fc.mutation.FeedURL(); ok {
-		if err := entfeeds.FeedURLValidator(v); err != nil {
+		if err := feeds.FeedURLValidator(v); err != nil {
 			return &ValidationError{Name: "feed_url", err: fmt.Errorf(`ent: validator failed for field "Feeds.feed_url": %w`, err)}
 		}
 	}
@@ -255,7 +254,7 @@ func (fc *FeedsCreate) check() error {
 		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "Feeds.language"`)}
 	}
 	if v, ok := fc.mutation.Language(); ok {
-		if err := entfeeds.LanguageValidator(v); err != nil {
+		if err := feeds.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Feeds.language": %w`, err)}
 		}
 	}
@@ -292,10 +291,10 @@ func (fc *FeedsCreate) createSpec() (*Feeds, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Feeds{config: fc.config}
 		_spec = &sqlgraph.CreateSpec{
-			Table: entfeeds.Table,
+			Table: feeds.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: entfeeds.FieldID,
+				Column: feeds.FieldID,
 			},
 		}
 	)
@@ -304,35 +303,35 @@ func (fc *FeedsCreate) createSpec() (*Feeds, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = &id
 	}
 	if value, ok := fc.mutation.SiteURL(); ok {
-		_spec.SetField(entfeeds.FieldSiteURL, field.TypeString, value)
+		_spec.SetField(feeds.FieldSiteURL, field.TypeString, value)
 		_node.SiteURL = value
 	}
 	if value, ok := fc.mutation.Title(); ok {
-		_spec.SetField(entfeeds.FieldTitle, field.TypeString, value)
+		_spec.SetField(feeds.FieldTitle, field.TypeString, value)
 		_node.Title = value
 	}
 	if value, ok := fc.mutation.Description(); ok {
-		_spec.SetField(entfeeds.FieldDescription, field.TypeString, value)
+		_spec.SetField(feeds.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
 	if value, ok := fc.mutation.FeedURL(); ok {
-		_spec.SetField(entfeeds.FieldFeedURL, field.TypeString, value)
+		_spec.SetField(feeds.FieldFeedURL, field.TypeString, value)
 		_node.FeedURL = value
 	}
 	if value, ok := fc.mutation.Language(); ok {
-		_spec.SetField(entfeeds.FieldLanguage, field.TypeString, value)
+		_spec.SetField(feeds.FieldLanguage, field.TypeString, value)
 		_node.Language = value
 	}
 	if value, ok := fc.mutation.DtCreated(); ok {
-		_spec.SetField(entfeeds.FieldDtCreated, field.TypeTime, value)
+		_spec.SetField(feeds.FieldDtCreated, field.TypeTime, value)
 		_node.DtCreated = value
 	}
 	if value, ok := fc.mutation.DtUpdated(); ok {
-		_spec.SetField(entfeeds.FieldDtUpdated, field.TypeTime, value)
+		_spec.SetField(feeds.FieldDtUpdated, field.TypeTime, value)
 		_node.DtUpdated = value
 	}
 	if value, ok := fc.mutation.Favorites(); ok {
-		_spec.SetField(entfeeds.FieldFavorites, field.TypeInt64, value)
+		_spec.SetField(feeds.FieldFavorites, field.TypeInt64, value)
 		_node.Favorites = value
 	}
 	return _node, _spec

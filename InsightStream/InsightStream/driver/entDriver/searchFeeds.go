@@ -2,6 +2,8 @@ package entDriver
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"insightstream/domain/searchWord"
 	"insightstream/ent"
 	entFeeds "insightstream/ent/feeds"
@@ -19,8 +21,10 @@ func SearchFeeds(searchWord searchWord.SearchWord, cl *ent.Client, ctx context.C
 		ent.Desc("dt_updated"),
 	).All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("failed to query: " + err.Error())
 	}
+
+	fmt.Println("baseFeeds length is : ", len(feeds))
 
 	return feeds, nil
 }

@@ -1,4 +1,4 @@
-package feeds
+package baseFeeds
 
 import (
 	"time"

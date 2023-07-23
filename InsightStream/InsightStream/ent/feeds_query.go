@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"fmt"
+	"insightstream/ent/feeds"
 	"insightstream/ent/predicate"
 	"math"
 
@@ -12,8 +13,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-
-	entfeeds "insightstream/ent/feeds"
 )
 
 // FeedsQuery is the builder for querying Feeds entities.
@@ -70,7 +69,7 @@ func (fq *FeedsQuery) First(ctx context.Context) (*Feeds, error) {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{entfeeds.Label}
+		return nil, &NotFoundError{feeds.Label}
 	}
 	return nodes[0], nil
 }
@@ -92,7 +91,7 @@ func (fq *FeedsQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{entfeeds.Label}
+		err = &NotFoundError{feeds.Label}
 		return
 	}
 	return ids[0], nil
@@ -119,9 +118,9 @@ func (fq *FeedsQuery) Only(ctx context.Context) (*Feeds, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{entfeeds.Label}
+		return nil, &NotFoundError{feeds.Label}
 	default:
-		return nil, &NotSingularError{entfeeds.Label}
+		return nil, &NotSingularError{feeds.Label}
 	}
 }
 
@@ -146,9 +145,9 @@ func (fq *FeedsQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{entfeeds.Label}
+		err = &NotFoundError{feeds.Label}
 	default:
-		err = &NotSingularError{entfeeds.Label}
+		err = &NotSingularError{feeds.Label}
 	}
 	return
 }
@@ -185,7 +184,7 @@ func (fq *FeedsQuery) AllX(ctx context.Context) []*Feeds {
 func (fq *FeedsQuery) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	var ids []uuid.UUID
 	ctx = newQueryContext(ctx, TypeFeeds, "IDs")
-	if err := fq.Select(entfeeds.FieldID).Scan(ctx, &ids); err != nil {
+	if err := fq.Select(feeds.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -271,14 +270,14 @@ func (fq *FeedsQuery) Clone() *FeedsQuery {
 //	}
 //
 //	client.Feeds.Query().
-//		GroupBy(entfeeds.FieldSiteURL).
+//		GroupBy(feeds.FieldSiteURL).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fq *FeedsQuery) GroupBy(field string, fields ...string) *FeedsGroupBy {
 	fq.fields = append([]string{field}, fields...)
 	grbuild := &FeedsGroupBy{build: fq}
 	grbuild.flds = &fq.fields
-	grbuild.label = entfeeds.Label
+	grbuild.label = feeds.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -293,12 +292,12 @@ func (fq *FeedsQuery) GroupBy(field string, fields ...string) *FeedsGroupBy {
 //	}
 //
 //	client.Feeds.Query().
-//		Select(entfeeds.FieldSiteURL).
+//		Select(feeds.FieldSiteURL).
 //		Scan(ctx, &v)
 func (fq *FeedsQuery) Select(fields ...string) *FeedsSelect {
 	fq.fields = append(fq.fields, fields...)
 	sbuild := &FeedsSelect{FeedsQuery: fq}
-	sbuild.label = entfeeds.Label
+	sbuild.label = feeds.Label
 	sbuild.flds, sbuild.scan = &fq.fields, sbuild.Scan
 	return sbuild
 }
@@ -320,7 +319,7 @@ func (fq *FeedsQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range fq.fields {
-		if !entfeeds.ValidColumn(f) {
+		if !feeds.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -371,11 +370,11 @@ func (fq *FeedsQuery) sqlCount(ctx context.Context) (int, error) {
 func (fq *FeedsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := &sqlgraph.QuerySpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   entfeeds.Table,
-			Columns: entfeeds.Columns,
+			Table:   feeds.Table,
+			Columns: feeds.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: entfeeds.FieldID,
+				Column: feeds.FieldID,
 			},
 		},
 		From:   fq.sql,
@@ -386,9 +385,9 @@ func (fq *FeedsQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := fq.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, entfeeds.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, feeds.FieldID)
 		for i := range fields {
-			if fields[i] != entfeeds.FieldID {
+			if fields[i] != feeds.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -418,10 +417,10 @@ func (fq *FeedsQuery) querySpec() *sqlgraph.QuerySpec {
 
 func (fq *FeedsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(fq.driver.Dialect())
-	t1 := builder.Table(entfeeds.Table)
+	t1 := builder.Table(feeds.Table)
 	columns := fq.fields
 	if len(columns) == 0 {
-		columns = entfeeds.Columns
+		columns = feeds.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if fq.sql != nil {

@@ -6,14 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/domain/baseFeeds"
 	"insightstream/ent/cooccurrencenetworkpool"
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
-	entfeeds "insightstream/ent/feeds"
+	"insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/predicate"
 	"insightstream/ent/users"
-	"insightstream/models/feeds"
 	"sync"
 	"time"
 
@@ -1604,19 +1604,19 @@ func (m *FeedsMutation) OldDtCreated(ctx context.Context) (v time.Time, err erro
 // ClearDtCreated clears the value of the "dt_created" field.
 func (m *FeedsMutation) ClearDtCreated() {
 	m.dt_created = nil
-	m.clearedFields[entfeeds.FieldDtCreated] = struct{}{}
+	m.clearedFields[feeds.FieldDtCreated] = struct{}{}
 }
 
 // DtCreatedCleared returns if the "dt_created" field was cleared in this mutation.
 func (m *FeedsMutation) DtCreatedCleared() bool {
-	_, ok := m.clearedFields[entfeeds.FieldDtCreated]
+	_, ok := m.clearedFields[feeds.FieldDtCreated]
 	return ok
 }
 
 // ResetDtCreated resets all changes to the "dt_created" field.
 func (m *FeedsMutation) ResetDtCreated() {
 	m.dt_created = nil
-	delete(m.clearedFields, entfeeds.FieldDtCreated)
+	delete(m.clearedFields, feeds.FieldDtCreated)
 }
 
 // SetDtUpdated sets the "dt_updated" field.
@@ -1653,19 +1653,19 @@ func (m *FeedsMutation) OldDtUpdated(ctx context.Context) (v time.Time, err erro
 // ClearDtUpdated clears the value of the "dt_updated" field.
 func (m *FeedsMutation) ClearDtUpdated() {
 	m.dt_updated = nil
-	m.clearedFields[entfeeds.FieldDtUpdated] = struct{}{}
+	m.clearedFields[feeds.FieldDtUpdated] = struct{}{}
 }
 
 // DtUpdatedCleared returns if the "dt_updated" field was cleared in this mutation.
 func (m *FeedsMutation) DtUpdatedCleared() bool {
-	_, ok := m.clearedFields[entfeeds.FieldDtUpdated]
+	_, ok := m.clearedFields[feeds.FieldDtUpdated]
 	return ok
 }
 
 // ResetDtUpdated resets all changes to the "dt_updated" field.
 func (m *FeedsMutation) ResetDtUpdated() {
 	m.dt_updated = nil
-	delete(m.clearedFields, entfeeds.FieldDtUpdated)
+	delete(m.clearedFields, feeds.FieldDtUpdated)
 }
 
 // SetFavorites sets the "favorites" field.
@@ -1760,28 +1760,28 @@ func (m *FeedsMutation) Type() string {
 func (m *FeedsMutation) Fields() []string {
 	fields := make([]string, 0, 8)
 	if m.site_url != nil {
-		fields = append(fields, entfeeds.FieldSiteURL)
+		fields = append(fields, feeds.FieldSiteURL)
 	}
 	if m.title != nil {
-		fields = append(fields, entfeeds.FieldTitle)
+		fields = append(fields, feeds.FieldTitle)
 	}
 	if m.description != nil {
-		fields = append(fields, entfeeds.FieldDescription)
+		fields = append(fields, feeds.FieldDescription)
 	}
 	if m.feed_url != nil {
-		fields = append(fields, entfeeds.FieldFeedURL)
+		fields = append(fields, feeds.FieldFeedURL)
 	}
 	if m.language != nil {
-		fields = append(fields, entfeeds.FieldLanguage)
+		fields = append(fields, feeds.FieldLanguage)
 	}
 	if m.dt_created != nil {
-		fields = append(fields, entfeeds.FieldDtCreated)
+		fields = append(fields, feeds.FieldDtCreated)
 	}
 	if m.dt_updated != nil {
-		fields = append(fields, entfeeds.FieldDtUpdated)
+		fields = append(fields, feeds.FieldDtUpdated)
 	}
 	if m.favorites != nil {
-		fields = append(fields, entfeeds.FieldFavorites)
+		fields = append(fields, feeds.FieldFavorites)
 	}
 	return fields
 }
@@ -1791,21 +1791,21 @@ func (m *FeedsMutation) Fields() []string {
 // schema.
 func (m *FeedsMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case entfeeds.FieldSiteURL:
+	case feeds.FieldSiteURL:
 		return m.SiteURL()
-	case entfeeds.FieldTitle:
+	case feeds.FieldTitle:
 		return m.Title()
-	case entfeeds.FieldDescription:
+	case feeds.FieldDescription:
 		return m.Description()
-	case entfeeds.FieldFeedURL:
+	case feeds.FieldFeedURL:
 		return m.FeedURL()
-	case entfeeds.FieldLanguage:
+	case feeds.FieldLanguage:
 		return m.Language()
-	case entfeeds.FieldDtCreated:
+	case feeds.FieldDtCreated:
 		return m.DtCreated()
-	case entfeeds.FieldDtUpdated:
+	case feeds.FieldDtUpdated:
 		return m.DtUpdated()
-	case entfeeds.FieldFavorites:
+	case feeds.FieldFavorites:
 		return m.Favorites()
 	}
 	return nil, false
@@ -1816,21 +1816,21 @@ func (m *FeedsMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *FeedsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case entfeeds.FieldSiteURL:
+	case feeds.FieldSiteURL:
 		return m.OldSiteURL(ctx)
-	case entfeeds.FieldTitle:
+	case feeds.FieldTitle:
 		return m.OldTitle(ctx)
-	case entfeeds.FieldDescription:
+	case feeds.FieldDescription:
 		return m.OldDescription(ctx)
-	case entfeeds.FieldFeedURL:
+	case feeds.FieldFeedURL:
 		return m.OldFeedURL(ctx)
-	case entfeeds.FieldLanguage:
+	case feeds.FieldLanguage:
 		return m.OldLanguage(ctx)
-	case entfeeds.FieldDtCreated:
+	case feeds.FieldDtCreated:
 		return m.OldDtCreated(ctx)
-	case entfeeds.FieldDtUpdated:
+	case feeds.FieldDtUpdated:
 		return m.OldDtUpdated(ctx)
-	case entfeeds.FieldFavorites:
+	case feeds.FieldFavorites:
 		return m.OldFavorites(ctx)
 	}
 	return nil, fmt.Errorf("unknown Feeds field %s", name)
@@ -1841,56 +1841,56 @@ func (m *FeedsMutation) OldField(ctx context.Context, name string) (ent.Value, e
 // type.
 func (m *FeedsMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case entfeeds.FieldSiteURL:
+	case feeds.FieldSiteURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSiteURL(v)
 		return nil
-	case entfeeds.FieldTitle:
+	case feeds.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTitle(v)
 		return nil
-	case entfeeds.FieldDescription:
+	case feeds.FieldDescription:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDescription(v)
 		return nil
-	case entfeeds.FieldFeedURL:
+	case feeds.FieldFeedURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFeedURL(v)
 		return nil
-	case entfeeds.FieldLanguage:
+	case feeds.FieldLanguage:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLanguage(v)
 		return nil
-	case entfeeds.FieldDtCreated:
+	case feeds.FieldDtCreated:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDtCreated(v)
 		return nil
-	case entfeeds.FieldDtUpdated:
+	case feeds.FieldDtUpdated:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDtUpdated(v)
 		return nil
-	case entfeeds.FieldFavorites:
+	case feeds.FieldFavorites:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1906,7 +1906,7 @@ func (m *FeedsMutation) SetField(name string, value ent.Value) error {
 func (m *FeedsMutation) AddedFields() []string {
 	var fields []string
 	if m.addfavorites != nil {
-		fields = append(fields, entfeeds.FieldFavorites)
+		fields = append(fields, feeds.FieldFavorites)
 	}
 	return fields
 }
@@ -1916,7 +1916,7 @@ func (m *FeedsMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *FeedsMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case entfeeds.FieldFavorites:
+	case feeds.FieldFavorites:
 		return m.AddedFavorites()
 	}
 	return nil, false
@@ -1927,7 +1927,7 @@ func (m *FeedsMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedsMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case entfeeds.FieldFavorites:
+	case feeds.FieldFavorites:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1942,11 +1942,11 @@ func (m *FeedsMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *FeedsMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(entfeeds.FieldDtCreated) {
-		fields = append(fields, entfeeds.FieldDtCreated)
+	if m.FieldCleared(feeds.FieldDtCreated) {
+		fields = append(fields, feeds.FieldDtCreated)
 	}
-	if m.FieldCleared(entfeeds.FieldDtUpdated) {
-		fields = append(fields, entfeeds.FieldDtUpdated)
+	if m.FieldCleared(feeds.FieldDtUpdated) {
+		fields = append(fields, feeds.FieldDtUpdated)
 	}
 	return fields
 }
@@ -1962,10 +1962,10 @@ func (m *FeedsMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *FeedsMutation) ClearField(name string) error {
 	switch name {
-	case entfeeds.FieldDtCreated:
+	case feeds.FieldDtCreated:
 		m.ClearDtCreated()
 		return nil
-	case entfeeds.FieldDtUpdated:
+	case feeds.FieldDtUpdated:
 		m.ClearDtUpdated()
 		return nil
 	}
@@ -1976,28 +1976,28 @@ func (m *FeedsMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *FeedsMutation) ResetField(name string) error {
 	switch name {
-	case entfeeds.FieldSiteURL:
+	case feeds.FieldSiteURL:
 		m.ResetSiteURL()
 		return nil
-	case entfeeds.FieldTitle:
+	case feeds.FieldTitle:
 		m.ResetTitle()
 		return nil
-	case entfeeds.FieldDescription:
+	case feeds.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case entfeeds.FieldFeedURL:
+	case feeds.FieldFeedURL:
 		m.ResetFeedURL()
 		return nil
-	case entfeeds.FieldLanguage:
+	case feeds.FieldLanguage:
 		m.ResetLanguage()
 		return nil
-	case entfeeds.FieldDtCreated:
+	case feeds.FieldDtCreated:
 		m.ResetDtCreated()
 		return nil
-	case entfeeds.FieldDtUpdated:
+	case feeds.FieldDtUpdated:
 		m.ResetDtUpdated()
 		return nil
-	case entfeeds.FieldFavorites:
+	case feeds.FieldFavorites:
 		m.ResetFavorites()
 		return nil
 	}
@@ -2067,9 +2067,9 @@ type FollowListMutation struct {
 	title                  *string
 	description            *string
 	link                   *string
-	links                  *feeds.FeedLink
-	item_description       *[]feeds.FeedItem
-	appenditem_description []feeds.FeedItem
+	links                  *baseFeeds.FeedLink
+	item_description       *[]baseFeeds.FeedItem
+	appenditem_description []baseFeeds.FeedItem
 	language               *string
 	dt_created             *time.Time
 	dt_updated             *time.Time
@@ -2477,12 +2477,12 @@ func (m *FollowListMutation) ResetLink() {
 }
 
 // SetLinks sets the "links" field.
-func (m *FollowListMutation) SetLinks(fl feeds.FeedLink) {
-	m.links = &fl
+func (m *FollowListMutation) SetLinks(bfl baseFeeds.FeedLink) {
+	m.links = &bfl
 }
 
 // Links returns the value of the "links" field in the mutation.
-func (m *FollowListMutation) Links() (r feeds.FeedLink, exists bool) {
+func (m *FollowListMutation) Links() (r baseFeeds.FeedLink, exists bool) {
 	v := m.links
 	if v == nil {
 		return
@@ -2493,7 +2493,7 @@ func (m *FollowListMutation) Links() (r feeds.FeedLink, exists bool) {
 // OldLinks returns the old "links" field's value of the FollowList entity.
 // If the FollowList object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldLinks(ctx context.Context) (v feeds.FeedLink, err error) {
+func (m *FollowListMutation) OldLinks(ctx context.Context) (v baseFeeds.FeedLink, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLinks is only allowed on UpdateOne operations")
 	}
@@ -2513,13 +2513,13 @@ func (m *FollowListMutation) ResetLinks() {
 }
 
 // SetItemDescription sets the "item_description" field.
-func (m *FollowListMutation) SetItemDescription(fi []feeds.FeedItem) {
-	m.item_description = &fi
+func (m *FollowListMutation) SetItemDescription(bfi []baseFeeds.FeedItem) {
+	m.item_description = &bfi
 	m.appenditem_description = nil
 }
 
 // ItemDescription returns the value of the "item_description" field in the mutation.
-func (m *FollowListMutation) ItemDescription() (r []feeds.FeedItem, exists bool) {
+func (m *FollowListMutation) ItemDescription() (r []baseFeeds.FeedItem, exists bool) {
 	v := m.item_description
 	if v == nil {
 		return
@@ -2530,7 +2530,7 @@ func (m *FollowListMutation) ItemDescription() (r []feeds.FeedItem, exists bool)
 // OldItemDescription returns the old "item_description" field's value of the FollowList entity.
 // If the FollowList object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []feeds.FeedItem, err error) {
+func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []baseFeeds.FeedItem, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldItemDescription is only allowed on UpdateOne operations")
 	}
@@ -2544,13 +2544,13 @@ func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []feeds.
 	return oldValue.ItemDescription, nil
 }
 
-// AppendItemDescription adds fi to the "item_description" field.
-func (m *FollowListMutation) AppendItemDescription(fi []feeds.FeedItem) {
-	m.appenditem_description = append(m.appenditem_description, fi...)
+// AppendItemDescription adds bfi to the "item_description" field.
+func (m *FollowListMutation) AppendItemDescription(bfi []baseFeeds.FeedItem) {
+	m.appenditem_description = append(m.appenditem_description, bfi...)
 }
 
 // AppendedItemDescription returns the list of values that were appended to the "item_description" field in this mutation.
-func (m *FollowListMutation) AppendedItemDescription() ([]feeds.FeedItem, bool) {
+func (m *FollowListMutation) AppendedItemDescription() ([]baseFeeds.FeedItem, bool) {
 	if len(m.appenditem_description) == 0 {
 		return nil, false
 	}
@@ -3183,14 +3183,14 @@ func (m *FollowListMutation) SetField(name string, value ent.Value) error {
 		m.SetLink(v)
 		return nil
 	case followlist.FieldLinks:
-		v, ok := value.(feeds.FeedLink)
+		v, ok := value.(baseFeeds.FeedLink)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLinks(v)
 		return nil
 	case followlist.FieldItemDescription:
-		v, ok := value.([]feeds.FeedItem)
+		v, ok := value.([]baseFeeds.FeedItem)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

@@ -9,7 +9,7 @@ import (
 
 func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 	// one of the most complicated part of the code
-	// this part is to make sure that the feeds are fetched in parallel
+	// this part is to make sure that the baseFeeds are fetched in parallel
 	var wg sync.WaitGroup
 	feedsCh := make(chan []*gofeed.Feed, len(storedList))
 	errCh := make(chan error, len(storedList))
@@ -29,7 +29,7 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 			defer wg.Done()
 			feeds, err := MultiFeed(list)
 			if err != nil {
-				errCh <- fmt.Errorf("failed to fetch feeds: %w", err)
+				errCh <- fmt.Errorf("failed to fetch baseFeeds: %w", err)
 				return
 			}
 			m.Lock() // Locking
@@ -75,18 +75,18 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 // 	var parallelList [][]*gofeed.Feed
 
 // 	// one of the most complicated part of the code
-// 	// this part is to make sure that the feeds are fetched in parallel
+// 	// this part is to make sure that the baseFeeds are fetched in parallel
 // 	var wg sync.WaitGroup
 // 	var ch = make(chan [][]*gofeed.Feed, len(separatedList))
 // 	for _, list := range separatedList {
 // 		wg.Add(1)
 // 		go func(list []string) {
 // 			defer wg.Done()
-// 			feeds, err := paralyzingFetch(list)
+// 			baseFeeds, err := paralyzingFetch(list)
 // 			if err != nil {
 // 				panic(err)
 // 			}
-// 			ch <- [][]*gofeed.Feed{feeds}
+// 			ch <- [][]*gofeed.Feed{baseFeeds}
 // 		}(list)
 
 // 		parallelList = append(parallelList, <-ch...)
@@ -98,8 +98,8 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 // 	wg.Wait()
 
 // 	var flattenedList []*gofeed.Feed
-// 	for _, feeds := range parallelList {
-// 		flattenedList = append(flattenedList, feeds...)
+// 	for _, baseFeeds := range parallelList {
+// 		flattenedList = append(flattenedList, baseFeeds...)
 // 	}
 
 // 	return flattenedList, nil
@@ -107,10 +107,10 @@ func ParallelizeFetch(storedList []string) ([]*gofeed.Feed, error) {
 
 // func paralyzingFetch(feedsList []string) ([]*gofeed.Feed, error) {
 // 	//li := <-feedsList
-// 	feeds, err := MultiFeed(feedsList)
+// 	baseFeeds, err := MultiFeed(feedsList)
 // 	if err != nil {
-// 		return nil, errors.New(fmt.Sprintf("failed to fetch feeds: %v", err))
+// 		return nil, errors.New(fmt.Sprintf("failed to fetch baseFeeds: %v", err))
 // 	}
 
-// 	return feeds, err
+// 	return baseFeeds, err
 // }

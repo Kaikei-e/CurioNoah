@@ -37,7 +37,7 @@ func TestExchangeToEnt(t *testing.T) {
 	// Perform assertions
 	expectedFeedCount := len(gFeeds)
 	if len(feedsEnt) != expectedFeedCount {
-		t.Errorf("ExchangeToEnt returned %d feeds, expected %d", len(feedsEnt), expectedFeedCount)
+		t.Errorf("ExchangeToEnt returned %d baseFeeds, expected %d", len(feedsEnt), expectedFeedCount)
 	}
 
 	// Example assertion for the first feed

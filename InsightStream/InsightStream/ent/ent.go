@@ -9,15 +9,14 @@ import (
 	"insightstream/ent/cooccurrencenetworkpool"
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
+	"insightstream/ent/feeds"
+	"insightstream/ent/followlist"
+	"insightstream/ent/users"
 	"reflect"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-
-	entfeeds "insightstream/ent/feeds"
-	"insightstream/ent/followlist"
-	"insightstream/ent/users"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -47,7 +46,7 @@ func columnChecker(table string) func(string) error {
 		cooccurrencenetworkpool.Table: cooccurrencenetworkpool.ValidColumn,
 		feedaudittrailaction.Table:    feedaudittrailaction.ValidColumn,
 		feedaudittraillog.Table:       feedaudittraillog.ValidColumn,
-		entfeeds.Table:                entfeeds.ValidColumn,
+		feeds.Table:                   feeds.ValidColumn,
 		followlist.Table:              followlist.ValidColumn,
 		users.Table:                   users.ValidColumn,
 	}

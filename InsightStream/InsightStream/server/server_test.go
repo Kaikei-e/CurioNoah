@@ -12,7 +12,7 @@ func TestServer(t *testing.T) {
 	const err404 = "{\n  \"message\": \"Not Found\"\n}"
 
 	reqSuccessAlive := httptest.NewRequest("GET", "/", nil)
-	reqSuccessFetchFeeds := httptest.NewRequest("GET", "/api/v1/fetch-feeds", nil)
+	reqSuccessFetchFeeds := httptest.NewRequest("GET", "/api/v1/fetch-baseFeeds", nil)
 	reqFailureBase := httptest.NewRequest("GET", "/wahfohofeofegf", nil)
 	reqFailureFetchFeeds := httptest.NewRequest("GET", "/api/v1/fetch-feed", nil)
 

@@ -155,7 +155,7 @@ func CheckDiffByFeedItems(oldFeeds []*gofeed.Feed, newFeeds []*gofeed.Feed) ([]s
 //		return nil, nil, errors.New(fmt.Sprintf("failed to fetch feed. error: %v", err))
 //	}
 //
-//	// create link group of old feeds that is stored in the database
+//	// create link group of old baseFeeds that is stored in the database
 //	var oldLinks []linksItem
 //	for _, feed := range oldFeeds {
 //		var sortedLink []string
@@ -174,7 +174,7 @@ func CheckDiffByFeedItems(oldFeeds []*gofeed.Feed, newFeeds []*gofeed.Feed) ([]s
 //	}
 //
 //	// caution: newFeeds[x].Links is not target URLs. So need to use .Items.Link
-//	// create link group of new feeds that is fetched from the internet
+//	// create link group of new baseFeeds that is fetched from the internet
 //	var newLinks []linksItem
 //	for _, feed := range newFeeds {
 //		var sortedLink []string
