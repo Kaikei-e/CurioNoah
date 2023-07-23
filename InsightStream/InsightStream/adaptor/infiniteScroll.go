@@ -39,6 +39,6 @@ func InfiniteFetching(c echo.Context, cl *ent.Client) error {
 }
 
 type response struct {
-	Feeds       []baseFeeds.EachFeed `json:"baseFeeds"`
+	Feeds       []baseFeeds.EachFeed `json:"feeds"`
 	HadExceeded bool                 `json:"hadExceeded"`
 }

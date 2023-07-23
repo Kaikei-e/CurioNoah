@@ -6,14 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"insightstream/ent/feeds"
 	"insightstream/ent/predicate"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-
-	entfeeds "insightstream/ent/feeds"
 )
 
 // FeedsUpdate is the builder for updating Feeds entities.
@@ -168,7 +167,7 @@ func (fu *FeedsUpdate) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (fu *FeedsUpdate) defaults() {
 	if _, ok := fu.mutation.DtUpdated(); !ok && !fu.mutation.DtUpdatedCleared() {
-		v := entfeeds.UpdateDefaultDtUpdated()
+		v := feeds.UpdateDefaultDtUpdated()
 		fu.mutation.SetDtUpdated(v)
 	}
 }
@@ -176,27 +175,27 @@ func (fu *FeedsUpdate) defaults() {
 // check runs all checks and user-defined validators on the builder.
 func (fu *FeedsUpdate) check() error {
 	if v, ok := fu.mutation.SiteURL(); ok {
-		if err := entfeeds.SiteURLValidator(v); err != nil {
+		if err := feeds.SiteURLValidator(v); err != nil {
 			return &ValidationError{Name: "site_url", err: fmt.Errorf(`ent: validator failed for field "Feeds.site_url": %w`, err)}
 		}
 	}
 	if v, ok := fu.mutation.Title(); ok {
-		if err := entfeeds.TitleValidator(v); err != nil {
+		if err := feeds.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Feeds.title": %w`, err)}
 		}
 	}
 	if v, ok := fu.mutation.Description(); ok {
-		if err := entfeeds.DescriptionValidator(v); err != nil {
+		if err := feeds.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Feeds.description": %w`, err)}
 		}
 	}
 	if v, ok := fu.mutation.FeedURL(); ok {
-		if err := entfeeds.FeedURLValidator(v); err != nil {
+		if err := feeds.FeedURLValidator(v); err != nil {
 			return &ValidationError{Name: "feed_url", err: fmt.Errorf(`ent: validator failed for field "Feeds.feed_url": %w`, err)}
 		}
 	}
 	if v, ok := fu.mutation.Language(); ok {
-		if err := entfeeds.LanguageValidator(v); err != nil {
+		if err := feeds.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Feeds.language": %w`, err)}
 		}
 	}
@@ -209,11 +208,11 @@ func (fu *FeedsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   entfeeds.Table,
-			Columns: entfeeds.Columns,
+			Table:   feeds.Table,
+			Columns: feeds.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: entfeeds.FieldID,
+				Column: feeds.FieldID,
 			},
 		},
 	}
@@ -225,38 +224,38 @@ func (fu *FeedsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := fu.mutation.SiteURL(); ok {
-		_spec.SetField(entfeeds.FieldSiteURL, field.TypeString, value)
+		_spec.SetField(feeds.FieldSiteURL, field.TypeString, value)
 	}
 	if value, ok := fu.mutation.Title(); ok {
-		_spec.SetField(entfeeds.FieldTitle, field.TypeString, value)
+		_spec.SetField(feeds.FieldTitle, field.TypeString, value)
 	}
 	if value, ok := fu.mutation.Description(); ok {
-		_spec.SetField(entfeeds.FieldDescription, field.TypeString, value)
+		_spec.SetField(feeds.FieldDescription, field.TypeString, value)
 	}
 	if value, ok := fu.mutation.FeedURL(); ok {
-		_spec.SetField(entfeeds.FieldFeedURL, field.TypeString, value)
+		_spec.SetField(feeds.FieldFeedURL, field.TypeString, value)
 	}
 	if value, ok := fu.mutation.Language(); ok {
-		_spec.SetField(entfeeds.FieldLanguage, field.TypeString, value)
+		_spec.SetField(feeds.FieldLanguage, field.TypeString, value)
 	}
 	if fu.mutation.DtCreatedCleared() {
-		_spec.ClearField(entfeeds.FieldDtCreated, field.TypeTime)
+		_spec.ClearField(feeds.FieldDtCreated, field.TypeTime)
 	}
 	if value, ok := fu.mutation.DtUpdated(); ok {
-		_spec.SetField(entfeeds.FieldDtUpdated, field.TypeTime, value)
+		_spec.SetField(feeds.FieldDtUpdated, field.TypeTime, value)
 	}
 	if fu.mutation.DtUpdatedCleared() {
-		_spec.ClearField(entfeeds.FieldDtUpdated, field.TypeTime)
+		_spec.ClearField(feeds.FieldDtUpdated, field.TypeTime)
 	}
 	if value, ok := fu.mutation.Favorites(); ok {
-		_spec.SetField(entfeeds.FieldFavorites, field.TypeInt64, value)
+		_spec.SetField(feeds.FieldFavorites, field.TypeInt64, value)
 	}
 	if value, ok := fu.mutation.AddedFavorites(); ok {
-		_spec.AddField(entfeeds.FieldFavorites, field.TypeInt64, value)
+		_spec.AddField(feeds.FieldFavorites, field.TypeInt64, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{entfeeds.Label}
+			err = &NotFoundError{feeds.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -420,7 +419,7 @@ func (fuo *FeedsUpdateOne) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (fuo *FeedsUpdateOne) defaults() {
 	if _, ok := fuo.mutation.DtUpdated(); !ok && !fuo.mutation.DtUpdatedCleared() {
-		v := entfeeds.UpdateDefaultDtUpdated()
+		v := feeds.UpdateDefaultDtUpdated()
 		fuo.mutation.SetDtUpdated(v)
 	}
 }
@@ -428,27 +427,27 @@ func (fuo *FeedsUpdateOne) defaults() {
 // check runs all checks and user-defined validators on the builder.
 func (fuo *FeedsUpdateOne) check() error {
 	if v, ok := fuo.mutation.SiteURL(); ok {
-		if err := entfeeds.SiteURLValidator(v); err != nil {
+		if err := feeds.SiteURLValidator(v); err != nil {
 			return &ValidationError{Name: "site_url", err: fmt.Errorf(`ent: validator failed for field "Feeds.site_url": %w`, err)}
 		}
 	}
 	if v, ok := fuo.mutation.Title(); ok {
-		if err := entfeeds.TitleValidator(v); err != nil {
+		if err := feeds.TitleValidator(v); err != nil {
 			return &ValidationError{Name: "title", err: fmt.Errorf(`ent: validator failed for field "Feeds.title": %w`, err)}
 		}
 	}
 	if v, ok := fuo.mutation.Description(); ok {
-		if err := entfeeds.DescriptionValidator(v); err != nil {
+		if err := feeds.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Feeds.description": %w`, err)}
 		}
 	}
 	if v, ok := fuo.mutation.FeedURL(); ok {
-		if err := entfeeds.FeedURLValidator(v); err != nil {
+		if err := feeds.FeedURLValidator(v); err != nil {
 			return &ValidationError{Name: "feed_url", err: fmt.Errorf(`ent: validator failed for field "Feeds.feed_url": %w`, err)}
 		}
 	}
 	if v, ok := fuo.mutation.Language(); ok {
-		if err := entfeeds.LanguageValidator(v); err != nil {
+		if err := feeds.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Feeds.language": %w`, err)}
 		}
 	}
@@ -461,11 +460,11 @@ func (fuo *FeedsUpdateOne) sqlSave(ctx context.Context) (_node *Feeds, err error
 	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   entfeeds.Table,
-			Columns: entfeeds.Columns,
+			Table:   feeds.Table,
+			Columns: feeds.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: entfeeds.FieldID,
+				Column: feeds.FieldID,
 			},
 		},
 	}
@@ -476,12 +475,12 @@ func (fuo *FeedsUpdateOne) sqlSave(ctx context.Context) (_node *Feeds, err error
 	_spec.Node.ID.Value = id
 	if fields := fuo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, entfeeds.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, feeds.FieldID)
 		for _, f := range fields {
-			if !entfeeds.ValidColumn(f) {
+			if !feeds.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != entfeeds.FieldID {
+			if f != feeds.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -494,41 +493,41 @@ func (fuo *FeedsUpdateOne) sqlSave(ctx context.Context) (_node *Feeds, err error
 		}
 	}
 	if value, ok := fuo.mutation.SiteURL(); ok {
-		_spec.SetField(entfeeds.FieldSiteURL, field.TypeString, value)
+		_spec.SetField(feeds.FieldSiteURL, field.TypeString, value)
 	}
 	if value, ok := fuo.mutation.Title(); ok {
-		_spec.SetField(entfeeds.FieldTitle, field.TypeString, value)
+		_spec.SetField(feeds.FieldTitle, field.TypeString, value)
 	}
 	if value, ok := fuo.mutation.Description(); ok {
-		_spec.SetField(entfeeds.FieldDescription, field.TypeString, value)
+		_spec.SetField(feeds.FieldDescription, field.TypeString, value)
 	}
 	if value, ok := fuo.mutation.FeedURL(); ok {
-		_spec.SetField(entfeeds.FieldFeedURL, field.TypeString, value)
+		_spec.SetField(feeds.FieldFeedURL, field.TypeString, value)
 	}
 	if value, ok := fuo.mutation.Language(); ok {
-		_spec.SetField(entfeeds.FieldLanguage, field.TypeString, value)
+		_spec.SetField(feeds.FieldLanguage, field.TypeString, value)
 	}
 	if fuo.mutation.DtCreatedCleared() {
-		_spec.ClearField(entfeeds.FieldDtCreated, field.TypeTime)
+		_spec.ClearField(feeds.FieldDtCreated, field.TypeTime)
 	}
 	if value, ok := fuo.mutation.DtUpdated(); ok {
-		_spec.SetField(entfeeds.FieldDtUpdated, field.TypeTime, value)
+		_spec.SetField(feeds.FieldDtUpdated, field.TypeTime, value)
 	}
 	if fuo.mutation.DtUpdatedCleared() {
-		_spec.ClearField(entfeeds.FieldDtUpdated, field.TypeTime)
+		_spec.ClearField(feeds.FieldDtUpdated, field.TypeTime)
 	}
 	if value, ok := fuo.mutation.Favorites(); ok {
-		_spec.SetField(entfeeds.FieldFavorites, field.TypeInt64, value)
+		_spec.SetField(feeds.FieldFavorites, field.TypeInt64, value)
 	}
 	if value, ok := fuo.mutation.AddedFavorites(); ok {
-		_spec.AddField(entfeeds.FieldFavorites, field.TypeInt64, value)
+		_spec.AddField(feeds.FieldFavorites, field.TypeInt64, value)
 	}
 	_node = &Feeds{config: fuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, fuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{entfeeds.Label}
+			err = &NotFoundError{feeds.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

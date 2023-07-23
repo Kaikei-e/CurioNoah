@@ -144,28 +144,28 @@ func (flu *FollowListUpdate) SetNillableLink(s *string) *FollowListUpdate {
 }
 
 // SetLinks sets the "links" field.
-func (flu *FollowListUpdate) SetLinks(fl baseFeeds.FeedLink) *FollowListUpdate {
-	flu.mutation.SetLinks(fl)
+func (flu *FollowListUpdate) SetLinks(bfl baseFeeds.FeedLink) *FollowListUpdate {
+	flu.mutation.SetLinks(bfl)
 	return flu
 }
 
 // SetNillableLinks sets the "links" field if the given value is not nil.
-func (flu *FollowListUpdate) SetNillableLinks(fl *baseFeeds.FeedLink) *FollowListUpdate {
-	if fl != nil {
-		flu.SetLinks(*fl)
+func (flu *FollowListUpdate) SetNillableLinks(bfl *baseFeeds.FeedLink) *FollowListUpdate {
+	if bfl != nil {
+		flu.SetLinks(*bfl)
 	}
 	return flu
 }
 
 // SetItemDescription sets the "item_description" field.
-func (flu *FollowListUpdate) SetItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdate {
-	flu.mutation.SetItemDescription(fi)
+func (flu *FollowListUpdate) SetItemDescription(bfi []baseFeeds.FeedItem) *FollowListUpdate {
+	flu.mutation.SetItemDescription(bfi)
 	return flu
 }
 
-// AppendItemDescription appends fi to the "item_description" field.
-func (flu *FollowListUpdate) AppendItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdate {
-	flu.mutation.AppendItemDescription(fi)
+// AppendItemDescription appends bfi to the "item_description" field.
+func (flu *FollowListUpdate) AppendItemDescription(bfi []baseFeeds.FeedItem) *FollowListUpdate {
+	flu.mutation.AppendItemDescription(bfi)
 	return flu
 }
 
@@ -598,28 +598,28 @@ func (fluo *FollowListUpdateOne) SetNillableLink(s *string) *FollowListUpdateOne
 }
 
 // SetLinks sets the "links" field.
-func (fluo *FollowListUpdateOne) SetLinks(fl baseFeeds.FeedLink) *FollowListUpdateOne {
-	fluo.mutation.SetLinks(fl)
+func (fluo *FollowListUpdateOne) SetLinks(bfl baseFeeds.FeedLink) *FollowListUpdateOne {
+	fluo.mutation.SetLinks(bfl)
 	return fluo
 }
 
 // SetNillableLinks sets the "links" field if the given value is not nil.
-func (fluo *FollowListUpdateOne) SetNillableLinks(fl *baseFeeds.FeedLink) *FollowListUpdateOne {
-	if fl != nil {
-		fluo.SetLinks(*fl)
+func (fluo *FollowListUpdateOne) SetNillableLinks(bfl *baseFeeds.FeedLink) *FollowListUpdateOne {
+	if bfl != nil {
+		fluo.SetLinks(*bfl)
 	}
 	return fluo
 }
 
 // SetItemDescription sets the "item_description" field.
-func (fluo *FollowListUpdateOne) SetItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdateOne {
-	fluo.mutation.SetItemDescription(fi)
+func (fluo *FollowListUpdateOne) SetItemDescription(bfi []baseFeeds.FeedItem) *FollowListUpdateOne {
+	fluo.mutation.SetItemDescription(bfi)
 	return fluo
 }
 
-// AppendItemDescription appends fi to the "item_description" field.
-func (fluo *FollowListUpdateOne) AppendItemDescription(fi []baseFeeds.FeedItem) *FollowListUpdateOne {
-	fluo.mutation.AppendItemDescription(fi)
+// AppendItemDescription appends bfi to the "item_description" field.
+func (fluo *FollowListUpdateOne) AppendItemDescription(bfi []baseFeeds.FeedItem) *FollowListUpdateOne {
+	fluo.mutation.AppendItemDescription(bfi)
 	return fluo
 }
 

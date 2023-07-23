@@ -13,7 +13,7 @@ import (
 	"insightstream/ent/cooccurrencenetworkpool"
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
-	entfeeds "insightstream/ent/feeds"
+	"insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/users"
 
@@ -568,13 +568,13 @@ func NewFeedsClient(c config) *FeedsClient {
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `entfeeds.Hooks(f(g(h())))`.
+// A call to `Use(f, g, h)` equals to `feeds.Hooks(f(g(h())))`.
 func (c *FeedsClient) Use(hooks ...Hook) {
 	c.hooks.Feeds = append(c.hooks.Feeds, hooks...)
 }
 
 // Use adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `entfeeds.Intercept(f(g(h())))`.
+// A call to `Intercept(f, g, h)` equals to `feeds.Intercept(f(g(h())))`.
 func (c *FeedsClient) Intercept(interceptors ...Interceptor) {
 	c.inters.Feeds = append(c.inters.Feeds, interceptors...)
 }
@@ -621,7 +621,7 @@ func (c *FeedsClient) DeleteOne(f *Feeds) *FeedsDeleteOne {
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
 func (c *FeedsClient) DeleteOneID(id uuid.UUID) *FeedsDeleteOne {
-	builder := c.Delete().Where(entfeeds.ID(id))
+	builder := c.Delete().Where(feeds.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
 	return &FeedsDeleteOne{builder}
@@ -637,7 +637,7 @@ func (c *FeedsClient) Query() *FeedsQuery {
 
 // Get returns a Feeds entity by its id.
 func (c *FeedsClient) Get(ctx context.Context, id uuid.UUID) (*Feeds, error) {
-	return c.Query().Where(entfeeds.ID(id)).Only(ctx)
+	return c.Query().Where(feeds.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.

@@ -4,13 +4,12 @@ package ent
 
 import (
 	"fmt"
+	"insightstream/ent/feeds"
 	"strings"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-
-	entfeeds "insightstream/ent/feeds"
 )
 
 // Feeds is the model entity for the Feeds schema.
@@ -41,13 +40,13 @@ func (*Feeds) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case entfeeds.FieldFavorites:
+		case feeds.FieldFavorites:
 			values[i] = new(sql.NullInt64)
-		case entfeeds.FieldSiteURL, entfeeds.FieldTitle, entfeeds.FieldDescription, entfeeds.FieldFeedURL, entfeeds.FieldLanguage:
+		case feeds.FieldSiteURL, feeds.FieldTitle, feeds.FieldDescription, feeds.FieldFeedURL, feeds.FieldLanguage:
 			values[i] = new(sql.NullString)
-		case entfeeds.FieldDtCreated, entfeeds.FieldDtUpdated:
+		case feeds.FieldDtCreated, feeds.FieldDtUpdated:
 			values[i] = new(sql.NullTime)
-		case entfeeds.FieldID:
+		case feeds.FieldID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Feeds", columns[i])
@@ -64,55 +63,55 @@ func (f *Feeds) assignValues(columns []string, values []any) error {
 	}
 	for i := range columns {
 		switch columns[i] {
-		case entfeeds.FieldID:
+		case feeds.FieldID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				f.ID = *value
 			}
-		case entfeeds.FieldSiteURL:
+		case feeds.FieldSiteURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field site_url", values[i])
 			} else if value.Valid {
 				f.SiteURL = value.String
 			}
-		case entfeeds.FieldTitle:
+		case feeds.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
 				f.Title = value.String
 			}
-		case entfeeds.FieldDescription:
+		case feeds.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				f.Description = value.String
 			}
-		case entfeeds.FieldFeedURL:
+		case feeds.FieldFeedURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_url", values[i])
 			} else if value.Valid {
 				f.FeedURL = value.String
 			}
-		case entfeeds.FieldLanguage:
+		case feeds.FieldLanguage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field language", values[i])
 			} else if value.Valid {
 				f.Language = value.String
 			}
-		case entfeeds.FieldDtCreated:
+		case feeds.FieldDtCreated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field dt_created", values[i])
 			} else if value.Valid {
 				f.DtCreated = value.Time
 			}
-		case entfeeds.FieldDtUpdated:
+		case feeds.FieldDtUpdated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field dt_updated", values[i])
 			} else if value.Valid {
 				f.DtUpdated = value.Time
 			}
-		case entfeeds.FieldFavorites:
+		case feeds.FieldFavorites:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field favorites", values[i])
 			} else if value.Valid {

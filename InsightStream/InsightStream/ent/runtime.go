@@ -7,7 +7,7 @@ import (
 	"insightstream/ent/cooccurrencenetworkpool"
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
-	entfeeds "insightstream/ent/feeds"
+	"insightstream/ent/feeds"
 	"insightstream/ent/followlist"
 	"insightstream/ent/schema"
 	"insightstream/ent/users"
@@ -52,54 +52,54 @@ func init() {
 	feedaudittraillog.DefaultUpdatedAt = feedaudittraillogDescUpdatedAt.Default.(func() time.Time)
 	// feedaudittraillog.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	feedaudittraillog.UpdateDefaultUpdatedAt = feedaudittraillogDescUpdatedAt.UpdateDefault.(func() time.Time)
-	entfeedsFields := schema.Feeds{}.Fields()
-	_ = entfeedsFields
-	// entfeedsDescSiteURL is the schema descriptor for site_url field.
-	entfeedsDescSiteURL := entfeedsFields[1].Descriptor()
-	// entfeeds.DefaultSiteURL holds the default value on creation for the site_url field.
-	entfeeds.DefaultSiteURL = entfeedsDescSiteURL.Default.(string)
-	// entfeeds.SiteURLValidator is a validator for the "site_url" field. It is called by the builders before save.
-	entfeeds.SiteURLValidator = entfeedsDescSiteURL.Validators[0].(func(string) error)
-	// entfeedsDescTitle is the schema descriptor for title field.
-	entfeedsDescTitle := entfeedsFields[2].Descriptor()
-	// entfeeds.DefaultTitle holds the default value on creation for the title field.
-	entfeeds.DefaultTitle = entfeedsDescTitle.Default.(string)
-	// entfeeds.TitleValidator is a validator for the "title" field. It is called by the builders before save.
-	entfeeds.TitleValidator = entfeedsDescTitle.Validators[0].(func(string) error)
-	// entfeedsDescDescription is the schema descriptor for description field.
-	entfeedsDescDescription := entfeedsFields[3].Descriptor()
-	// entfeeds.DefaultDescription holds the default value on creation for the description field.
-	entfeeds.DefaultDescription = entfeedsDescDescription.Default.(string)
-	// entfeeds.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
-	entfeeds.DescriptionValidator = entfeedsDescDescription.Validators[0].(func(string) error)
-	// entfeedsDescFeedURL is the schema descriptor for feed_url field.
-	entfeedsDescFeedURL := entfeedsFields[4].Descriptor()
-	// entfeeds.DefaultFeedURL holds the default value on creation for the feed_url field.
-	entfeeds.DefaultFeedURL = entfeedsDescFeedURL.Default.(string)
-	// entfeeds.FeedURLValidator is a validator for the "feed_url" field. It is called by the builders before save.
-	entfeeds.FeedURLValidator = entfeedsDescFeedURL.Validators[0].(func(string) error)
-	// entfeedsDescLanguage is the schema descriptor for language field.
-	entfeedsDescLanguage := entfeedsFields[5].Descriptor()
-	// entfeeds.DefaultLanguage holds the default value on creation for the language field.
-	entfeeds.DefaultLanguage = entfeedsDescLanguage.Default.(string)
-	// entfeeds.LanguageValidator is a validator for the "language" field. It is called by the builders before save.
-	entfeeds.LanguageValidator = entfeedsDescLanguage.Validators[0].(func(string) error)
-	// entfeedsDescDtCreated is the schema descriptor for dt_created field.
-	entfeedsDescDtCreated := entfeedsFields[6].Descriptor()
-	// entfeeds.DefaultDtCreated holds the default value on creation for the dt_created field.
-	entfeeds.DefaultDtCreated = entfeedsDescDtCreated.Default.(func() time.Time)
-	// entfeedsDescDtUpdated is the schema descriptor for dt_updated field.
-	entfeedsDescDtUpdated := entfeedsFields[7].Descriptor()
-	// entfeeds.UpdateDefaultDtUpdated holds the default value on update for the dt_updated field.
-	entfeeds.UpdateDefaultDtUpdated = entfeedsDescDtUpdated.UpdateDefault.(func() time.Time)
-	// entfeedsDescFavorites is the schema descriptor for favorites field.
-	entfeedsDescFavorites := entfeedsFields[8].Descriptor()
-	// entfeeds.DefaultFavorites holds the default value on creation for the favorites field.
-	entfeeds.DefaultFavorites = entfeedsDescFavorites.Default.(int64)
-	// entfeedsDescID is the schema descriptor for id field.
-	entfeedsDescID := entfeedsFields[0].Descriptor()
-	// entfeeds.DefaultID holds the default value on creation for the id field.
-	entfeeds.DefaultID = entfeedsDescID.Default.(func() uuid.UUID)
+	feedsFields := schema.Feeds{}.Fields()
+	_ = feedsFields
+	// feedsDescSiteURL is the schema descriptor for site_url field.
+	feedsDescSiteURL := feedsFields[1].Descriptor()
+	// feeds.DefaultSiteURL holds the default value on creation for the site_url field.
+	feeds.DefaultSiteURL = feedsDescSiteURL.Default.(string)
+	// feeds.SiteURLValidator is a validator for the "site_url" field. It is called by the builders before save.
+	feeds.SiteURLValidator = feedsDescSiteURL.Validators[0].(func(string) error)
+	// feedsDescTitle is the schema descriptor for title field.
+	feedsDescTitle := feedsFields[2].Descriptor()
+	// feeds.DefaultTitle holds the default value on creation for the title field.
+	feeds.DefaultTitle = feedsDescTitle.Default.(string)
+	// feeds.TitleValidator is a validator for the "title" field. It is called by the builders before save.
+	feeds.TitleValidator = feedsDescTitle.Validators[0].(func(string) error)
+	// feedsDescDescription is the schema descriptor for description field.
+	feedsDescDescription := feedsFields[3].Descriptor()
+	// feeds.DefaultDescription holds the default value on creation for the description field.
+	feeds.DefaultDescription = feedsDescDescription.Default.(string)
+	// feeds.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	feeds.DescriptionValidator = feedsDescDescription.Validators[0].(func(string) error)
+	// feedsDescFeedURL is the schema descriptor for feed_url field.
+	feedsDescFeedURL := feedsFields[4].Descriptor()
+	// feeds.DefaultFeedURL holds the default value on creation for the feed_url field.
+	feeds.DefaultFeedURL = feedsDescFeedURL.Default.(string)
+	// feeds.FeedURLValidator is a validator for the "feed_url" field. It is called by the builders before save.
+	feeds.FeedURLValidator = feedsDescFeedURL.Validators[0].(func(string) error)
+	// feedsDescLanguage is the schema descriptor for language field.
+	feedsDescLanguage := feedsFields[5].Descriptor()
+	// feeds.DefaultLanguage holds the default value on creation for the language field.
+	feeds.DefaultLanguage = feedsDescLanguage.Default.(string)
+	// feeds.LanguageValidator is a validator for the "language" field. It is called by the builders before save.
+	feeds.LanguageValidator = feedsDescLanguage.Validators[0].(func(string) error)
+	// feedsDescDtCreated is the schema descriptor for dt_created field.
+	feedsDescDtCreated := feedsFields[6].Descriptor()
+	// feeds.DefaultDtCreated holds the default value on creation for the dt_created field.
+	feeds.DefaultDtCreated = feedsDescDtCreated.Default.(func() time.Time)
+	// feedsDescDtUpdated is the schema descriptor for dt_updated field.
+	feedsDescDtUpdated := feedsFields[7].Descriptor()
+	// feeds.UpdateDefaultDtUpdated holds the default value on update for the dt_updated field.
+	feeds.UpdateDefaultDtUpdated = feedsDescDtUpdated.UpdateDefault.(func() time.Time)
+	// feedsDescFavorites is the schema descriptor for favorites field.
+	feedsDescFavorites := feedsFields[8].Descriptor()
+	// feeds.DefaultFavorites holds the default value on creation for the favorites field.
+	feeds.DefaultFavorites = feedsDescFavorites.Default.(int64)
+	// feedsDescID is the schema descriptor for id field.
+	feedsDescID := feedsFields[0].Descriptor()
+	// feeds.DefaultID holds the default value on creation for the id field.
+	feeds.DefaultID = feedsDescID.Default.(func() uuid.UUID)
 	followlistFields := schema.FollowList{}.Fields()
 	_ = followlistFields
 	// followlistDescUUID is the schema descriptor for uuid field.

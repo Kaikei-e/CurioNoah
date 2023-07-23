@@ -15,7 +15,7 @@ type FeedAuditTrailAction func(*sql.Selector)
 // FeedAuditTrailLog is the predicate function for feedaudittraillog builders.
 type FeedAuditTrailLog func(*sql.Selector)
 
-// Feeds is the predicate function for entfeeds builders.
+// Feeds is the predicate function for feeds builders.
 type Feeds func(*sql.Selector)
 
 // FollowList is the predicate function for followlist builders.

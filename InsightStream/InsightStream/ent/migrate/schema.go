@@ -72,7 +72,7 @@ var (
 			},
 		},
 	}
-	// FeedsColumns holds the columns for the "baseFeeds" table.
+	// FeedsColumns holds the columns for the "feeds" table.
 	FeedsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "site_url", Type: field.TypeString, Default: ""},
@@ -84,9 +84,9 @@ var (
 		{Name: "dt_updated", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "datetime"}},
 		{Name: "favorites", Type: field.TypeInt64, Default: 0},
 	}
-	// FeedsTable holds the schema information for the "baseFeeds" table.
+	// FeedsTable holds the schema information for the "feeds" table.
 	FeedsTable = &schema.Table{
-		Name:       "baseFeeds",
+		Name:       "feeds",
 		Columns:    FeedsColumns,
 		PrimaryKey: []*schema.Column{FeedsColumns[0]},
 		Indexes: []*schema.Index{

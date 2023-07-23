@@ -121,22 +121,22 @@ func (flc *FollowListCreate) SetNillableLink(s *string) *FollowListCreate {
 }
 
 // SetLinks sets the "links" field.
-func (flc *FollowListCreate) SetLinks(fl baseFeeds.FeedLink) *FollowListCreate {
-	flc.mutation.SetLinks(fl)
+func (flc *FollowListCreate) SetLinks(bfl baseFeeds.FeedLink) *FollowListCreate {
+	flc.mutation.SetLinks(bfl)
 	return flc
 }
 
 // SetNillableLinks sets the "links" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableLinks(fl *baseFeeds.FeedLink) *FollowListCreate {
-	if fl != nil {
-		flc.SetLinks(*fl)
+func (flc *FollowListCreate) SetNillableLinks(bfl *baseFeeds.FeedLink) *FollowListCreate {
+	if bfl != nil {
+		flc.SetLinks(*bfl)
 	}
 	return flc
 }
 
 // SetItemDescription sets the "item_description" field.
-func (flc *FollowListCreate) SetItemDescription(fi []baseFeeds.FeedItem) *FollowListCreate {
-	flc.mutation.SetItemDescription(fi)
+func (flc *FollowListCreate) SetItemDescription(bfi []baseFeeds.FeedItem) *FollowListCreate {
+	flc.mutation.SetItemDescription(bfi)
 	return flc
 }
 

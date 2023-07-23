@@ -79,7 +79,7 @@ func Server(cl *ent.Client) {
 						HadExceeded: hadExceeded,
 					}
 
-					e.Logger.Info("no more baseFeeds")
+					e.Logger.Info("no more feeds to fetch")
 					return c.JSON(200, emptyRes)
 				}
 
@@ -98,7 +98,7 @@ func Server(cl *ent.Client) {
 					e.Logger.Errorf("failed to reduce baseFeeds. error: %v", err)
 				}
 
-				e.Logger.Infof("baseFeeds were fetched: feed number is %v", len(reducedFeeds))
+				e.Logger.Infof("feeds were fetched: feed number is %v", len(reducedFeeds))
 
 				var feedsFormatted []gofeed.Feed
 				for _, feed := range reducedFeeds {
