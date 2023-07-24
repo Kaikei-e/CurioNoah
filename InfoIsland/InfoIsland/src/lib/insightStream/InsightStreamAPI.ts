@@ -1,4 +1,4 @@
-enum Method {
+export enum Method {
   GET = "GET",
   POST = "POST",
   PUT = "PUT",
@@ -21,44 +21,36 @@ const action = (inputMethod: Method) => {
 };
 
 export const insightStreamAPI = async (
-  inputAction: string,
+  method: Method,
   url: string,
-  body?: Object
+  body?: { [key: string]: string }
 ) => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Origin: origin,
+  };
 
-  const wantedAction = action(inputAction as Method);
-  if (wantedAction === Method.GET) {
-    const queryParam = new URLSearchParams(
-      body as { [key: string]: string }
-    ).toString();
+  let options: RequestInit = {
+    method: method,
+    headers: headers,
+  };
 
-    const response = await fetch(`${apiURL}${url}?${queryParam}`, {
-      method: wantedAction,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Origin: origin,
-      },
-    });
-    return await response.json().catch((err) => {
-      console.log(err);
-      return false;
-    });
-  } else if (wantedAction === Method.POST) {
-    const response = await fetch(apiURL + url, {
-      method: wantedAction,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Origin: origin,
-      },
-      body: JSON.stringify(body),
-    });
-    return await response.json().catch((err) => {
-      console.log(err);
-      return false;
-    });
+  if (method === Method.GET && body) {
+    const queryParam = new URLSearchParams(body).toString();
+    url = `${apiURL}${url}?${queryParam}`;
+  } else if (body) {
+    options.body = JSON.stringify(body);
+    url = apiURL + url;
   }
+
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
 };
