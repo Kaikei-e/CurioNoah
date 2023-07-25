@@ -6,7 +6,7 @@ import {
 import React, { useEffect } from "react";
 import { ByTitleOrDescription } from "../../../lib/models/searchFeeds/byTitleOrDescription";
 import { TitleOrDescription } from "../../../lib/models/searchFeeds/baseFeed";
-import { Button, CircularProgress } from "@chakra-ui/react";
+import { Button, CircularProgress, Flex } from "@chakra-ui/react";
 
 type Props = {};
 
@@ -31,30 +31,27 @@ export const FeedFlare = (props: Props) => {
     description: "",
   });
 
-  useEffect(() => {
-    setIsLoading(true);
-  });
-
-  const onSubmit: SubmitHandler<Input> = (data: Input, event: any) => {
+  const onSubmit: SubmitHandler<Input> = async (data: Input, event: any) => {
     event.preventDefault();
     setIsLoading(true);
-    const res = insightStreamAPI(Method.GET, "/search/baseFeeds", {
-      title: data.title,
-      description: data.description,
-    })
-      .then((res) => {
-        setItems(res.feeds);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
+    try {
+      const res = await insightStreamAPI(Method.GET, "/search/baseFeeds", {
+        title: data.title,
+        description: data.description,
       });
+      if (Array.isArray(res.feeds)) {
+        setItems(res.feeds);
+      } else {
+        console.error("Unexpected response structure", res);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
-    <div>
-      <h3>FeedFlare</h3>
+    <Flex h={"100%"} w={"100%"} flexDirection={"column"}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           defaultValue="Go"
@@ -64,25 +61,47 @@ export const FeedFlare = (props: Props) => {
         <input type="submit" />
       </form>
 
-      {isLoading ? (
-        <CircularProgress
-          isIndeterminate
-          color="green.300"
-          trackColor="green.100"
-          size="48px"
-          thickness="10px"
-        />
-      ) : (
-        items.map((item, index) => (
-          <div key={index}>
-            <h3>
-              {item.title}
-              <a href={item.feed_url}>{item.feed_url}</a>
-            </h3>
-            <p>{item.description}</p>
-          </div>
-        ))
-      )}
-    </div>
+      <Flex h={"100%"} w={"100%"}>
+        {isLoading ? (
+          <CircularProgress
+            isIndeterminate
+            color="green.300"
+            trackColor="green.100"
+            size="48px"
+            thickness="10px"
+          />
+        ) : (
+          <Flex flexDirection={"column"}>
+            {items.map((item, index) => (
+                <div key={index}>
+                  <a href={item.feed_url} style={feedsTitleStyle} target={"_blank"}>
+                    {item.title}
+                  </a>
+                  <p style={feedsDescriptionStyle}>{item.description}</p>
+                </div>
+            ))}
+          </Flex>
+        )}
+      </Flex>
+    </Flex>
   );
+};
+
+
+const feedsTitleStyle: any = {
+  fontSize: "1.4rem",
+  fontWeight: "bold",
+  color: "#000",
+  fontFamily: "Jost",
+  textAlign: "left",
+  margin: "0.5rem",
+};
+
+const feedsDescriptionStyle: any = {
+  fontSize: "1rem",
+  fontWeight: "regular",
+  color: "#000",
+  fontFamily: "Jost",
+  textAlign: "left",
+  margin: "0.5rem",
 };

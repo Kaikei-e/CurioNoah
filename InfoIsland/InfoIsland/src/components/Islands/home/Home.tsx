@@ -55,13 +55,16 @@ export const Home = () => {
           >
             <Flex
               bgColor={"#D6C862"}
-              w={"48%"}
+              w={"100%"}
               h={"100%"}
               p={"1%"}
               mr={"2%"}
               rounded={"xl"}
             >
               <Flex
+                  w={"100%"} h={"100%"}
+                  overflowY={"scroll"}
+                  overflowWrap={"break-word"}
                 justifyContent={"start"}
                 alignItems={"start"}
                 textAlign={"center"}
@@ -77,24 +80,24 @@ export const Home = () => {
                 <FeedFlare />
               </Flex>
             </Flex>
-            <Flex
-              flexDirection={"column"}
-              bgColor={"#D6C862"}
-              w={"48%"}
-              h={"100%"}
-              p={"1%"}
-              ml={"2%"}
-              rounded={"xl"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <Box bgColor={"#D5D5D5"} w={"100%"} h={"48%"} mb={"2%"}>
-                <Text>SlateFlex: Notes</Text>
-              </Box>
-              <Box bgColor={"#D5D5D5"} w={"100%"} h={"48%"} mt={"2%"}>
-                <Text>Account Settings</Text>
-              </Box>
-            </Flex>
+            {/*<Flex*/}
+            {/*  flexDirection={"column"}*/}
+            {/*  bgColor={"#D6C862"}*/}
+            {/*  w={"48%"}*/}
+            {/*  h={"100%"}*/}
+            {/*  p={"1%"}*/}
+            {/*  ml={"2%"}*/}
+            {/*  rounded={"xl"}*/}
+            {/*  justifyContent={"center"}*/}
+            {/*  alignItems={"center"}*/}
+            {/*>*/}
+            {/*  <Box bgColor={"#D5D5D5"} w={"100%"} h={"48%"} mb={"2%"}>*/}
+            {/*    <Text>SlateFlex: Notes</Text>*/}
+            {/*  </Box>*/}
+            {/*  <Box bgColor={"#D5D5D5"} w={"100%"} h={"48%"} mt={"2%"}>*/}
+            {/*    <Text>Account Settings</Text>*/}
+            {/*  </Box>*/}
+            {/*</Flex>*/}
           </Flex>
         </Flex>
       </Flex>
