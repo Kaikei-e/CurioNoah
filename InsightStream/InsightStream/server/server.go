@@ -6,6 +6,7 @@ import (
 	"github.com/mmcdole/gofeed"
 	"insightstream/adaptor"
 	register "insightstream/collector/registerFeed"
+	"insightstream/domain/searchedFeed"
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
@@ -144,8 +145,13 @@ func Server(cl *ent.Client) {
 				if err != nil {
 					log.Fatalln(err)
 				}
+				response := struct {
+					Feeds []searchedFeed.ByTitleOrDescription `json:"feeds"`
+				}{
+					Feeds: searchedFeeds,
+				}
 
-				return c.JSON(200, searchedFeeds)
+				return c.JSON(200, response)
 			})
 		}
 
