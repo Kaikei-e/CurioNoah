@@ -40,6 +40,7 @@ export const FeedFlare = (props: Props) => {
         description: data.description,
       });
       if (Array.isArray(res.feeds)) {
+        setItems([]);
         setItems(res.feeds);
       } else {
         console.error("Unexpected response structure", res);
