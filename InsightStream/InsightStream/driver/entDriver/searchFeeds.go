@@ -11,7 +11,7 @@ import (
 
 func SearchFeeds(searchWord searchWord.SearchWord, cl *ent.Client, ctx context.Context) ([]*ent.Feeds, error) {
 	// This is the limit of the number of feeds to be displayed on the screen.
-	// not intentional number, just for now.
+	// non-intentional number, just for now.
 	const limit = 100
 
 	feeds, err := cl.Feeds.Query().Select().Limit(limit).Where(
