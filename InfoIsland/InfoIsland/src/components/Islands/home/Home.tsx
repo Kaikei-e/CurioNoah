@@ -62,9 +62,10 @@ export const Home = () => {
               rounded={"xl"}
             >
               <Flex
-                  w={"100%"} h={"100%"}
-                  overflowY={"scroll"}
-                  overflowWrap={"break-word"}
+                w={"100%"}
+                h={"100%"}
+                overflowY={"scroll"}
+                overflowWrap={"break-word"}
                 justifyContent={"start"}
                 alignItems={"start"}
                 textAlign={"center"}

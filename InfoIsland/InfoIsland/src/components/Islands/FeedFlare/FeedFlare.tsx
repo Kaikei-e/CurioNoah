@@ -74,12 +74,16 @@ export const FeedFlare = (props: Props) => {
         ) : (
           <Flex flexDirection={"column"}>
             {items.map((item, index) => (
-                <div key={index}>
-                  <a href={item.feed_url} style={feedsTitleStyle} target={"_blank"}>
-                    {item.title}
-                  </a>
-                  <p style={feedsDescriptionStyle}>{item.description}</p>
-                </div>
+              <div key={index}>
+                <a
+                  href={item.feed_url}
+                  style={feedsTitleStyle}
+                  target={"_blank"}
+                >
+                  {item.title}
+                </a>
+                <p style={feedsDescriptionStyle}>{item.description}</p>
+              </div>
             ))}
           </Flex>
         )}
@@ -87,7 +91,6 @@ export const FeedFlare = (props: Props) => {
     </Flex>
   );
 };
-
 
 const feedsTitleStyle: any = {
   fontSize: "1.4rem",
