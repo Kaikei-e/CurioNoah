@@ -129,6 +129,17 @@ var (
 					},
 				},
 			},
+			{
+				Name:    "feeds_description",
+				Unique:  false,
+				Columns: []*schema.Column{FeedsColumns[3]},
+				Annotation: &entsql.IndexAnnotation{
+					Types: map[string]string{
+						"mysql":    "FULLTEXT",
+						"postgres": "GIN",
+					},
+				},
+			},
 		},
 	}
 	// FollowListsColumns holds the columns for the "follow_lists" table.

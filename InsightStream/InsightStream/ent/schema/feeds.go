@@ -55,6 +55,12 @@ func (Feeds) Indexes() []ent.Index {
 				dialect.Postgres: "GIN",
 			}),
 		),
+		index.Fields("description").Annotations(
+			entsql.IndexTypes(map[string]string{
+				dialect.MySQL:    "FULLTEXT",
+				dialect.Postgres: "GIN",
+			}),
+		),
 	}
 }
 
