@@ -97,7 +97,10 @@ export const InfiniteFeeds: React.FC<Props> = () => {
               >
                 {item.title}
               </Link>
-              <Button color={"white"} backgroundColor={buttonBgColor}>
+              <Button
+                  variant='outline'
+                  border={"1px"}
+                  color={"blackAlpha.800"} backgroundColor={"teal.50"}>
                 Like !
               </Button>
             </Flex>
@@ -108,5 +111,3 @@ export const InfiniteFeeds: React.FC<Props> = () => {
     </InfiniteScroll>
   );
 };
-
-const buttonBgColor = "#88A6B1";
