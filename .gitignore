@@ -19,3 +19,4 @@ CoreManager/CoreManager/target
 Exec/feed_harmony_pid.txt
 .gitignore
 Exec/feedharmony_pid.txt
+oath_db/postgresql
