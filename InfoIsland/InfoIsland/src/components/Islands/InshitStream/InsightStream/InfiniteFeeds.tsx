@@ -70,9 +70,9 @@ export const InfiniteFeeds: React.FC<Props> = () => {
       useWindow={false}
     >
       <Flex flexDirection={"column"}>
-        {items.map((item, index) => (
+        {items.map((item) => (
           <Box
-            key={item.title + index}
+            key={item.item_id}
             p={5}
             my={2}
             bgColor={"teal.50"}
@@ -98,9 +98,11 @@ export const InfiniteFeeds: React.FC<Props> = () => {
                 {item.title}
               </Link>
               <Button
-                  variant='outline'
-                  border={"1px"}
-                  color={"blackAlpha.800"} backgroundColor={"teal.50"}>
+                variant="outline"
+                border={"1px"}
+                color={"blackAlpha.800"}
+                backgroundColor={"teal.50"}
+              >
                 Like !
               </Button>
             </Flex>

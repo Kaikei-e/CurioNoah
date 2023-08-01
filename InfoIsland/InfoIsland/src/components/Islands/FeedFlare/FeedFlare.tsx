@@ -73,8 +73,8 @@ export const FeedFlare = (props: Props) => {
           />
         ) : (
           <Flex flexDirection={"column"}>
-            {items.map((item, index) => (
-              <div key={index}>
+            {items.map((item) => (
+              <div key={item.feed_url}>
                 <a
                   href={item.feed_url}
                   style={feedsTitleStyle}
