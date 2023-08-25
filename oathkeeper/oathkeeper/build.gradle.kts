@@ -1,57 +1,45 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+val ktor_version: String by project
+val kotlin_version: String by project
+val logback_version: String by project
 
+val postgres_version: String by project
+val h2_version: String by project
 plugins {
-    id("org.springframework.boot") version "3.1.0"
-    id("io.spring.dependency-management") version "1.1.0"
-    id("org.asciidoctor.jvm.convert") version "3.3.2"
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.spring") version "1.8.21"
+    kotlin("jvm") version "1.9.10"
+    id("io.ktor.plugin") version "2.3.3"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 }
 
 group = "com.the3ridge"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
+application {
+    mainClass.set("com.the3ridge.ApplicationKt")
+
+    val isDevelopment: Boolean = project.ext.has("development")
+    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
 repositories {
     mavenCentral()
 }
 
-extra["snippetsDir"] = file("build/generated-snippets")
-
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
-    implementation("org.springframework.data:spring-data-jdbc:3.1.2")
-    runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("org.springframework.security:spring-security-test")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "17"
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.test {
-    outputs.dir(project.property("snippetsDir"))
-}
-
-tasks.asciidoctor {
-    inputs.dir(project.property("snippetsDir"))
-    dependsOn(tasks.test)
+    implementation("io.ktor:ktor-server-core-jvm")
+    implementation("io.ktor:ktor-server-auth-jvm")
+    implementation("io.ktor:ktor-client-core-jvm")
+    implementation("io.ktor:ktor-client-apache-jvm")
+    implementation("io.ktor:ktor-server-sessions-jvm")
+    implementation("io.ktor:ktor-server-cors-jvm")
+    implementation("io.ktor:ktor-server-swagger-jvm")
+    implementation("io.ktor:ktor-server-metrics-jvm")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm")
+    implementation("io.ktor:ktor-serialization-gson-jvm")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
+    implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("com.h2database:h2:$h2_version")
+    implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("ch.qos.logback:logback-classic:$logback_version")
+    testImplementation("io.ktor:ktor-server-tests-jvm")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
