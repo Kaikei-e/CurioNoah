@@ -1,6 +1,6 @@
 package com.the3ridge.oathkeeper.repository
 
-import io.github.cdimascio.dotenv.dotenv
+import io.github.cdimascio.dotenv.dotenv // Ensure this library is imported correctly
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,7 +11,7 @@ class DataSourceConfig {
 
     @Bean
     fun dataSource(): DataSource {
-        val dotenv = dotenv()
+        val dotenv = dotenv() // Loads the .env file into environment variables
 
         return DataSourceBuilder.create()
             .url(dotenv["DB_URL"])
