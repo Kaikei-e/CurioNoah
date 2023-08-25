@@ -124,6 +124,9 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 	}
 
 	feedLinkList, err := CheckDiffByFeedItems(feedExchanged, fetchedFeeds)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("failed to check diff. error: %v", err))
+	}
 
 	var updateTargetList []updateList
 	for _, fll := range feedLinkList {
