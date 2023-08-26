@@ -4,6 +4,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### Application ###
+src/main/resources/*.conf
+
 ### STS ###
 .apt_generated
 .classpath
