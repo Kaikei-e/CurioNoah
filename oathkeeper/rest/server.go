@@ -1,8 +1,8 @@
 package rest
 
 import (
+	"ghostkeeper/logger"
 	"github.com/labstack/echo/v4"
-	"log"
 )
 
 func Server() {
@@ -14,5 +14,10 @@ func Server() {
 		})
 	})
 
-	log.Fatalf("Server error: %v", e.Start(":9800"))
+	err := e.Start(":9800")
+	if err != nil {
+		logger.Logger.Error("Server error: %v", err)
+		panic(err)
+	}
+
 }
