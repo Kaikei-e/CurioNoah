@@ -4,7 +4,6 @@ import cats.effect.{ExitCode, IO, IOApp, Resource}
 import com.comcast.ip4s.{Host, Port}
 import org.http4s.ember.server.EmberServerBuilder
 import server.system.System
-import cats.effect.std.Console
 import org.http4s.server.Server
 
 object APIServer extends IOApp{
