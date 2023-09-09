@@ -4,9 +4,11 @@
 .env
 .DS_Store
 *.log
+*.xml
 .vscode
 /CoreDatabase/mysql
-*.xml
+
+
 InfoIsland/InfoIsland/.yarn/install-state.gz
 
 
@@ -20,3 +22,5 @@ Exec/feed_harmony_pid.txt
 .gitignore
 Exec/feedharmony_pid.txt
 oath_db/postgresql
+oathkeeper/scanner/target
+oathkeeper/scanner/project/target
