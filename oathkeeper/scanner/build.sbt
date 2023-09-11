@@ -14,3 +14,8 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-ember-server" % http4sVersion,
   "org.http4s" %% "http4s-dsl"          % http4sVersion,
 )
+
+libraryDependencies += "org.scalatra" %% "scalatra" % "2.8.4"
+libraryDependencies += "org.scalatra" %% "scalatra-scalatest" % "2.8.4" % "test"
+libraryDependencies += "org.scalatra" %% "scalatra-json" % "2.8.4"
+libraryDependencies += "org.json4s" %% "json4s-jackson" % "4.0.6"
