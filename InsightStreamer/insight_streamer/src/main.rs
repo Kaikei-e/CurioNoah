@@ -1,6 +1,7 @@
-use std::env;
 use crate::rest::server::api_server;
+use std::env;
 
+mod domain;
 mod rest;
 
 #[tokio::main]
@@ -17,7 +18,6 @@ async fn main() {
     }
     let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = sqlx::mysql::MySqlPool::connect(&var).await.unwrap();
-
 
     api_server(pool).await;
 

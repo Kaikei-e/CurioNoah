@@ -1,8 +1,8 @@
-use axum::Router;
 use axum::routing::get;
+use axum::Router;
 use axum::Server;
-use std::net::SocketAddr;
 use sqlx::{MySql, Pool};
+use std::net::SocketAddr;
 
 #[derive(Clone)]
 pub struct DatabasePool {
@@ -19,7 +19,7 @@ pub async fn api_server(pool: Pool<MySql>) {
     };
 
     let app = Router::new()
-    .route("/system/alive", get(|| async { "Keep alive" }))
+        .route("/system/alive", get(|| async { "Keep alive" }))
         .with_state(state.pool);
 
     let port = 9200;
@@ -41,5 +41,4 @@ pub async fn api_server(pool: Pool<MySql>) {
         .unwrap();
 
     println!("Server stopped");
-
 }
