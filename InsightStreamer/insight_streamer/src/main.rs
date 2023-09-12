@@ -4,6 +4,7 @@ use std::env;
 mod domain;
 mod rest;
 mod usecase;
+mod driver;
 
 #[tokio::main]
 async fn main() {
