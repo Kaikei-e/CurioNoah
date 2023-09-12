@@ -3,6 +3,7 @@ use std::env;
 
 mod domain;
 mod rest;
+mod usecase;
 
 #[tokio::main]
 async fn main() {
