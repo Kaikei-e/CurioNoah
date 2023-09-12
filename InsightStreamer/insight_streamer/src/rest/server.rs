@@ -1,17 +1,15 @@
+use crate::driver::repository::rss_feeds_driver::DatabasePool;
 use axum::routing::get;
 use axum::Router;
 use axum::Server;
 use sqlx::{MySql, Pool};
 use std::net::SocketAddr;
 
-use crate::driver::repository::rss_feeds_driver::DatabasePool;
-
-
-
 #[derive(Clone)]
 struct AppState {
     pool: DatabasePool,
 }
+
 pub async fn api_server(pool: Pool<MySql>) {
     let state = AppState {
         pool: DatabasePool { pool },

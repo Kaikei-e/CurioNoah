@@ -2,9 +2,9 @@ use crate::rest::server::api_server;
 use std::env;
 
 mod domain;
+mod driver;
 mod rest;
 mod usecase;
-mod driver;
 
 #[tokio::main]
 async fn main() {
