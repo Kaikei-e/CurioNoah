@@ -11,5 +11,5 @@ func InitLogger() {
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
 	Logger = logger
 
-	Logger.Info("Logger initialized")
+	Logger.Info("Logger initialized...")
 }
