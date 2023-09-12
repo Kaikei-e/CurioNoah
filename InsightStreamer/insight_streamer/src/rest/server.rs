@@ -10,7 +10,7 @@ struct AppState {
 }
 
 pub async fn api_server() {
-    let pool = RSSFeedRepository::new().await;
+    let pool = RSSFeedRepository::initialize_connection().await;
 
     let state = AppState {
         pool: DatabasePool { pool },

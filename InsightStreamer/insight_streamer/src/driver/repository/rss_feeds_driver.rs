@@ -1,7 +1,9 @@
-use crate::domain::feed_source::{FeedElement, FollowList};
+use crate::domain::feed_source::{FeedElement, FollowList, OneFeed};
 use axum::async_trait;
-use sqlx::{Error, MySql, Pool};
+use serde_json::Value;
+use sqlx::{Error, MySql, Pool, Row};
 use std::env;
+use std::str::FromStr;
 
 #[derive(Clone)]
 pub struct DatabasePool {
@@ -14,7 +16,7 @@ pub struct RSSFeedRepository {
 }
 
 impl RSSFeedRepository {
-    pub async fn new() -> Pool<MySql> {
+    pub async fn initialize_connection() -> Pool<MySql> {
         let loaded = dotenvy::dotenv();
 
         match loaded {
@@ -27,7 +29,7 @@ impl RSSFeedRepository {
         }
         let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
         let pool_future = sqlx::mysql::MySqlPool::connect(&var);
-        
+
         match pool_future.await {
             Ok(p) => p,
             Err(e) => panic!("Failed to connect to database: {}", e),
@@ -45,7 +47,48 @@ pub trait RSSFeedRepositoryTrait {
 #[async_trait]
 impl RSSFeedRepositoryTrait for RSSFeedRepository {
     async fn fetch_follow_list_by_twenty(&self) -> Result<Vec<FollowList>, Error> {
-        todo!()
+        let query_limit = 20;
+        let mut conn = self.pool.acquire().await?;
+
+        let maybe_rows = sqlx::query(
+            "SELECT id, site_url, feed_url, title, language, description, created_at, updated_at, favorites FROM feeds LIMIT ?",
+        ).bind(query_limit).fetch_all(&mut conn).await;
+
+        if let Err(e) = maybe_rows {
+            println!("Error: {}", e);
+            return Err(sqlx::Error::RowNotFound);
+        }
+
+        let follow_lists: Vec<FollowList> = maybe_rows
+            .unwrap()
+            .iter()
+            .map(|row| FollowList {
+                id: row.get("id"),
+                uuid: uuid::Uuid::from_str(&row.get::<String, _>("uuid")).unwrap(),
+                xml_version: row.get("xml_version"),
+                rss_version: row.get("rss_version"),
+                url: row.get("url"),
+                title: row.get("title"),
+                description: row.get("description"),
+                link: row.get("link"),
+                links: serde_json::from_str(&row.get::<Value, _>("links").to_string()).unwrap(),
+                item_description: serde_json::from_str::<OneFeed>(
+                    &row.get::<Value, _>("item_description").to_string(),
+                )
+                .unwrap(),
+                language: row.get("language"),
+                dt_created: row.get("dt_created"),
+                dt_updated: row.get("dt_updated"),
+                dt_last_inserted: row.get("dt_last_inserted"),
+                feed_category: row.get("feed_category"),
+                is_favorite: row.get("is_favorite"),
+                is_active: row.get("is_active"),
+                is_read: row.get("is_read"),
+                is_updated: row.get("is_updated"),
+            })
+            .collect();
+
+        Ok(follow_lists)
     }
 
     async fn fetch_feeds(&self) -> Result<Vec<FeedElement>, Error> {
