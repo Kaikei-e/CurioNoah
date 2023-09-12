@@ -7,7 +7,6 @@ use axum::async_trait;
 
 use chrono::{DateTime, Utc};
 
-
 use serde_json::Value;
 use sqlx::mysql::MySqlPoolOptions;
 use sqlx::{Connection, Error as SqlxError};
