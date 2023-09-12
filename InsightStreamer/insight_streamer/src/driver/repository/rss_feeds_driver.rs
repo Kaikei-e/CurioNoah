@@ -27,11 +27,11 @@ impl RSSFeedRepository {
         }
         let var = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
         let pool_future = sqlx::mysql::MySqlPool::connect(&var);
-        let pool = match pool_future.await {
+        
+        match pool_future.await {
             Ok(p) => p,
             Err(e) => panic!("Failed to connect to database: {}", e),
-        };
-        pool
+        }
     }
 }
 
