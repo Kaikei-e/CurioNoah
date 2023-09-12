@@ -1,8 +1,7 @@
-use crate::driver::repository::rss_feeds_driver::DatabasePool;
+use crate::driver::repository::rss_feeds_driver::*;
 use axum::routing::get;
 use axum::Router;
 use axum::Server;
-use sqlx::{MySql, Pool};
 use std::net::SocketAddr;
 
 #[derive(Clone)]
@@ -10,7 +9,9 @@ struct AppState {
     pool: DatabasePool,
 }
 
-pub async fn api_server(pool: Pool<MySql>) {
+pub async fn api_server() {
+    let pool = RSSFeedRepository::new().await;
+
     let state = AppState {
         pool: DatabasePool { pool },
     };
