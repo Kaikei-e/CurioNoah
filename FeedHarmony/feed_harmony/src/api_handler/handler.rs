@@ -19,7 +19,6 @@ pub async fn handler(pool: Pool<MySql>) {
     };
 
     let app = Router::new()
-        .route("/", get(|| async { "Hello, World!" }))
         .route(
             "/api/v1/store_feeds",
             post(api_handler::v1::store_feeds::fetch_all),
