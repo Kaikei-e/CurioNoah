@@ -1,1 +1,1 @@
-mod repository;
+pub(crate) mod repository;

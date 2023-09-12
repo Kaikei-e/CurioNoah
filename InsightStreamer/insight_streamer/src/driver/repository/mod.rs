@@ -1,1 +1,1 @@
-mod rss_feeds_driver;
+pub(crate) mod rss_feeds_driver;

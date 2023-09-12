@@ -4,10 +4,9 @@ use axum::Server;
 use sqlx::{MySql, Pool};
 use std::net::SocketAddr;
 
-#[derive(Clone)]
-pub struct DatabasePool {
-    pub(crate) pool: Pool<MySql>,
-}
+use crate::driver::repository::rss_feeds_driver::DatabasePool;
+
+
 
 #[derive(Clone)]
 struct AppState {
