@@ -4,7 +4,7 @@ use axum::extract::State;
 use axum::{response::IntoResponse, Json};
 
 pub async fn fetch(
-    State(pool): State<DatabasePool>,
+    State(_pool): State<DatabasePool>,
     Json(payload): Json<FollowList>,
 ) -> impl IntoResponse {
     Json(payload)

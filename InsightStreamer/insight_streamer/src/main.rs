@@ -2,6 +2,7 @@ use crate::rest::server::api_server;
 
 mod domain;
 mod driver;
+mod gateway;
 mod rest;
 mod usecase;
 
