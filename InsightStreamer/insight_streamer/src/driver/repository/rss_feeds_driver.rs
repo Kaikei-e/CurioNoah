@@ -51,8 +51,17 @@ impl RSSFeedRepositoryTrait for RSSFeedRepository {
         let mut conn = self.pool.acquire().await?;
 
         let maybe_rows = sqlx::query(
-            "SELECT id, site_url, feed_url, title, language, description, created_at, updated_at, favorites FROM feeds LIMIT ?",
-        ).bind(query_limit).fetch_all(&mut conn).await;
+            "SELECT id, uuid, xml_version, \
+            rss_version, url, title, \
+            description, link, links, \
+            item_description, language, dt_created, \
+            dt_updated, dt_last_inserted, feed_category, \
+            is_favorite, is_active, is_read, \
+            is_updated FROM follow_list LIMIT ?",
+        )
+        .bind(query_limit)
+        .fetch_all(&mut conn)
+        .await;
 
         if let Err(e) = maybe_rows {
             println!("Error: {}", e);
