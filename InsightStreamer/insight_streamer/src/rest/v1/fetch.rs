@@ -1,4 +1,4 @@
-use crate::domain::feed_source::FollowList;
+use crate::domain::follow_list::FollowList;
 use crate::driver::repository::rss_feeds_driver::DatabasePool;
 use axum::extract::State;
 use axum::{response::IntoResponse, Json};
