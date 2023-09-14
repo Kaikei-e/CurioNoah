@@ -1,5 +1,4 @@
-use crate::domain::feeds::FeedElement;
-use crate::domain::follow_list::FollowList;
+use crate::domain::feeds::{FeedElement, FollowList};
 use axum::async_trait;
 
 #[async_trait]
