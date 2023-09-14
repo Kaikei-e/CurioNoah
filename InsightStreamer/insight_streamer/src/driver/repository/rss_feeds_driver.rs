@@ -103,6 +103,10 @@ impl RSSFeedRepositoryTrait for RSSFeedRepository {
     async fn fetch_follow_list(&self) -> Result<Vec<FollowList>, Error> {
         todo!()
     }
+
+    async fn fetch_follow_list_with_offset(&self, offset: i32) -> Result<Vec<crate::domain::follow_list::FollowList>, Error> {
+        todo!()
+    }
 }
 
 pub type OneFeed = Vec<FeedElement>;
