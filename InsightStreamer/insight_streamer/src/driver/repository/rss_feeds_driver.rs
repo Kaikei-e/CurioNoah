@@ -105,7 +105,7 @@ impl RSSFeedRepositoryTrait for RSSFeedRepository {
     async fn fetch_follow_list_with_offset(
         &self,
         offset: i32,
-    ) -> Result<Vec<crate::domain::follow_list::FollowList>, Error> {
+    ) -> Result<Vec<FollowList>, Error> {
         todo!()
     }
 }
