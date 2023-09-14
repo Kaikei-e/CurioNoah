@@ -41,6 +41,8 @@ impl RSSFeedRepository {
 #[async_trait]
 impl RSSFeedRepositoryTrait for RSSFeedRepository {
     async fn fetch_follow_list_by_twenty(&self) -> Result<Vec<FollowList>, Error> {
+        // This is bad practice, I need to fix this to use parameters.
+        // Because this function has a side effect.
         let query_limit = 20;
         let mut conn = self.pool.acquire().await?;
 
