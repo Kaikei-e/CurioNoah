@@ -4,6 +4,7 @@ use serde_json::Value;
 use sqlx::{Error, MySql, Pool, Row};
 use std::env;
 use std::str::FromStr;
+use crate::domain::feeds::{FeedElement, FollowList, OneFeed};
 
 #[derive(Clone)]
 pub struct DatabasePool {
