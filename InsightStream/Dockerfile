@@ -1,4 +1,4 @@
-FROM golang:1.20.5-bullseye
+FROM golang:1.21.1-bullseye
 
 ADD ./InsightStream /usr/src/app
 

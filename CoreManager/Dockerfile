@@ -1,4 +1,4 @@
-FROM rust:1.66-bullseye
+FROM rust:1.72-bullseye
 
 ADD ./CoreManager /usr/src/app
 

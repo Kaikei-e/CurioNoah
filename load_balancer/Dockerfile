@@ -1,5 +1,3 @@
-FROM nginx:1.22.1
-
-
+FROM nginx:1.25.2
 
 EXPOSE 80 443
