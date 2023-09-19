@@ -1,10 +1,10 @@
+use crate::domain::feeds::{FeedElement, FollowList, OneFeed};
 use crate::gateway::fetch_feeds_gateway::RSSFeedRepositoryTrait;
 use axum::async_trait;
 use serde_json::Value;
 use sqlx::{Error, MySql, Pool, Row};
 use std::env;
 use std::str::FromStr;
-use crate::domain::feeds::{FeedElement, FollowList, OneFeed};
 
 #[derive(Clone)]
 pub struct DatabasePool {
@@ -17,6 +17,9 @@ pub struct RSSFeedRepository {
 }
 
 impl RSSFeedRepository {
+    pub fn new(pool: Pool<MySql>) -> Self {
+        Self { pool }
+    }
     pub async fn initialize_connection() -> Pool<MySql> {
         let loaded = dotenvy::dotenv();
 
@@ -104,10 +107,7 @@ impl RSSFeedRepositoryTrait for RSSFeedRepository {
         todo!()
     }
 
-    async fn fetch_follow_list_with_offset(
-        &self,
-        _offset: i32,
-    ) -> Result<Vec<FollowList>, Error> {
+    async fn fetch_follow_list_with_offset(&self, _offset: i32) -> Result<Vec<FollowList>, Error> {
         todo!()
     }
 }

@@ -1,1 +1,1 @@
-mod fetch;
+pub(crate) mod fetch;

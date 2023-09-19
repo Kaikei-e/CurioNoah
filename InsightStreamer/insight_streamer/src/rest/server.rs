@@ -1,4 +1,5 @@
 use crate::driver::repository::rss_feeds_driver::*;
+use crate::rest::v1::fetch::fetch;
 use axum::routing::get;
 use axum::Router;
 use axum::Server;
@@ -18,6 +19,7 @@ pub async fn api_server() {
 
     let app = Router::new()
         .route("/system/alive", get(|| async { "Keep alive" }))
+        .route("/v1/fetch", get(fetch))
         .with_state(state.pool);
 
     let port = 9200;
