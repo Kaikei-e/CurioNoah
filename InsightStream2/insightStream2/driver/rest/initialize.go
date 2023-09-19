@@ -36,6 +36,12 @@ func Initialize() {
 		return c.String(200, "Keep Alive")
 	})
 
+	apiV1 := e.Group("/api/v1")
+	apiV1.Use()
+	{
+		panic("implement me")
+	}
+
 	e.Logger.Fatal(e.Start(":9110"))
 
 }
