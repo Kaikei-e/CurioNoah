@@ -9,7 +9,7 @@ use chrono::{DateTime, Utc};
 
 use serde_json::Value;
 use sqlx::mysql::MySqlPoolOptions;
-use sqlx::{Connection, Error as SqlxError};
+use sqlx::Error as SqlxError;
 use sqlx::{MySql, Pool, Row};
 use std::fmt::Debug;
 use std::str::FromStr;
