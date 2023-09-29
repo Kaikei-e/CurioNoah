@@ -49,7 +49,13 @@ pub trait FeedConnection {
 #[async_trait]
 impl FeedConnection for FeedRepository {
     async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError> {
-        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, rss_version, url, title, description, link, links, item_description, language, dt_created, dt_updated, dt_last_inserted, feed_category, is_favorite, is_active, is_read, is_updated FROM follow_lists")
+        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, \
+        rss_version, url, title, \
+        description, link, links, \
+        item_description, language, dt_created, \
+        dt_updated, dt_last_inserted, feed_category, \
+        is_favorite, is_active, is_read, \
+        is_updated FROM follow_lists")
             .fetch_all(&self.pool)
             .await
             .map_err(|e| anyhow::anyhow!(e));
@@ -93,7 +99,8 @@ impl FeedConnection for FeedRepository {
 
     async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError> {
         let row = sqlx::query(
-            "SELECT id, updated_at, action_id FROM feed_audit_trail_logs ORDER BY updated_at DESC LIMIT 1",
+            "SELECT id, updated_at, action_id \
+            FROM feed_audit_trail_logs ORDER BY updated_at DESC LIMIT 1",
         )
             .fetch_optional(&self.pool)
             .await?;
