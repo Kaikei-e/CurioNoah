@@ -787,6 +787,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "axum",
+ "bytes",
  "chrono",
  "dotenvy",
  "hyper 1.0.0-rc.4",
@@ -796,6 +797,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "tokio",
+ "url",
  "uuid",
 ]
 
