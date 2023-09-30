@@ -99,8 +99,46 @@ impl RSSFeedRepositoryTrait for RSSFeedRepository {
         Ok(follow_lists)
     }
 
-    async fn fetch_feeds(&self) -> Result<Vec<FeedElement>, Error> {
-        todo!()
+    async fn fetch_feeds(&self, limit: i32, offset: i32) -> Result<Vec<FeedElement>, Error> {
+        let mut conn = self.pool.acquire().await?;
+
+        let maybe_rows = sqlx::query(
+            "SELECT guid, item_id, updated, \
+            item_link, published, item_title, \
+            item_description, published_parsed, \
+            categories FROM feeds LIMIT ? OFFSET ?",
+        )
+        .bind(limit)
+        .bind(offset)
+        .fetch_all(&mut conn)
+        .await;
+
+        if let Err(e) = maybe_rows {
+            println!("Error: {}", e);
+            return Err(sqlx::Error::RowNotFound);
+        };
+
+        let feeds: Vec<FeedElement> = maybe_rows
+            .unwrap()
+            .iter()
+            .map(|row| FeedElement {
+                guid: row.get("guid"),
+                item_id: row.get("item_id"),
+                updated: row.get("updated"),
+                item_link: row.get("item_link"),
+                published: row.get("published"),
+                item_title: row.get("item_title"),
+                item_description: serde_json::from_str(
+                    &row.get::<Value, _>("item_description").to_string(),
+                )
+                .unwrap(),
+                published_parsed: row.get("published_parsed"),
+                categories: serde_json::from_str(&row.get::<Value, _>("categories").to_string())
+                    .unwrap(),
+            })
+            .collect();
+
+        Ok(feeds)
     }
 
     async fn fetch_follow_list(&self) -> Result<Vec<FollowList>, Error> {

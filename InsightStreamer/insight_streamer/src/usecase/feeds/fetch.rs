@@ -47,29 +47,25 @@ mod tests {
                 "link3".to_string(),
             ],
         };
-        let one_feed =
-            vec![
-                 FeedElement {
-                     guid: "id".to_string(),
-                     item_id: "id".to_string(),
-                     updated: "date".to_string(),
-                     item_link: "item_link".to_string(),
-                     published: "date".to_string(),
-                     item_title: "title".to_string(),
-                     item_description: Default::default(),
-                     published_parsed: "date".to_string(),
-                     categories: None,
-                 }
-        ];
+        let one_feed = vec![FeedElement {
+            guid: "id".to_string(),
+            item_id: "id".to_string(),
+            updated: "date".to_string(),
+            item_link: "item_link".to_string(),
+            published: "date".to_string(),
+            item_title: "title".to_string(),
+            item_description: Default::default(),
+            published_parsed: "date".to_string(),
+            categories: None,
+        }];
         let dt_created = DateTime::<Utc>::from_naive_utc_and_offset(Default::default(), Utc);
         let dt_updated = DateTime::<Utc>::from_naive_utc_and_offset(Default::default(), Utc);
         let dt_last_inserted = DateTime::<Utc>::from_naive_utc_and_offset(Default::default(), Utc);
 
         let mut mock_driver = MockRSSFeedRepository::new();
-        let result = mock_driver.
-            expect_fetch_follow_list_by_twenty();
+        let result = mock_driver.expect_fetch_follow_list_by_twenty();
 
-        let expected: Result<Vec<FollowList>, ()> = Ok(vec![FollowList{
+        let expected: Result<Vec<FollowList>, ()> = Ok(vec![FollowList {
             id: 1,
             uuid: uid,
             xml_version: 1,
