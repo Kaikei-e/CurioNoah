@@ -1,9 +1,6 @@
 package server
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/mmcdole/gofeed"
 	"insightstream/adaptor"
 	register "insightstream/collector/registerFeed"
 	"insightstream/domain/searchedFeed"
@@ -14,6 +11,10 @@ import (
 	"log"
 	"sort"
 	"strconv"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/mmcdole/gofeed"
 )
 
 func Server(cl *ent.Client) {
@@ -31,6 +32,7 @@ func Server(cl *ent.Client) {
 		AllowOrigins: []string{"http://localhost:5173", "http://127.0.0.1:5173",
 			"http://localhost:4173", "http://127.0.0.1:4173",
 			"http://curionoah.com:5173", "http://curionoah.com:4173",
+			"https://curionoah.com:5173", "https://curionoah.com:4173",
 		},
 		AllowHeaders: []string{
 			echo.HeaderOrigin,

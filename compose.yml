@@ -14,8 +14,6 @@ services:
       - ./load_balancer/config/nginx.conf:/etc/nginx.conf
       - ./load_balancer/nginx:/var/www/html
       - ./load_balancer/app:/var/www/log
-    environment:
-      NGINX_HOST: 'curionoah.com'
     networks:
       app-network:
         ipv4_address: 192.168.100.20

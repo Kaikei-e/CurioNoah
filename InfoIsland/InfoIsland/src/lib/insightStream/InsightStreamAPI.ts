@@ -45,6 +45,8 @@ export const insightStreamAPI = async (
     options.body = JSON.stringify(body);
     url = apiURL + url;
   }
+  
+  console.log("url", url);
 
   const response = await fetch(url, options);
 
