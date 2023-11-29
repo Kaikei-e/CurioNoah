@@ -6,11 +6,6 @@ import {
   CardFooter,
   Text,
   Flex,
-  Avatar,
-  Heading,
-  IconButton,
-  Box,
-  Image,
   Button,
 } from "@chakra-ui/react";
 import { StarIcon, CopyIcon, CheckIcon } from "@chakra-ui/icons";
