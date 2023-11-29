@@ -4,14 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/mmcdole/gofeed"
 	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
+
+	"github.com/google/uuid"
+	"github.com/mmcdole/gofeed"
 )
 
 // TODO will implement unit tests
-func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
+func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 	//client := repository.InitConnection()
 
 	var links []string
@@ -54,7 +55,7 @@ func RegisterSingle(feed *gofeed.Feed, cl *ent.Client) error {
 		SetIsFavorite(false).
 		SetIsRead(false).
 		SetIsUpdated(false).
-		SetLink(feed.FeedLink).
+		SetLink(inputLink).
 		SetLinks(linksJson).
 		Save(ctx)
 

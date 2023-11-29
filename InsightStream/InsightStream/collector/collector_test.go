@@ -1,14 +1,15 @@
 package collector
 
 import (
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/mmcdole/gofeed"
-	"testing"
 )
 
 func TestCollector(t *testing.T) {
 	//const testXMLPath = "./testdata/sample.xml"
-	const testGuardianURL = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+	const testGuardianURL = "https://www.theverge.com/rss/samsung/index.xml"
 
 	cases := map[string]struct {
 		input    string
@@ -19,7 +20,7 @@ func TestCollector(t *testing.T) {
 			//input: testXMLPath,
 			input: testGuardianURL,
 			expected: &gofeed.Feed{
-				Link: "https://www.nytimes.com/section/world",
+				Link: "https://www.theverge.com/samsung",
 			},
 			wantErr: false,
 		},

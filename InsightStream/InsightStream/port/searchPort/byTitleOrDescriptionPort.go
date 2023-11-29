@@ -20,7 +20,8 @@ func (s *Impl) NewSearchPort() SearchPort {
 
 func (s *Impl) SearchByTitleOrDescription(sw searchWord.SearchWord, cl *ent.Client, ctx context.Context) ([]*ent.Feeds, error) {
 
-	feeds, err := entDriver.SearchFeeds(sw, cl, ctx)
+	// change to pass a simple string
+	feeds, err := entDriver.SearchFeeds(sw.Title, cl, ctx)
 	if err != nil {
 		return nil, err
 	}

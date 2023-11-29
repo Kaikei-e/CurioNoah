@@ -32,7 +32,7 @@ func RegisterHandler(g *echo.Group, cl *ent.Client) {
 				return errors.New(fmt.Sprintf("fetch %s: %v", sf.URL, err))
 			}
 
-			err = RegisterSingle(feeds[0], cl)
+			err = RegisterSingle(sf.URL, feeds[0], cl)
 			if err != nil {
 				c.Logger().Errorf("error in register feed: %v", err)
 				return errors.New(fmt.Sprintf("register %s: %v", sf.URL, err))
