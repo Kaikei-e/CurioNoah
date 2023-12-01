@@ -16,6 +16,7 @@ docker restart $INFO_ISLAND_CONTAINER_NAME &&
 echo "container curionoah-info_island-1 is terminated" &&
 
 # terminate FeedHarmony
-# kill $(lsof -t -i:5100) &&
+docker restart curionoah-feed_harmony-1 &&
+echo "container curionoah-feed_harmony-1 is terminated" &&
 
 echo "All services are terminated"

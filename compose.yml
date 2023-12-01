@@ -154,12 +154,30 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.7
+        
+  feed_harmony:
+    build:
+      context: ./FeedHarmony
+      dockerfile: Dockerfile
+    ports:
+      - '5100:5100'
+    environment:
+      timezone: 'Asia/Tokyo'
+    tty: true
+    volumes:
+      - './FeedHarmony:/app'
+    depends_on:
+      - core_database
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.8
 
   core_database:
     # Database
     build:
       context: ./CoreDatabase
       dockerfile: Dockerfile
+    container_name: core_database
     ports:
       - '3306:3306'
     tty: true
