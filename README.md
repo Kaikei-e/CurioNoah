@@ -48,6 +48,12 @@ password > admin
 ```
 
 
+## Decision
+
+I have made a certain decision. It is to base this suite of applications on the use of partial cloud services. There will be no changes to the basic structure or functionality. Operation is assumed with Docker Compose. However, I have decided to adopt a policy of allowing high flexibility in external use by constantly running this application on my home machine, authenticated via the internet using Cloudflare Tunnel. This will make the setup more complex, but the needs for use cases that require complete local operation will be met by a desktop application I am developing with Rust and Tauri, named CardinalAura.
+
+Therefore, the following setup, which was never complete, will now become even less relevant. However, I plan to update the setup method when I feel inclined to do so in the future.
+
 <br/>
 
 ***Cloning and building the environment from scratch is too much work, so it will be improved.***
