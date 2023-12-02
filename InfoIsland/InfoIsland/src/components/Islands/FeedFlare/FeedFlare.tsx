@@ -22,7 +22,12 @@ export const FeedFlare = (props: Props) => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Input>();
+  } = useForm<Input>({
+    defaultValues: {
+      title: "",
+      description: "",
+    },
+  });
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [items, setItems] = React.useState<ByTitleOrDescription[]>([]);
