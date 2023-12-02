@@ -45,7 +45,8 @@ services:
     volumes:
       - './coreManager:/app'
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.15
@@ -63,7 +64,8 @@ services:
     volumes:
       - './curiosity:/app'
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.2
@@ -81,7 +83,8 @@ services:
     volumes:
       - './FeedFlare/FeedFlare:/usr/src/app'
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.3
@@ -91,6 +94,7 @@ services:
     build:
       context: ./InfoIsland
       dockerfile: Dockerfile
+    command: ["/bin/bash", "-c", "cd /usr/src/app && npm run preview"]
     ports:
       - '5173:5173'
       - '4173:4173'
@@ -100,7 +104,8 @@ services:
     volumes:
       - './InfoIsland/InfoIsland:/usr/src/app'
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.4
@@ -110,13 +115,15 @@ services:
     build:
       context: ./InsightStream
       dockerfile: Dockerfile
+    command: ["/bin/bash", "-c", "cd /usr/src/app && go run main.go"]
     ports:
       - '9000:9000'
     tty: true
     volumes:
       - './InsightStream/InsightStream:/usr/src/app'
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.5
@@ -132,7 +139,8 @@ services:
     volumes:
       - ./slateFlex:/app
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.6
@@ -150,7 +158,8 @@ services:
     volumes:
       - './FeedSpark:/app'
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.7
@@ -159,6 +168,7 @@ services:
     build:
       context: ./FeedHarmony
       dockerfile: Dockerfile
+    command: ["/bin/bash", "-c", "cd /usr/src/app && cargo build --release && ./target/release/feed_harmony"]
     ports:
       - '5100:5100'
     environment:
@@ -167,7 +177,8 @@ services:
     volumes:
       - './FeedHarmony:/app'
     depends_on:
-      - core_database
+      core_database:
+        condition: service_healthy
     networks:
       app-network:
         ipv4_address: 192.168.100.8
@@ -191,6 +202,11 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
     networks:
       app-network:
         ipv4_address: 192.168.100.10

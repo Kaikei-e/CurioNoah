@@ -2,6 +2,6 @@ FROM golang:1.21.1-bullseye
 
 ADD ./InsightStream /usr/src/app
 
-RUN cd /usr/src/app && go run main.go
+WORKDIR /usr/src/app
 
 EXPOSE 9000

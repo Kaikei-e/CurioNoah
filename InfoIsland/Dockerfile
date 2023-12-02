@@ -4,6 +4,6 @@ ADD ./InfoIsland /usr/src/app
 
 RUN cd /usr/src/app && npm install && npm run build
 
-RUN npm run preview
+WORKDIR /usr/src/app
 
-EXPOSE 5173 4173
+EXPOSE 4173 5173
