@@ -6,19 +6,19 @@ export const collectAllNewFeeds = async () => {
     Accept: "application/json",
     Origin: origin,
   };
-  
+
   let options: RequestInit = {
     method: "POST",
     headers: headers,
   };
-  
+
   const url = `${apiURL}/feeds/fetchAllfeeds`;
-  
+
   const response = await fetch(url, options);
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   return response.json();
-}
+};

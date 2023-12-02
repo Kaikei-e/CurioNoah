@@ -138,11 +138,7 @@ export const InsightStreamMain = () => {
             <InfiniteFeeds />
           </Flex>
         </Flex>
-        <Flex flexDirection={"column"} 
-        w={"30%"} h={"100%"} 
-          p={"2%"}
-
-        >
+        <Flex flexDirection={"column"} w={"30%"} h={"100%"} p={"2%"}>
           <Flex
             w={"100%"}
             h={"45%"}
@@ -168,8 +164,7 @@ export const InsightStreamMain = () => {
               onClick={async () => {
                 await collectAllNewFeeds();
                 alert("Collecting new feeds!");
-              }
-              }
+              }}
             >
               Collect New Feeds
             </Button>
