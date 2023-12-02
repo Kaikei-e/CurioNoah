@@ -9,22 +9,23 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Button,
 } from "@chakra-ui/react";
 import React from "react";
 import { AddFeed } from "./AddFeed";
 import { InfiniteFeeds } from "./InsightStream/InfiniteFeeds";
+import { collectAllNewFeeds } from "../../../lib/fetcher/collectAllNewFeeds";
 
 export const InsightStreamMain = () => {
   return (
     <Flex
       h={"100vh"}
       w={"100vw"}
-      minH={"100%"}
-      minW={"100%"}
       flexDirection={"row"}
       fontFamily="Jost"
+      boxSizing="border-box"
     >
-      <Flex flexDirection={"column"} w={"20%"} h={"100%"} bgColor={"#88A6B1"}>
+      <Flex flexDirection={"column"} w={"25%"} h={"100%"} bgColor={"#88A6B1"}>
         <Flex
           h={"6%"}
           justifyContent={"center"}
@@ -47,7 +48,7 @@ export const InsightStreamMain = () => {
         </Flex>
         <Flex
           flexDirection={"column"}
-          w={"100%"}
+          w={"95%"}
           h={"94%"}
           alignItems={"center"}
           p={"4%"}
@@ -98,10 +99,11 @@ export const InsightStreamMain = () => {
       </Flex>
       <Flex
         flexDirection={"row"}
-        w={"80%"}
+        w={"75%"}
         h={"100%"}
         bgColor={"#88A6B1"}
         p={"2%"}
+        justifyContent={"space-evenly"}
       >
         <Flex
           flexDirection={"column"}
@@ -136,16 +138,42 @@ export const InsightStreamMain = () => {
             <InfiniteFeeds />
           </Flex>
         </Flex>
-        <Flex
-          w={"25%"}
-          h={"40%"}
-          rounded={"xl"}
+        <Flex flexDirection={"column"} 
+        w={"30%"} h={"100%"} 
           p={"2%"}
-          ml={"5%"}
-          border={"1px solid #000"}
-          shadow={"md"}
+
         >
-          <AddFeed />
+          <Flex
+            w={"100%"}
+            h={"45%"}
+            p={"2%"}
+            rounded={"xl"}
+            border={"1px solid #000"}
+            shadow={"md"}
+          >
+            <AddFeed />
+          </Flex>
+          <Flex
+            w={"100%"}
+            h={"10%"}
+            rounded={"xl"}
+            p={"2%"}
+            mt={"2%"}
+            border={"1px solid #000"}
+            shadow={"md"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Button
+              onClick={async () => {
+                await collectAllNewFeeds();
+                alert("Collecting new feeds!");
+              }
+              }
+            >
+              Collect New Feeds
+            </Button>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

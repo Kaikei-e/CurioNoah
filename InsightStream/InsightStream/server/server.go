@@ -2,6 +2,7 @@ package server
 
 import (
 	"insightstream/adaptor"
+	"insightstream/collector/fetchFeedDomain/indexing"
 	register "insightstream/collector/registerFeed"
 	"insightstream/domain/searchedFeed"
 	"insightstream/ent"
@@ -120,6 +121,7 @@ func Server(cl *ent.Client) {
 
 				return c.JSON(200, res)
 			})
+
 		}
 
 		registerFeed := apiV1.Group("/register-feed")
@@ -152,6 +154,19 @@ func Server(cl *ent.Client) {
 				}
 
 				return c.JSON(200, response)
+			})
+		}
+
+		feeds := apiV1.Group("/feeds")
+		feeds.Use()
+		{
+			feeds.GET("/fetchAllfeeds", func(c echo.Context) error {
+				err := indexing.FetchLatestByClick(cl)
+				if err != nil {
+					log.Fatalln(err)
+				}
+
+				return c.JSON(200, "ok")
 			})
 		}
 

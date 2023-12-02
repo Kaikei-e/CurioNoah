@@ -23,8 +23,12 @@ export const SitePreviewModal = (props: Props) => {
         <ModalHeader>Site Preview</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <iframe src={url} title="Site Preview" width="100%" height="100%"
-          referrerPolicy="same-origin"
+          <iframe
+            src={url}
+            title="Site Preview"
+            width="100%"
+            height="100%"
+            referrerPolicy="same-origin"
           />
         </ModalBody>
       </ModalContent>
