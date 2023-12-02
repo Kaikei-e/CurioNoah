@@ -15,7 +15,7 @@ docker exec -d $INFO_ISLAND_CONTAINER_NAME /bin/bash -c "cd /usr/src/app && npm 
 echo "Info Island is running" &&
 
 
-docker exec -d $FEED_HARMONY /bin/bash -c "cd /usr/src/app && cargo build --release && ./target/release/feed_harmony > /usr/src/app/feed_harmony.log 2>&1" &&
+docker exec -d $FEED_HARMONY /bin/bash -c "cd /usr/src/app && cargo build --release && ./target/release/feed_harmony > /usr/src/app/harmony.log 2>&1" &&
 
 echo "FeedHarmony is running" &&
 echo "All services are running"
