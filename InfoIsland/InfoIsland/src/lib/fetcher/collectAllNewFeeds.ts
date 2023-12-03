@@ -1,15 +1,13 @@
 export const collectAllNewFeeds = async () => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Origin: origin,
-  };
 
   let options: RequestInit = {
     method: "POST",
-    headers: headers,
+    headers: {
+      "Content-Type": "application/json",
+      Origin: origin,
+    },
   };
 
   const url = `${apiURL}/feeds/fetchAllfeeds`;

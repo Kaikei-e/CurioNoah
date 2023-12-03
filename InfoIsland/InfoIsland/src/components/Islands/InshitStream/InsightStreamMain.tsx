@@ -160,14 +160,16 @@ export const InsightStreamMain = () => {
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Button
-              onClick={async () => {
-                await collectAllNewFeeds();
-                alert("Collecting new feeds!");
-              }}
-            >
-              Collect New Feeds
-            </Button>
+            <form>
+              <Button
+                onClick={async () => {
+                  await collectAllNewFeeds();
+                  alert("Collecting new feeds!");
+                }}
+              >
+                Collect New Feeds
+              </Button>
+            </form>
           </Flex>
         </Flex>
       </Flex>

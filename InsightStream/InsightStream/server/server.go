@@ -160,7 +160,7 @@ func Server(cl *ent.Client) {
 		feeds := apiV1.Group("/feeds")
 		feeds.Use()
 		{
-			feeds.GET("/fetchAllfeeds", func(c echo.Context) error {
+			feeds.POST("/fetchAllfeeds", func(c echo.Context) error {
 				err := indexing.FetchLatestByClick(cl)
 				if err != nil {
 					log.Fatalln(err)
