@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile
     tty: true
     ports:
-      - '80:80'
-      - '443:443'
+      - '80'
+      - '443'
     volumes:
       - ./load_balancer:/usr/share/nginx/html
       - ./load_balancer/config/nginx.conf:/etc/nginx.conf
@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     tty: true
     ports:
-      - '9800:9800'
+      - '9800'
     volumes:
       - ./oathkeeper:/usr/src/app
     networks:
@@ -38,7 +38,7 @@ services:
       context: ./CoreManager
       dockerfile: Dockerfile
     ports:
-      - '5020:5020'
+      - '5020'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true
@@ -57,7 +57,7 @@ services:
       context: ./Curiosity
       dockerfile: Dockerfile
     ports:
-      - '37936:37936'
+      - '37936'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true
@@ -76,7 +76,7 @@ services:
       context: ./FeedFlare
       dockerfile: Dockerfile
     ports:
-      - '9100:9100'
+      - '9100'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true
@@ -96,8 +96,8 @@ services:
       dockerfile: Dockerfile
     command: ["/bin/bash", "-c", "cd /usr/src/app && npm run preview"]
     ports:
-      - '5173:5173'
-      - '4173:4173'
+      - '5173'
+      - '4173'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true
@@ -117,7 +117,7 @@ services:
       dockerfile: Dockerfile
     command: ["/bin/bash", "-c", "cd /usr/src/app && go run main.go"]
     ports:
-      - '9000:9000'
+      - '9000'
     tty: true
     volumes:
       - './InsightStream/InsightStream:/usr/src/app'
@@ -134,7 +134,7 @@ services:
       context: ./SlateFlex
       dockerfile: Dockerfile
     ports:
-      - '6000:6000'
+      - '6000'
     tty: true
     volumes:
       - ./slateFlex:/app
@@ -151,7 +151,7 @@ services:
       context: ./FeedSpark
       dockerfile: Dockerfile
     ports:
-      - '5010:5010'
+      - '5010'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true
@@ -170,7 +170,7 @@ services:
       dockerfile: Dockerfile
     command: ["/bin/bash", "-c", "cd /usr/src/app && cargo build --release && ./target/release/feed_harmony"]
     ports:
-      - '5100:5100'
+      - '5100'
     environment:
       timezone: 'Asia/Tokyo'
     tty: true
@@ -190,7 +190,7 @@ services:
       dockerfile: Dockerfile
     container_name: core_database
     ports:
-      - '3306:3306'
+      - '3306'
     tty: true
     volumes:
       - './CoreDatabase/mysql/data:/var/lib/mysql'
@@ -217,7 +217,7 @@ services:
       context: ./oath_db
       dockerfile: Dockerfile
     ports:
-      - '5432:5432'
+      - '5432'
     tty: true
     volumes:
       - './oath_db/init/create_oath_db.sql:/docker-entrypoint-initdb.d/create_oath_db.sql'
