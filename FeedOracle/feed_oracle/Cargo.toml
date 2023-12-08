@@ -6,6 +6,7 @@ edition = "2021"
 [workspace]
 members = [
     "rest",
+    "domain",
 ]
 
 [dependencies]
@@ -21,4 +22,5 @@ serde_json = { version = "1.0" }
 
 # my deps
 rest = { path = "./rest" }
+domain = { path = "./domain" }
 
