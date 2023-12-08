@@ -182,6 +182,25 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.8
+        
+  feed_oracle:
+    build:
+      context: ./FeedOracle
+      dockerfile: Dockerfile
+    command: ["/bin/bash", "-c", "cd /usr/src/app && cargo build --release && ./target/release/feed_oracle"]
+    ports:
+      - '5110'
+    environment:
+      timezone: 'Asia/Tokyo'
+    tty: true
+    volumes:
+      - './FeedOracle:/app'
+    depends_on:
+      core_database:
+        condition: service_healthy
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.9
 
   core_database:
     # Database
@@ -238,3 +257,4 @@ networks:
       driver: default
       config:
         - subnet: 192.168.100.0/24
+        
