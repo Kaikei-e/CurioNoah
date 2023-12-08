@@ -1,0 +1,15 @@
+[package]
+name = "feed_oracle"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = [
+    "rest",
+]
+
+[workspace.dependencies]
+axum = { version = "0.7.2" }
+tokio = { version = "1.34.0", features = ["full"] }
+rest = { path = "./rest" }
+
