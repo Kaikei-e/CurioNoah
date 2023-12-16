@@ -44,11 +44,11 @@ export const FeedFlare = (props: Props) => {
         title: data.title,
         description: data.description,
       });
-      if(res.feeds === null){
-        console.log("No feeds found")
-        res.feeds = []
+      if (res.feeds === null) {
+        console.log("No feeds found");
+        res.feeds = [];
       }
-      
+
       if (Array.isArray(res.feeds)) {
         setItems([]);
         setItems(res.feeds);
