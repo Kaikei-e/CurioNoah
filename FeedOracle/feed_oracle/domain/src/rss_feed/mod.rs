@@ -1,1 +1,1 @@
-pub mod SimpleFeed;
+pub mod simple_feed;
