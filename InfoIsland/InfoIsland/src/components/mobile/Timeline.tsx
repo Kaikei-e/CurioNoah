@@ -3,7 +3,6 @@ import { InfiniteFeeds } from "./InfiniteScroll/InfiniteFeeds";
 
 export const Timeline = () => {
   return (
-    <Flex minH={"100%"} minW={"100%"} fontFamily={"Jost"} p={"4%"}>
       <Flex
         w={"100%"}
         h={"100%"}
@@ -18,7 +17,6 @@ export const Timeline = () => {
         </div>
         <Flex width={"100%"} height={"85%"}>
           <InfiniteFeeds />
-        </Flex>
       </Flex>
     </Flex>
   );
