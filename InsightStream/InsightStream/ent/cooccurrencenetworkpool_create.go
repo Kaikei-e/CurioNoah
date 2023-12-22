@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"insightstream/ent/cooccurrencenetworkpool"
 
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
@@ -18,6 +20,7 @@ type CooccurrenceNetworkPoolCreate struct {
 	config
 	mutation *CooccurrenceNetworkPoolMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetSiteURL sets the "site_url" field.
@@ -154,6 +157,7 @@ func (cnpc *CooccurrenceNetworkPoolCreate) createSpec() (*CooccurrenceNetworkPoo
 			},
 		}
 	)
+	_spec.OnConflict = cnpc.conflict
 	if id, ok := cnpc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
@@ -173,10 +177,224 @@ func (cnpc *CooccurrenceNetworkPoolCreate) createSpec() (*CooccurrenceNetworkPoo
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.CooccurrenceNetworkPool.Create().
+//		SetSiteURL(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CooccurrenceNetworkPoolUpsert) {
+//			SetSiteURL(v+v).
+//		}).
+//		Exec(ctx)
+func (cnpc *CooccurrenceNetworkPoolCreate) OnConflict(opts ...sql.ConflictOption) *CooccurrenceNetworkPoolUpsertOne {
+	cnpc.conflict = opts
+	return &CooccurrenceNetworkPoolUpsertOne{
+		create: cnpc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.CooccurrenceNetworkPool.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (cnpc *CooccurrenceNetworkPoolCreate) OnConflictColumns(columns ...string) *CooccurrenceNetworkPoolUpsertOne {
+	cnpc.conflict = append(cnpc.conflict, sql.ConflictColumns(columns...))
+	return &CooccurrenceNetworkPoolUpsertOne{
+		create: cnpc,
+	}
+}
+
+type (
+	// CooccurrenceNetworkPoolUpsertOne is the builder for "upsert"-ing
+	//  one CooccurrenceNetworkPool node.
+	CooccurrenceNetworkPoolUpsertOne struct {
+		create *CooccurrenceNetworkPoolCreate
+	}
+
+	// CooccurrenceNetworkPoolUpsert is the "OnConflict" setter.
+	CooccurrenceNetworkPoolUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSiteURL sets the "site_url" field.
+func (u *CooccurrenceNetworkPoolUpsert) SetSiteURL(v string) *CooccurrenceNetworkPoolUpsert {
+	u.Set(cooccurrencenetworkpool.FieldSiteURL, v)
+	return u
+}
+
+// UpdateSiteURL sets the "site_url" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsert) UpdateSiteURL() *CooccurrenceNetworkPoolUpsert {
+	u.SetExcluded(cooccurrencenetworkpool.FieldSiteURL)
+	return u
+}
+
+// SetTitles sets the "titles" field.
+func (u *CooccurrenceNetworkPoolUpsert) SetTitles(v []string) *CooccurrenceNetworkPoolUpsert {
+	u.Set(cooccurrencenetworkpool.FieldTitles, v)
+	return u
+}
+
+// UpdateTitles sets the "titles" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsert) UpdateTitles() *CooccurrenceNetworkPoolUpsert {
+	u.SetExcluded(cooccurrencenetworkpool.FieldTitles)
+	return u
+}
+
+// SetDescriptions sets the "descriptions" field.
+func (u *CooccurrenceNetworkPoolUpsert) SetDescriptions(v []string) *CooccurrenceNetworkPoolUpsert {
+	u.Set(cooccurrencenetworkpool.FieldDescriptions, v)
+	return u
+}
+
+// UpdateDescriptions sets the "descriptions" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsert) UpdateDescriptions() *CooccurrenceNetworkPoolUpsert {
+	u.SetExcluded(cooccurrencenetworkpool.FieldDescriptions)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.CooccurrenceNetworkPool.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(cooccurrencenetworkpool.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *CooccurrenceNetworkPoolUpsertOne) UpdateNewValues() *CooccurrenceNetworkPoolUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(cooccurrencenetworkpool.FieldID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.CooccurrenceNetworkPool.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *CooccurrenceNetworkPoolUpsertOne) Ignore() *CooccurrenceNetworkPoolUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CooccurrenceNetworkPoolUpsertOne) DoNothing() *CooccurrenceNetworkPoolUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CooccurrenceNetworkPoolCreate.OnConflict
+// documentation for more info.
+func (u *CooccurrenceNetworkPoolUpsertOne) Update(set func(*CooccurrenceNetworkPoolUpsert)) *CooccurrenceNetworkPoolUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CooccurrenceNetworkPoolUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSiteURL sets the "site_url" field.
+func (u *CooccurrenceNetworkPoolUpsertOne) SetSiteURL(v string) *CooccurrenceNetworkPoolUpsertOne {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.SetSiteURL(v)
+	})
+}
+
+// UpdateSiteURL sets the "site_url" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsertOne) UpdateSiteURL() *CooccurrenceNetworkPoolUpsertOne {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.UpdateSiteURL()
+	})
+}
+
+// SetTitles sets the "titles" field.
+func (u *CooccurrenceNetworkPoolUpsertOne) SetTitles(v []string) *CooccurrenceNetworkPoolUpsertOne {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.SetTitles(v)
+	})
+}
+
+// UpdateTitles sets the "titles" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsertOne) UpdateTitles() *CooccurrenceNetworkPoolUpsertOne {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.UpdateTitles()
+	})
+}
+
+// SetDescriptions sets the "descriptions" field.
+func (u *CooccurrenceNetworkPoolUpsertOne) SetDescriptions(v []string) *CooccurrenceNetworkPoolUpsertOne {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.SetDescriptions(v)
+	})
+}
+
+// UpdateDescriptions sets the "descriptions" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsertOne) UpdateDescriptions() *CooccurrenceNetworkPoolUpsertOne {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.UpdateDescriptions()
+	})
+}
+
+// Exec executes the query.
+func (u *CooccurrenceNetworkPoolUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CooccurrenceNetworkPoolCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CooccurrenceNetworkPoolUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *CooccurrenceNetworkPoolUpsertOne) ID(ctx context.Context) (id uuid.UUID, err error) {
+	if u.create.driver.Dialect() == dialect.MySQL {
+		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
+		// fields from the database since MySQL does not support the RETURNING clause.
+		return id, errors.New("ent: CooccurrenceNetworkPoolUpsertOne.ID is not supported by MySQL driver. Use CooccurrenceNetworkPoolUpsertOne.Exec instead")
+	}
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *CooccurrenceNetworkPoolUpsertOne) IDX(ctx context.Context) uuid.UUID {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // CooccurrenceNetworkPoolCreateBulk is the builder for creating many CooccurrenceNetworkPool entities in bulk.
 type CooccurrenceNetworkPoolCreateBulk struct {
 	config
 	builders []*CooccurrenceNetworkPoolCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the CooccurrenceNetworkPool entities in the database.
@@ -203,6 +421,7 @@ func (cnpcb *CooccurrenceNetworkPoolCreateBulk) Save(ctx context.Context) ([]*Co
 					_, err = mutators[i+1].Mutate(root, cnpcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = cnpcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, cnpcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -249,6 +468,159 @@ func (cnpcb *CooccurrenceNetworkPoolCreateBulk) Exec(ctx context.Context) error 
 // ExecX is like Exec, but panics if an error occurs.
 func (cnpcb *CooccurrenceNetworkPoolCreateBulk) ExecX(ctx context.Context) {
 	if err := cnpcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.CooccurrenceNetworkPool.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CooccurrenceNetworkPoolUpsert) {
+//			SetSiteURL(v+v).
+//		}).
+//		Exec(ctx)
+func (cnpcb *CooccurrenceNetworkPoolCreateBulk) OnConflict(opts ...sql.ConflictOption) *CooccurrenceNetworkPoolUpsertBulk {
+	cnpcb.conflict = opts
+	return &CooccurrenceNetworkPoolUpsertBulk{
+		create: cnpcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.CooccurrenceNetworkPool.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (cnpcb *CooccurrenceNetworkPoolCreateBulk) OnConflictColumns(columns ...string) *CooccurrenceNetworkPoolUpsertBulk {
+	cnpcb.conflict = append(cnpcb.conflict, sql.ConflictColumns(columns...))
+	return &CooccurrenceNetworkPoolUpsertBulk{
+		create: cnpcb,
+	}
+}
+
+// CooccurrenceNetworkPoolUpsertBulk is the builder for "upsert"-ing
+// a bulk of CooccurrenceNetworkPool nodes.
+type CooccurrenceNetworkPoolUpsertBulk struct {
+	create *CooccurrenceNetworkPoolCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.CooccurrenceNetworkPool.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(cooccurrencenetworkpool.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *CooccurrenceNetworkPoolUpsertBulk) UpdateNewValues() *CooccurrenceNetworkPoolUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(cooccurrencenetworkpool.FieldID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.CooccurrenceNetworkPool.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *CooccurrenceNetworkPoolUpsertBulk) Ignore() *CooccurrenceNetworkPoolUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CooccurrenceNetworkPoolUpsertBulk) DoNothing() *CooccurrenceNetworkPoolUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CooccurrenceNetworkPoolCreateBulk.OnConflict
+// documentation for more info.
+func (u *CooccurrenceNetworkPoolUpsertBulk) Update(set func(*CooccurrenceNetworkPoolUpsert)) *CooccurrenceNetworkPoolUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CooccurrenceNetworkPoolUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSiteURL sets the "site_url" field.
+func (u *CooccurrenceNetworkPoolUpsertBulk) SetSiteURL(v string) *CooccurrenceNetworkPoolUpsertBulk {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.SetSiteURL(v)
+	})
+}
+
+// UpdateSiteURL sets the "site_url" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsertBulk) UpdateSiteURL() *CooccurrenceNetworkPoolUpsertBulk {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.UpdateSiteURL()
+	})
+}
+
+// SetTitles sets the "titles" field.
+func (u *CooccurrenceNetworkPoolUpsertBulk) SetTitles(v []string) *CooccurrenceNetworkPoolUpsertBulk {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.SetTitles(v)
+	})
+}
+
+// UpdateTitles sets the "titles" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsertBulk) UpdateTitles() *CooccurrenceNetworkPoolUpsertBulk {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.UpdateTitles()
+	})
+}
+
+// SetDescriptions sets the "descriptions" field.
+func (u *CooccurrenceNetworkPoolUpsertBulk) SetDescriptions(v []string) *CooccurrenceNetworkPoolUpsertBulk {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.SetDescriptions(v)
+	})
+}
+
+// UpdateDescriptions sets the "descriptions" field to the value that was provided on create.
+func (u *CooccurrenceNetworkPoolUpsertBulk) UpdateDescriptions() *CooccurrenceNetworkPoolUpsertBulk {
+	return u.Update(func(s *CooccurrenceNetworkPoolUpsert) {
+		s.UpdateDescriptions()
+	})
+}
+
+// Exec executes the query.
+func (u *CooccurrenceNetworkPoolUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the CooccurrenceNetworkPoolCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CooccurrenceNetworkPoolCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CooccurrenceNetworkPoolUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"insightstream/ent/feedaudittrailaction"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -17,6 +18,7 @@ type FeedAuditTrailActionCreate struct {
 	config
 	mutation *FeedAuditTrailActionMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetAction sets the "action" field.
@@ -107,6 +109,7 @@ func (fatac *FeedAuditTrailActionCreate) createSpec() (*FeedAuditTrailAction, *s
 			},
 		}
 	)
+	_spec.OnConflict = fatac.conflict
 	if id, ok := fatac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -118,10 +121,167 @@ func (fatac *FeedAuditTrailActionCreate) createSpec() (*FeedAuditTrailAction, *s
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.FeedAuditTrailAction.Create().
+//		SetAction(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FeedAuditTrailActionUpsert) {
+//			SetAction(v+v).
+//		}).
+//		Exec(ctx)
+func (fatac *FeedAuditTrailActionCreate) OnConflict(opts ...sql.ConflictOption) *FeedAuditTrailActionUpsertOne {
+	fatac.conflict = opts
+	return &FeedAuditTrailActionUpsertOne{
+		create: fatac,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.FeedAuditTrailAction.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fatac *FeedAuditTrailActionCreate) OnConflictColumns(columns ...string) *FeedAuditTrailActionUpsertOne {
+	fatac.conflict = append(fatac.conflict, sql.ConflictColumns(columns...))
+	return &FeedAuditTrailActionUpsertOne{
+		create: fatac,
+	}
+}
+
+type (
+	// FeedAuditTrailActionUpsertOne is the builder for "upsert"-ing
+	//  one FeedAuditTrailAction node.
+	FeedAuditTrailActionUpsertOne struct {
+		create *FeedAuditTrailActionCreate
+	}
+
+	// FeedAuditTrailActionUpsert is the "OnConflict" setter.
+	FeedAuditTrailActionUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetAction sets the "action" field.
+func (u *FeedAuditTrailActionUpsert) SetAction(v string) *FeedAuditTrailActionUpsert {
+	u.Set(feedaudittrailaction.FieldAction, v)
+	return u
+}
+
+// UpdateAction sets the "action" field to the value that was provided on create.
+func (u *FeedAuditTrailActionUpsert) UpdateAction() *FeedAuditTrailActionUpsert {
+	u.SetExcluded(feedaudittrailaction.FieldAction)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.FeedAuditTrailAction.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(feedaudittrailaction.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *FeedAuditTrailActionUpsertOne) UpdateNewValues() *FeedAuditTrailActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(feedaudittrailaction.FieldID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.FeedAuditTrailAction.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *FeedAuditTrailActionUpsertOne) Ignore() *FeedAuditTrailActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FeedAuditTrailActionUpsertOne) DoNothing() *FeedAuditTrailActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FeedAuditTrailActionCreate.OnConflict
+// documentation for more info.
+func (u *FeedAuditTrailActionUpsertOne) Update(set func(*FeedAuditTrailActionUpsert)) *FeedAuditTrailActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FeedAuditTrailActionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetAction sets the "action" field.
+func (u *FeedAuditTrailActionUpsertOne) SetAction(v string) *FeedAuditTrailActionUpsertOne {
+	return u.Update(func(s *FeedAuditTrailActionUpsert) {
+		s.SetAction(v)
+	})
+}
+
+// UpdateAction sets the "action" field to the value that was provided on create.
+func (u *FeedAuditTrailActionUpsertOne) UpdateAction() *FeedAuditTrailActionUpsertOne {
+	return u.Update(func(s *FeedAuditTrailActionUpsert) {
+		s.UpdateAction()
+	})
+}
+
+// Exec executes the query.
+func (u *FeedAuditTrailActionUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FeedAuditTrailActionCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FeedAuditTrailActionUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *FeedAuditTrailActionUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *FeedAuditTrailActionUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // FeedAuditTrailActionCreateBulk is the builder for creating many FeedAuditTrailAction entities in bulk.
 type FeedAuditTrailActionCreateBulk struct {
 	config
 	builders []*FeedAuditTrailActionCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the FeedAuditTrailAction entities in the database.
@@ -147,6 +307,7 @@ func (fatacb *FeedAuditTrailActionCreateBulk) Save(ctx context.Context) ([]*Feed
 					_, err = mutators[i+1].Mutate(root, fatacb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = fatacb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, fatacb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -197,6 +358,131 @@ func (fatacb *FeedAuditTrailActionCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (fatacb *FeedAuditTrailActionCreateBulk) ExecX(ctx context.Context) {
 	if err := fatacb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.FeedAuditTrailAction.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FeedAuditTrailActionUpsert) {
+//			SetAction(v+v).
+//		}).
+//		Exec(ctx)
+func (fatacb *FeedAuditTrailActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedAuditTrailActionUpsertBulk {
+	fatacb.conflict = opts
+	return &FeedAuditTrailActionUpsertBulk{
+		create: fatacb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.FeedAuditTrailAction.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fatacb *FeedAuditTrailActionCreateBulk) OnConflictColumns(columns ...string) *FeedAuditTrailActionUpsertBulk {
+	fatacb.conflict = append(fatacb.conflict, sql.ConflictColumns(columns...))
+	return &FeedAuditTrailActionUpsertBulk{
+		create: fatacb,
+	}
+}
+
+// FeedAuditTrailActionUpsertBulk is the builder for "upsert"-ing
+// a bulk of FeedAuditTrailAction nodes.
+type FeedAuditTrailActionUpsertBulk struct {
+	create *FeedAuditTrailActionCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.FeedAuditTrailAction.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(feedaudittrailaction.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *FeedAuditTrailActionUpsertBulk) UpdateNewValues() *FeedAuditTrailActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(feedaudittrailaction.FieldID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.FeedAuditTrailAction.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *FeedAuditTrailActionUpsertBulk) Ignore() *FeedAuditTrailActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FeedAuditTrailActionUpsertBulk) DoNothing() *FeedAuditTrailActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FeedAuditTrailActionCreateBulk.OnConflict
+// documentation for more info.
+func (u *FeedAuditTrailActionUpsertBulk) Update(set func(*FeedAuditTrailActionUpsert)) *FeedAuditTrailActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FeedAuditTrailActionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetAction sets the "action" field.
+func (u *FeedAuditTrailActionUpsertBulk) SetAction(v string) *FeedAuditTrailActionUpsertBulk {
+	return u.Update(func(s *FeedAuditTrailActionUpsert) {
+		s.SetAction(v)
+	})
+}
+
+// UpdateAction sets the "action" field to the value that was provided on create.
+func (u *FeedAuditTrailActionUpsertBulk) UpdateAction() *FeedAuditTrailActionUpsertBulk {
+	return u.Update(func(s *FeedAuditTrailActionUpsert) {
+		s.UpdateAction()
+	})
+}
+
+// Exec executes the query.
+func (u *FeedAuditTrailActionUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FeedAuditTrailActionCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FeedAuditTrailActionCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FeedAuditTrailActionUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
