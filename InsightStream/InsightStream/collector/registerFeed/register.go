@@ -2,11 +2,11 @@ package registerFeed
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 	"github.com/mmcdole/gofeed"
 )
@@ -22,6 +22,11 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 	linksJson.Link = links
 
 	var fis []baseFeeds.FeedItem
+	tx, err := cl.Tx(context.Background())
+	if err != nil {
+		return fmt.Errorf("failed to create transaction: %v", err)
+	}
+
 	for _, item := range feed.Items {
 		var authors []string
 		for _, author := range item.Authors {
@@ -44,8 +49,11 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 	}
 
 	ctx := context.Background()
-
-	_, err := cl.FollowLists.Create().
+	err = cl.FollowLists.Create().
+		OnConflict(
+			sql.ConflictColumns("link"),
+		).
+		UpdateNewValues().
 		SetTitle(feed.Title).
 		SetURL(feed.Link).
 		SetDescription(feed.Description).
@@ -57,10 +65,17 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 		SetIsUpdated(false).
 		SetLink(inputLink).
 		SetLinks(linksJson).
-		Save(ctx)
+		Ignore().
+		Exec(ctx)
 
 	if err != nil {
-		return errors.New(fmt.Sprintf("failed to register feed: %v", err))
+		return fmt.Errorf("failed to register feed: %v", err)
+	}
+
+	commitErr := tx.Commit()
+	if commitErr != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to commit transaction: %v", commitErr)
 	}
 
 	return nil
@@ -69,25 +84,16 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 // TODO will implement unit tests
 func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error {
 	ctx := context.Background()
-	bulk := make([]*ent.FollowListsCreate, 0, len(feeds))
+	builders := make([]*ent.FollowListsCreate, len(feeds))
 
-	for i, feed := range feeds {
-		bulk[i] = cl.FollowLists.Create().
-			SetTitle(feed.Title).
-			SetURL(feed.Link).
-			SetDescription(feed.Description).
-			SetLanguage(feed.Language).
-			SetIsActive(true).
-			SetIsFavorite(false).
-			SetIsRead(false).
-			SetIsUpdated(false).
-			SetLink(feed.Link)
-		//SetLinks(feed.Links)
-
-	}
-
-	if _, err := cl.FollowLists.CreateBulk(bulk...).Save(ctx); err != nil {
-		return errors.New(fmt.Sprintf("failed to register feed: %v", err))
+	err := cl.FollowLists.CreateBulk(builders...).
+		OnConflict(
+			sql.ConflictColumns("link"),
+		).
+		UpdateNewValues().
+		Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to register feeds: %v", err)
 	}
 
 	return nil
