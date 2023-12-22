@@ -1,4 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
+import { InfiniteFeeds } from "./InfiniteScroll/InfiniteFeeds";
 
 export const Timeline = () => {
   return (
@@ -10,10 +11,14 @@ export const Timeline = () => {
         rounded={"xl"}
         p={"0.5rem"}
         border={"1px solid #000"}
+        flexDirection={"column"}
       >
-        <div style={{ width: "100%", height: "100%" }}>
+        <div style={{ width: "100%", height: "8%" }}>
           <Text textAlign={"center"}>Timeline</Text>
         </div>
+        <Flex width={"100%"} height={"85%"}>
+          <InfiniteFeeds />
+        </Flex>
       </Flex>
     </Flex>
   );
