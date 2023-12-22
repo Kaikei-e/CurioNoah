@@ -1,0 +1,20 @@
+import { Flex, Text } from "@chakra-ui/react";
+
+export const Timeline = () => {
+  return (
+    <Flex minH={"100%"} minW={"100%"} fontFamily={"Jost"} p={"4%"}>
+      <Flex
+        w={"100%"}
+        h={"100%"}
+        bgColor={"#EAF2F8"}
+        rounded={"xl"}
+        p={"0.5rem"}
+        border={"1px solid #000"}
+      >
+        <div style={{ width: "100%", height: "100%" }}>
+          <Text textAlign={"center"}>Timeline</Text>
+        </div>
+      </Flex>
+    </Flex>
+  );
+};

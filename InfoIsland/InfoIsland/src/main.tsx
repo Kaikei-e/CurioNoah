@@ -16,6 +16,7 @@ import { Home } from "./components/Islands/home/Home";
 import { InsightStreamMain } from "./components/Islands/InshitStream/InsightStreamMain";
 import { Login } from "./components/Login/Login";
 import { RequireAuth, AuthProvider } from "./components/Auth/RequireAuth";
+import { MobileHome } from "./components/mobile/MobileHome";
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement!).render(
@@ -42,6 +43,7 @@ ReactDOM.createRoot(rootElement!).render(
                 </RequireAuth>
               }
             />
+            <Route path="/mobile" element={<MobileHome />} />
           </Routes>
         </ChakraProvider>
       </BrowserRouter>
