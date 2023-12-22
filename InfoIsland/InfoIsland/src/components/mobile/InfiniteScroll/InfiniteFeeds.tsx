@@ -62,7 +62,7 @@ export const InfiniteFeeds: React.FC<Props> = () => {
   const loader = <CircularProgress isIndeterminate color="green.200" />;
 
   return (
-    <Flex>
+    <Flex overflowY={"scroll"} width={"100%"} rounded={"2xl"}>
       <InfiniteScroll
         pageStart={0}
         loadMore={loadMore}
@@ -70,7 +70,7 @@ export const InfiniteFeeds: React.FC<Props> = () => {
         loader={loader}
         useWindow={false}
       >
-        <Flex flexDirection={"column"}>
+        <Flex flexDirection={"column"} width={"100%"}>
           {items.map((item) => (
             <Box
               key={item.item_id}
@@ -89,11 +89,12 @@ export const InfiniteFeeds: React.FC<Props> = () => {
                 flexDirection={"row"}
                 alignItems={"center"}
                 justifyContent={"space-between"}
+                width={"100%"}
               >
                 <Link
                   href={item.feed_url}
                   isExternal
-                  fontSize="lg"
+                  fontSize="sm"
                   fontWeight="bold"
                 >
                   {item.title}
@@ -103,11 +104,13 @@ export const InfiniteFeeds: React.FC<Props> = () => {
                   border={"1px"}
                   color={"blackAlpha.800"}
                   backgroundColor={"teal.50"}
+                  fontSize={"sm"}
+                  size={"sm"}
                 >
                   Like !
                 </Button>
               </Flex>
-              <Text mt={2}>{item.description}</Text>
+              <Text mt={2} fontSize={"sm"}>{item.description}</Text>
             </Box>
           ))}
         </Flex>
