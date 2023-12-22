@@ -1,23 +1,24 @@
 package schema
 
 import (
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/schema/index"
 	"insightstream/domain/baseFeeds"
 	"time"
+
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/schema/index"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 )
 
-// FollowList holds the schema definition for the FollowList entity.
-type FollowList struct {
+// FollowLists holds the schema definition for the FollowLists entity.
+type FollowLists struct {
 	ent.Schema
 }
 
-// Fields of the FollowList.
-func (FollowList) Fields() []ent.Field {
+// Fields of the FollowLists.
+func (FollowLists) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("uuid", uuid.UUID{}).Default(uuid.New),
 		field.Int8("xml_version").Default(1),
@@ -52,15 +53,15 @@ func (FollowList) Fields() []ent.Field {
 	}
 }
 
-// Indexes of the FollowList.
-func (FollowList) Indexes() []ent.Index {
+// Indexes of the FollowLists.
+func (FollowLists) Indexes() []ent.Index {
 	return []ent.Index{
 		// unique index
 		index.Fields("uuid").Unique(),
 	}
 }
 
-// Edges of the FollowList.
-func (FollowList) Edges() []ent.Edge {
+// Edges of the FollowLists.
+func (FollowLists) Edges() []ent.Edge {
 	return nil
 }

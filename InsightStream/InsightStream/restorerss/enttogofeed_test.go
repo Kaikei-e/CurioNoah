@@ -1,19 +1,20 @@
 package restorerss
 
 import (
-	"github.com/mmcdole/gofeed"
 	baseFeeds2 "insightstream/domain/baseFeeds"
 	"reflect"
 	"testing"
+
+	"github.com/mmcdole/gofeed"
 
 	"insightstream/ent"
 )
 
 func TestFeedExchange(t *testing.T) {
 	// Create a sample input
-	feedsEnt := []*ent.FollowList{
-		// Create FollowList objects with mock data
-		&ent.FollowList{
+	feedsEnt := []*ent.FollowLists{
+		// Create FollowLists objects with mock data
+		&ent.FollowLists{
 			Title:       "Feed 1",
 			Description: "Description 1",
 			URL:         "https://example.com/feed1",
@@ -34,7 +35,7 @@ func TestFeedExchange(t *testing.T) {
 					Categories:      []string{"Category 1"},
 				},
 			},
-			// Add more FollowList objects if needed
+			// Add more FollowLists objects if needed
 		},
 	}
 
@@ -69,7 +70,7 @@ func TestFeedExchange(t *testing.T) {
 
 func TestEntFollowListExchangeToGofeed(t *testing.T) {
 	type args struct {
-		followLists []*ent.FollowList
+		followLists []*ent.FollowLists
 	}
 	tests := []struct {
 		name    string

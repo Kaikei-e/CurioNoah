@@ -4,17 +4,17 @@ import (
 	"context"
 	"fmt"
 	"insightstream/ent"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 )
 
-func QueryAll(cl *ent.Client) ([]*ent.FollowList, error) {
+func QueryAll(cl *ent.Client) ([]*ent.FollowLists, error) {
 	fmt.Println("query all")
 	ctx := context.Background()
 
-	fl, err := cl.FollowList.Query().
-		Select(followlist.FieldID, followlist.FieldURL,
-			followlist.FieldLink, followlist.FieldLinks,
-			followlist.FieldDtLastInserted).
+	fl, err := cl.FollowLists.Query().
+		Select(followlists.FieldID, followlists.FieldURL,
+			followlists.FieldLink, followlists.FieldLinks,
+			followlists.FieldDtLastInserted).
 		All(ctx)
 
 	if err != nil {

@@ -31,7 +31,7 @@ type (
 		FeedAuditTrailAction    []ent.Hook
 		FeedAuditTrailLog       []ent.Hook
 		Feeds                   []ent.Hook
-		FollowList              []ent.Hook
+		FollowLists             []ent.Hook
 		Users                   []ent.Hook
 	}
 	inters struct {
@@ -39,7 +39,7 @@ type (
 		FeedAuditTrailAction    []ent.Interceptor
 		FeedAuditTrailLog       []ent.Interceptor
 		Feeds                   []ent.Interceptor
-		FollowList              []ent.Interceptor
+		FollowLists             []ent.Interceptor
 		Users                   []ent.Interceptor
 	}
 )

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"insightstream/domain/baseFeeds"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"strings"
 	"time"
 
@@ -14,8 +14,8 @@ import (
 	"github.com/google/uuid"
 )
 
-// FollowList is the model entity for the FollowList schema.
-type FollowList struct {
+// FollowLists is the model entity for the FollowLists schema.
+type FollowLists struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
@@ -58,86 +58,86 @@ type FollowList struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*FollowList) scanValues(columns []string) ([]any, error) {
+func (*FollowLists) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case followlist.FieldLinks, followlist.FieldItemDescription:
+		case followlists.FieldLinks, followlists.FieldItemDescription:
 			values[i] = new([]byte)
-		case followlist.FieldIsActive, followlist.FieldIsFavorite, followlist.FieldIsRead, followlist.FieldIsUpdated:
+		case followlists.FieldIsActive, followlists.FieldIsFavorite, followlists.FieldIsRead, followlists.FieldIsUpdated:
 			values[i] = new(sql.NullBool)
-		case followlist.FieldID, followlist.FieldXMLVersion, followlist.FieldRssVersion, followlist.FieldFeedCategory:
+		case followlists.FieldID, followlists.FieldXMLVersion, followlists.FieldRssVersion, followlists.FieldFeedCategory:
 			values[i] = new(sql.NullInt64)
-		case followlist.FieldURL, followlist.FieldTitle, followlist.FieldDescription, followlist.FieldLink, followlist.FieldLanguage:
+		case followlists.FieldURL, followlists.FieldTitle, followlists.FieldDescription, followlists.FieldLink, followlists.FieldLanguage:
 			values[i] = new(sql.NullString)
-		case followlist.FieldDtCreated, followlist.FieldDtUpdated, followlist.FieldDtLastInserted:
+		case followlists.FieldDtCreated, followlists.FieldDtUpdated, followlists.FieldDtLastInserted:
 			values[i] = new(sql.NullTime)
-		case followlist.FieldUUID:
+		case followlists.FieldUUID:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type FollowList", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type FollowLists", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the FollowList fields.
-func (fl *FollowList) assignValues(columns []string, values []any) error {
+// to the FollowLists fields.
+func (fl *FollowLists) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case followlist.FieldID:
+		case followlists.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			fl.ID = int(value.Int64)
-		case followlist.FieldUUID:
+		case followlists.FieldUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field uuid", values[i])
 			} else if value != nil {
 				fl.UUID = *value
 			}
-		case followlist.FieldXMLVersion:
+		case followlists.FieldXMLVersion:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field xml_version", values[i])
 			} else if value.Valid {
 				fl.XMLVersion = int8(value.Int64)
 			}
-		case followlist.FieldRssVersion:
+		case followlists.FieldRssVersion:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field rss_version", values[i])
 			} else if value.Valid {
 				fl.RssVersion = int8(value.Int64)
 			}
-		case followlist.FieldURL:
+		case followlists.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
 				fl.URL = value.String
 			}
-		case followlist.FieldTitle:
+		case followlists.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
 				fl.Title = value.String
 			}
-		case followlist.FieldDescription:
+		case followlists.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				fl.Description = value.String
 			}
-		case followlist.FieldLink:
+		case followlists.FieldLink:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field link", values[i])
 			} else if value.Valid {
 				fl.Link = value.String
 			}
-		case followlist.FieldLinks:
+		case followlists.FieldLinks:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field links", values[i])
 			} else if value != nil && len(*value) > 0 {
@@ -145,7 +145,7 @@ func (fl *FollowList) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field links: %w", err)
 				}
 			}
-		case followlist.FieldItemDescription:
+		case followlists.FieldItemDescription:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field item_description", values[i])
 			} else if value != nil && len(*value) > 0 {
@@ -153,55 +153,55 @@ func (fl *FollowList) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field item_description: %w", err)
 				}
 			}
-		case followlist.FieldLanguage:
+		case followlists.FieldLanguage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field language", values[i])
 			} else if value.Valid {
 				fl.Language = value.String
 			}
-		case followlist.FieldDtCreated:
+		case followlists.FieldDtCreated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field dt_created", values[i])
 			} else if value.Valid {
 				fl.DtCreated = value.Time
 			}
-		case followlist.FieldDtUpdated:
+		case followlists.FieldDtUpdated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field dt_updated", values[i])
 			} else if value.Valid {
 				fl.DtUpdated = value.Time
 			}
-		case followlist.FieldDtLastInserted:
+		case followlists.FieldDtLastInserted:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field dt_last_inserted", values[i])
 			} else if value.Valid {
 				fl.DtLastInserted = value.Time
 			}
-		case followlist.FieldFeedCategory:
+		case followlists.FieldFeedCategory:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_category", values[i])
 			} else if value.Valid {
 				fl.FeedCategory = int(value.Int64)
 			}
-		case followlist.FieldIsActive:
+		case followlists.FieldIsActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_active", values[i])
 			} else if value.Valid {
 				fl.IsActive = value.Bool
 			}
-		case followlist.FieldIsFavorite:
+		case followlists.FieldIsFavorite:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_favorite", values[i])
 			} else if value.Valid {
 				fl.IsFavorite = value.Bool
 			}
-		case followlist.FieldIsRead:
+		case followlists.FieldIsRead:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_read", values[i])
 			} else if value.Valid {
 				fl.IsRead = value.Bool
 			}
-		case followlist.FieldIsUpdated:
+		case followlists.FieldIsUpdated:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_updated", values[i])
 			} else if value.Valid {
@@ -212,28 +212,28 @@ func (fl *FollowList) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Update returns a builder for updating this FollowList.
-// Note that you need to call FollowList.Unwrap() before calling this method if this FollowList
+// Update returns a builder for updating this FollowLists.
+// Note that you need to call FollowLists.Unwrap() before calling this method if this FollowLists
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (fl *FollowList) Update() *FollowListUpdateOne {
-	return (&FollowListClient{config: fl.config}).UpdateOne(fl)
+func (fl *FollowLists) Update() *FollowListsUpdateOne {
+	return (&FollowListsClient{config: fl.config}).UpdateOne(fl)
 }
 
-// Unwrap unwraps the FollowList entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the FollowLists entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (fl *FollowList) Unwrap() *FollowList {
+func (fl *FollowLists) Unwrap() *FollowLists {
 	_tx, ok := fl.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: FollowList is not a transactional entity")
+		panic("ent: FollowLists is not a transactional entity")
 	}
 	fl.config.driver = _tx.drv
 	return fl
 }
 
 // String implements the fmt.Stringer.
-func (fl *FollowList) String() string {
+func (fl *FollowLists) String() string {
 	var builder strings.Builder
-	builder.WriteString("FollowList(")
+	builder.WriteString("FollowLists(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", fl.ID))
 	builder.WriteString("uuid=")
 	builder.WriteString(fmt.Sprintf("%v", fl.UUID))
@@ -292,10 +292,10 @@ func (fl *FollowList) String() string {
 	return builder.String()
 }
 
-// FollowLists is a parsable slice of FollowList.
-type FollowLists []*FollowList
+// FollowListsSlice is a parsable slice of FollowLists.
+type FollowListsSlice []*FollowLists
 
-func (fl FollowLists) config(cfg config) {
+func (fl FollowListsSlice) config(cfg config) {
 	for _i := range fl {
 		fl[_i].config = cfg
 	}

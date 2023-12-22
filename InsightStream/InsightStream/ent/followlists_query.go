@@ -5,7 +5,7 @@ package ent
 import (
 	"context"
 	"fmt"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"insightstream/ent/predicate"
 	"math"
 
@@ -14,8 +14,8 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// FollowListQuery is the builder for querying FollowList entities.
-type FollowListQuery struct {
+// FollowListsQuery is the builder for querying FollowLists entities.
+type FollowListsQuery struct {
 	config
 	limit      *int
 	offset     *int
@@ -23,58 +23,58 @@ type FollowListQuery struct {
 	order      []OrderFunc
 	fields     []string
 	inters     []Interceptor
-	predicates []predicate.FollowList
+	predicates []predicate.FollowLists
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the FollowListQuery builder.
-func (flq *FollowListQuery) Where(ps ...predicate.FollowList) *FollowListQuery {
+// Where adds a new predicate for the FollowListsQuery builder.
+func (flq *FollowListsQuery) Where(ps ...predicate.FollowLists) *FollowListsQuery {
 	flq.predicates = append(flq.predicates, ps...)
 	return flq
 }
 
 // Limit the number of records to be returned by this query.
-func (flq *FollowListQuery) Limit(limit int) *FollowListQuery {
+func (flq *FollowListsQuery) Limit(limit int) *FollowListsQuery {
 	flq.limit = &limit
 	return flq
 }
 
 // Offset to start from.
-func (flq *FollowListQuery) Offset(offset int) *FollowListQuery {
+func (flq *FollowListsQuery) Offset(offset int) *FollowListsQuery {
 	flq.offset = &offset
 	return flq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (flq *FollowListQuery) Unique(unique bool) *FollowListQuery {
+func (flq *FollowListsQuery) Unique(unique bool) *FollowListsQuery {
 	flq.unique = &unique
 	return flq
 }
 
 // Order specifies how the records should be ordered.
-func (flq *FollowListQuery) Order(o ...OrderFunc) *FollowListQuery {
+func (flq *FollowListsQuery) Order(o ...OrderFunc) *FollowListsQuery {
 	flq.order = append(flq.order, o...)
 	return flq
 }
 
-// First returns the first FollowList entity from the query.
-// Returns a *NotFoundError when no FollowList was found.
-func (flq *FollowListQuery) First(ctx context.Context) (*FollowList, error) {
-	nodes, err := flq.Limit(1).All(newQueryContext(ctx, TypeFollowList, "First"))
+// First returns the first FollowLists entity from the query.
+// Returns a *NotFoundError when no FollowLists was found.
+func (flq *FollowListsQuery) First(ctx context.Context) (*FollowLists, error) {
+	nodes, err := flq.Limit(1).All(newQueryContext(ctx, TypeFollowLists, "First"))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{followlist.Label}
+		return nil, &NotFoundError{followlists.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (flq *FollowListQuery) FirstX(ctx context.Context) *FollowList {
+func (flq *FollowListsQuery) FirstX(ctx context.Context) *FollowLists {
 	node, err := flq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -82,22 +82,22 @@ func (flq *FollowListQuery) FirstX(ctx context.Context) *FollowList {
 	return node
 }
 
-// FirstID returns the first FollowList ID from the query.
-// Returns a *NotFoundError when no FollowList ID was found.
-func (flq *FollowListQuery) FirstID(ctx context.Context) (id int, err error) {
+// FirstID returns the first FollowLists ID from the query.
+// Returns a *NotFoundError when no FollowLists ID was found.
+func (flq *FollowListsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = flq.Limit(1).IDs(newQueryContext(ctx, TypeFollowList, "FirstID")); err != nil {
+	if ids, err = flq.Limit(1).IDs(newQueryContext(ctx, TypeFollowLists, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{followlist.Label}
+		err = &NotFoundError{followlists.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (flq *FollowListQuery) FirstIDX(ctx context.Context) int {
+func (flq *FollowListsQuery) FirstIDX(ctx context.Context) int {
 	id, err := flq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -105,11 +105,11 @@ func (flq *FollowListQuery) FirstIDX(ctx context.Context) int {
 	return id
 }
 
-// Only returns a single FollowList entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one FollowList entity is found.
-// Returns a *NotFoundError when no FollowList entities are found.
-func (flq *FollowListQuery) Only(ctx context.Context) (*FollowList, error) {
-	nodes, err := flq.Limit(2).All(newQueryContext(ctx, TypeFollowList, "Only"))
+// Only returns a single FollowLists entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one FollowLists entity is found.
+// Returns a *NotFoundError when no FollowLists entities are found.
+func (flq *FollowListsQuery) Only(ctx context.Context) (*FollowLists, error) {
+	nodes, err := flq.Limit(2).All(newQueryContext(ctx, TypeFollowLists, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -117,14 +117,14 @@ func (flq *FollowListQuery) Only(ctx context.Context) (*FollowList, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{followlist.Label}
+		return nil, &NotFoundError{followlists.Label}
 	default:
-		return nil, &NotSingularError{followlist.Label}
+		return nil, &NotSingularError{followlists.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (flq *FollowListQuery) OnlyX(ctx context.Context) *FollowList {
+func (flq *FollowListsQuery) OnlyX(ctx context.Context) *FollowLists {
 	node, err := flq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -132,27 +132,27 @@ func (flq *FollowListQuery) OnlyX(ctx context.Context) *FollowList {
 	return node
 }
 
-// OnlyID is like Only, but returns the only FollowList ID in the query.
-// Returns a *NotSingularError when more than one FollowList ID is found.
+// OnlyID is like Only, but returns the only FollowLists ID in the query.
+// Returns a *NotSingularError when more than one FollowLists ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (flq *FollowListQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (flq *FollowListsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = flq.Limit(2).IDs(newQueryContext(ctx, TypeFollowList, "OnlyID")); err != nil {
+	if ids, err = flq.Limit(2).IDs(newQueryContext(ctx, TypeFollowLists, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{followlist.Label}
+		err = &NotFoundError{followlists.Label}
 	default:
-		err = &NotSingularError{followlist.Label}
+		err = &NotSingularError{followlists.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (flq *FollowListQuery) OnlyIDX(ctx context.Context) int {
+func (flq *FollowListsQuery) OnlyIDX(ctx context.Context) int {
 	id, err := flq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -160,18 +160,18 @@ func (flq *FollowListQuery) OnlyIDX(ctx context.Context) int {
 	return id
 }
 
-// All executes the query and returns a list of FollowLists.
-func (flq *FollowListQuery) All(ctx context.Context) ([]*FollowList, error) {
-	ctx = newQueryContext(ctx, TypeFollowList, "All")
+// All executes the query and returns a list of FollowListsSlice.
+func (flq *FollowListsQuery) All(ctx context.Context) ([]*FollowLists, error) {
+	ctx = newQueryContext(ctx, TypeFollowLists, "All")
 	if err := flq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*FollowList, *FollowListQuery]()
-	return withInterceptors[[]*FollowList](ctx, flq, qr, flq.inters)
+	qr := querierAll[[]*FollowLists, *FollowListsQuery]()
+	return withInterceptors[[]*FollowLists](ctx, flq, qr, flq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (flq *FollowListQuery) AllX(ctx context.Context) []*FollowList {
+func (flq *FollowListsQuery) AllX(ctx context.Context) []*FollowLists {
 	nodes, err := flq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -179,18 +179,18 @@ func (flq *FollowListQuery) AllX(ctx context.Context) []*FollowList {
 	return nodes
 }
 
-// IDs executes the query and returns a list of FollowList IDs.
-func (flq *FollowListQuery) IDs(ctx context.Context) ([]int, error) {
+// IDs executes the query and returns a list of FollowLists IDs.
+func (flq *FollowListsQuery) IDs(ctx context.Context) ([]int, error) {
 	var ids []int
-	ctx = newQueryContext(ctx, TypeFollowList, "IDs")
-	if err := flq.Select(followlist.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = newQueryContext(ctx, TypeFollowLists, "IDs")
+	if err := flq.Select(followlists.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (flq *FollowListQuery) IDsX(ctx context.Context) []int {
+func (flq *FollowListsQuery) IDsX(ctx context.Context) []int {
 	ids, err := flq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -199,16 +199,16 @@ func (flq *FollowListQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (flq *FollowListQuery) Count(ctx context.Context) (int, error) {
-	ctx = newQueryContext(ctx, TypeFollowList, "Count")
+func (flq *FollowListsQuery) Count(ctx context.Context) (int, error) {
+	ctx = newQueryContext(ctx, TypeFollowLists, "Count")
 	if err := flq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, flq, querierCount[*FollowListQuery](), flq.inters)
+	return withInterceptors[int](ctx, flq, querierCount[*FollowListsQuery](), flq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (flq *FollowListQuery) CountX(ctx context.Context) int {
+func (flq *FollowListsQuery) CountX(ctx context.Context) int {
 	count, err := flq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -217,8 +217,8 @@ func (flq *FollowListQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (flq *FollowListQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = newQueryContext(ctx, TypeFollowList, "Exist")
+func (flq *FollowListsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = newQueryContext(ctx, TypeFollowLists, "Exist")
 	switch _, err := flq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -230,7 +230,7 @@ func (flq *FollowListQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (flq *FollowListQuery) ExistX(ctx context.Context) bool {
+func (flq *FollowListsQuery) ExistX(ctx context.Context) bool {
 	exist, err := flq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -238,19 +238,19 @@ func (flq *FollowListQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the FollowListQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the FollowListsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (flq *FollowListQuery) Clone() *FollowListQuery {
+func (flq *FollowListsQuery) Clone() *FollowListsQuery {
 	if flq == nil {
 		return nil
 	}
-	return &FollowListQuery{
+	return &FollowListsQuery{
 		config:     flq.config,
 		limit:      flq.limit,
 		offset:     flq.offset,
 		order:      append([]OrderFunc{}, flq.order...),
 		inters:     append([]Interceptor{}, flq.inters...),
-		predicates: append([]predicate.FollowList{}, flq.predicates...),
+		predicates: append([]predicate.FollowLists{}, flq.predicates...),
 		// clone intermediate query.
 		sql:    flq.sql.Clone(),
 		path:   flq.path,
@@ -268,15 +268,15 @@ func (flq *FollowListQuery) Clone() *FollowListQuery {
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.FollowList.Query().
-//		GroupBy(followlist.FieldUUID).
+//	client.FollowLists.Query().
+//		GroupBy(followlists.FieldUUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (flq *FollowListQuery) GroupBy(field string, fields ...string) *FollowListGroupBy {
+func (flq *FollowListsQuery) GroupBy(field string, fields ...string) *FollowListsGroupBy {
 	flq.fields = append([]string{field}, fields...)
-	grbuild := &FollowListGroupBy{build: flq}
+	grbuild := &FollowListsGroupBy{build: flq}
 	grbuild.flds = &flq.fields
-	grbuild.label = followlist.Label
+	grbuild.label = followlists.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -290,23 +290,23 @@ func (flq *FollowListQuery) GroupBy(field string, fields ...string) *FollowListG
 //		UUID uuid.UUID `json:"uuid,omitempty"`
 //	}
 //
-//	client.FollowList.Query().
-//		Select(followlist.FieldUUID).
+//	client.FollowLists.Query().
+//		Select(followlists.FieldUUID).
 //		Scan(ctx, &v)
-func (flq *FollowListQuery) Select(fields ...string) *FollowListSelect {
+func (flq *FollowListsQuery) Select(fields ...string) *FollowListsSelect {
 	flq.fields = append(flq.fields, fields...)
-	sbuild := &FollowListSelect{FollowListQuery: flq}
-	sbuild.label = followlist.Label
+	sbuild := &FollowListsSelect{FollowListsQuery: flq}
+	sbuild.label = followlists.Label
 	sbuild.flds, sbuild.scan = &flq.fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a FollowListSelect configured with the given aggregations.
-func (flq *FollowListQuery) Aggregate(fns ...AggregateFunc) *FollowListSelect {
+// Aggregate returns a FollowListsSelect configured with the given aggregations.
+func (flq *FollowListsQuery) Aggregate(fns ...AggregateFunc) *FollowListsSelect {
 	return flq.Select().Aggregate(fns...)
 }
 
-func (flq *FollowListQuery) prepareQuery(ctx context.Context) error {
+func (flq *FollowListsQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range flq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -318,7 +318,7 @@ func (flq *FollowListQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range flq.fields {
-		if !followlist.ValidColumn(f) {
+		if !followlists.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -332,16 +332,16 @@ func (flq *FollowListQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (flq *FollowListQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FollowList, error) {
+func (flq *FollowListsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FollowLists, error) {
 	var (
-		nodes = []*FollowList{}
+		nodes = []*FollowLists{}
 		_spec = flq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*FollowList).scanValues(nil, columns)
+		return (*FollowLists).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &FollowList{config: flq.config}
+		node := &FollowLists{config: flq.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -357,7 +357,7 @@ func (flq *FollowListQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	return nodes, nil
 }
 
-func (flq *FollowListQuery) sqlCount(ctx context.Context) (int, error) {
+func (flq *FollowListsQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := flq.querySpec()
 	_spec.Node.Columns = flq.fields
 	if len(flq.fields) > 0 {
@@ -366,14 +366,14 @@ func (flq *FollowListQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, flq.driver, _spec)
 }
 
-func (flq *FollowListQuery) querySpec() *sqlgraph.QuerySpec {
+func (flq *FollowListsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := &sqlgraph.QuerySpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   followlist.Table,
-			Columns: followlist.Columns,
+			Table:   followlists.Table,
+			Columns: followlists.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: followlist.FieldID,
+				Column: followlists.FieldID,
 			},
 		},
 		From:   flq.sql,
@@ -384,9 +384,9 @@ func (flq *FollowListQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := flq.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, followlist.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, followlists.FieldID)
 		for i := range fields {
-			if fields[i] != followlist.FieldID {
+			if fields[i] != followlists.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -414,12 +414,12 @@ func (flq *FollowListQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (flq *FollowListQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (flq *FollowListsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(flq.driver.Dialect())
-	t1 := builder.Table(followlist.Table)
+	t1 := builder.Table(followlists.Table)
 	columns := flq.fields
 	if len(columns) == 0 {
-		columns = followlist.Columns
+		columns = followlists.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if flq.sql != nil {
@@ -446,28 +446,28 @@ func (flq *FollowListQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// FollowListGroupBy is the group-by builder for FollowList entities.
-type FollowListGroupBy struct {
+// FollowListsGroupBy is the group-by builder for FollowLists entities.
+type FollowListsGroupBy struct {
 	selector
-	build *FollowListQuery
+	build *FollowListsQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (flgb *FollowListGroupBy) Aggregate(fns ...AggregateFunc) *FollowListGroupBy {
+func (flgb *FollowListsGroupBy) Aggregate(fns ...AggregateFunc) *FollowListsGroupBy {
 	flgb.fns = append(flgb.fns, fns...)
 	return flgb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (flgb *FollowListGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFollowList, "GroupBy")
+func (flgb *FollowListsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = newQueryContext(ctx, TypeFollowLists, "GroupBy")
 	if err := flgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FollowListQuery, *FollowListGroupBy](ctx, flgb.build, flgb, flgb.build.inters, v)
+	return scanWithInterceptors[*FollowListsQuery, *FollowListsGroupBy](ctx, flgb.build, flgb, flgb.build.inters, v)
 }
 
-func (flgb *FollowListGroupBy) sqlScan(ctx context.Context, root *FollowListQuery, v any) error {
+func (flgb *FollowListsGroupBy) sqlScan(ctx context.Context, root *FollowListsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(flgb.fns))
 	for _, fn := range flgb.fns {
@@ -494,28 +494,28 @@ func (flgb *FollowListGroupBy) sqlScan(ctx context.Context, root *FollowListQuer
 	return sql.ScanSlice(rows, v)
 }
 
-// FollowListSelect is the builder for selecting fields of FollowList entities.
-type FollowListSelect struct {
-	*FollowListQuery
+// FollowListsSelect is the builder for selecting fields of FollowLists entities.
+type FollowListsSelect struct {
+	*FollowListsQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (fls *FollowListSelect) Aggregate(fns ...AggregateFunc) *FollowListSelect {
+func (fls *FollowListsSelect) Aggregate(fns ...AggregateFunc) *FollowListsSelect {
 	fls.fns = append(fls.fns, fns...)
 	return fls
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (fls *FollowListSelect) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFollowList, "Select")
+func (fls *FollowListsSelect) Scan(ctx context.Context, v any) error {
+	ctx = newQueryContext(ctx, TypeFollowLists, "Select")
 	if err := fls.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FollowListQuery, *FollowListSelect](ctx, fls.FollowListQuery, fls, fls.inters, v)
+	return scanWithInterceptors[*FollowListsQuery, *FollowListsSelect](ctx, fls.FollowListsQuery, fls, fls.inters, v)
 }
 
-func (fls *FollowListSelect) sqlScan(ctx context.Context, root *FollowListQuery, v any) error {
+func (fls *FollowListsSelect) sqlScan(ctx context.Context, root *FollowListsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(fls.fns))
 	for _, fn := range fls.fns {

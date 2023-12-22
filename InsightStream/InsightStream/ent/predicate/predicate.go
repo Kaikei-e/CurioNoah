@@ -18,8 +18,8 @@ type FeedAuditTrailLog func(*sql.Selector)
 // Feeds is the predicate function for feeds builders.
 type Feeds func(*sql.Selector)
 
-// FollowList is the predicate function for followlist builders.
-type FollowList func(*sql.Selector)
+// FollowLists is the predicate function for followlists builders.
+type FollowLists func(*sql.Selector)
 
 // Users is the predicate function for users builders.
 type Users func(*sql.Selector)

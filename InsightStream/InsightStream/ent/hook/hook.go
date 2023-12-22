@@ -56,16 +56,16 @@ func (f FeedsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedsMutation", m)
 }
 
-// The FollowListFunc type is an adapter to allow the use of ordinary
-// function as FollowList mutator.
-type FollowListFunc func(context.Context, *ent.FollowListMutation) (ent.Value, error)
+// The FollowListsFunc type is an adapter to allow the use of ordinary
+// function as FollowLists mutator.
+type FollowListsFunc func(context.Context, *ent.FollowListsMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f FollowListFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.FollowListMutation); ok {
+func (f FollowListsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FollowListsMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FollowListMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FollowListsMutation", m)
 }
 
 // The UsersFunc type is an adapter to allow the use of ordinary

@@ -8,7 +8,7 @@ import (
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
 	"insightstream/ent/feeds"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"insightstream/ent/schema"
 	"insightstream/ent/users"
 	"time"
@@ -100,80 +100,80 @@ func init() {
 	feedsDescID := feedsFields[0].Descriptor()
 	// feeds.DefaultID holds the default value on creation for the id field.
 	feeds.DefaultID = feedsDescID.Default.(func() uuid.UUID)
-	followlistFields := schema.FollowList{}.Fields()
-	_ = followlistFields
-	// followlistDescUUID is the schema descriptor for uuid field.
-	followlistDescUUID := followlistFields[0].Descriptor()
-	// followlist.DefaultUUID holds the default value on creation for the uuid field.
-	followlist.DefaultUUID = followlistDescUUID.Default.(func() uuid.UUID)
-	// followlistDescXMLVersion is the schema descriptor for xml_version field.
-	followlistDescXMLVersion := followlistFields[1].Descriptor()
-	// followlist.DefaultXMLVersion holds the default value on creation for the xml_version field.
-	followlist.DefaultXMLVersion = followlistDescXMLVersion.Default.(int8)
-	// followlistDescRssVersion is the schema descriptor for rss_version field.
-	followlistDescRssVersion := followlistFields[2].Descriptor()
-	// followlist.DefaultRssVersion holds the default value on creation for the rss_version field.
-	followlist.DefaultRssVersion = followlistDescRssVersion.Default.(int8)
-	// followlistDescURL is the schema descriptor for url field.
-	followlistDescURL := followlistFields[3].Descriptor()
-	// followlist.DefaultURL holds the default value on creation for the url field.
-	followlist.DefaultURL = followlistDescURL.Default.(string)
-	// followlist.URLValidator is a validator for the "url" field. It is called by the builders before save.
-	followlist.URLValidator = followlistDescURL.Validators[0].(func(string) error)
-	// followlistDescTitle is the schema descriptor for title field.
-	followlistDescTitle := followlistFields[4].Descriptor()
-	// followlist.DefaultTitle holds the default value on creation for the title field.
-	followlist.DefaultTitle = followlistDescTitle.Default.(string)
-	// followlistDescDescription is the schema descriptor for description field.
-	followlistDescDescription := followlistFields[5].Descriptor()
-	// followlist.DefaultDescription holds the default value on creation for the description field.
-	followlist.DefaultDescription = followlistDescDescription.Default.(string)
-	// followlistDescLink is the schema descriptor for link field.
-	followlistDescLink := followlistFields[6].Descriptor()
-	// followlist.DefaultLink holds the default value on creation for the link field.
-	followlist.DefaultLink = followlistDescLink.Default.(string)
-	// followlistDescLinks is the schema descriptor for links field.
-	followlistDescLinks := followlistFields[7].Descriptor()
-	// followlist.DefaultLinks holds the default value on creation for the links field.
-	followlist.DefaultLinks = followlistDescLinks.Default.(baseFeeds.FeedLink)
-	// followlistDescLanguage is the schema descriptor for language field.
-	followlistDescLanguage := followlistFields[9].Descriptor()
-	// followlist.DefaultLanguage holds the default value on creation for the language field.
-	followlist.DefaultLanguage = followlistDescLanguage.Default.(string)
-	// followlist.LanguageValidator is a validator for the "language" field. It is called by the builders before save.
-	followlist.LanguageValidator = followlistDescLanguage.Validators[0].(func(string) error)
-	// followlistDescDtCreated is the schema descriptor for dt_created field.
-	followlistDescDtCreated := followlistFields[10].Descriptor()
-	// followlist.DefaultDtCreated holds the default value on creation for the dt_created field.
-	followlist.DefaultDtCreated = followlistDescDtCreated.Default.(time.Time)
-	// followlistDescDtUpdated is the schema descriptor for dt_updated field.
-	followlistDescDtUpdated := followlistFields[11].Descriptor()
-	// followlist.DefaultDtUpdated holds the default value on creation for the dt_updated field.
-	followlist.DefaultDtUpdated = followlistDescDtUpdated.Default.(time.Time)
-	// followlistDescDtLastInserted is the schema descriptor for dt_last_inserted field.
-	followlistDescDtLastInserted := followlistFields[12].Descriptor()
-	// followlist.DefaultDtLastInserted holds the default value on creation for the dt_last_inserted field.
-	followlist.DefaultDtLastInserted = followlistDescDtLastInserted.Default.(time.Time)
-	// followlistDescFeedCategory is the schema descriptor for feed_category field.
-	followlistDescFeedCategory := followlistFields[13].Descriptor()
-	// followlist.DefaultFeedCategory holds the default value on creation for the feed_category field.
-	followlist.DefaultFeedCategory = followlistDescFeedCategory.Default.(int)
-	// followlistDescIsActive is the schema descriptor for is_active field.
-	followlistDescIsActive := followlistFields[14].Descriptor()
-	// followlist.DefaultIsActive holds the default value on creation for the is_active field.
-	followlist.DefaultIsActive = followlistDescIsActive.Default.(bool)
-	// followlistDescIsFavorite is the schema descriptor for is_favorite field.
-	followlistDescIsFavorite := followlistFields[15].Descriptor()
-	// followlist.DefaultIsFavorite holds the default value on creation for the is_favorite field.
-	followlist.DefaultIsFavorite = followlistDescIsFavorite.Default.(bool)
-	// followlistDescIsRead is the schema descriptor for is_read field.
-	followlistDescIsRead := followlistFields[16].Descriptor()
-	// followlist.DefaultIsRead holds the default value on creation for the is_read field.
-	followlist.DefaultIsRead = followlistDescIsRead.Default.(bool)
-	// followlistDescIsUpdated is the schema descriptor for is_updated field.
-	followlistDescIsUpdated := followlistFields[17].Descriptor()
-	// followlist.DefaultIsUpdated holds the default value on creation for the is_updated field.
-	followlist.DefaultIsUpdated = followlistDescIsUpdated.Default.(bool)
+	followlistsFields := schema.FollowLists{}.Fields()
+	_ = followlistsFields
+	// followlistsDescUUID is the schema descriptor for uuid field.
+	followlistsDescUUID := followlistsFields[0].Descriptor()
+	// followlists.DefaultUUID holds the default value on creation for the uuid field.
+	followlists.DefaultUUID = followlistsDescUUID.Default.(func() uuid.UUID)
+	// followlistsDescXMLVersion is the schema descriptor for xml_version field.
+	followlistsDescXMLVersion := followlistsFields[1].Descriptor()
+	// followlists.DefaultXMLVersion holds the default value on creation for the xml_version field.
+	followlists.DefaultXMLVersion = followlistsDescXMLVersion.Default.(int8)
+	// followlistsDescRssVersion is the schema descriptor for rss_version field.
+	followlistsDescRssVersion := followlistsFields[2].Descriptor()
+	// followlists.DefaultRssVersion holds the default value on creation for the rss_version field.
+	followlists.DefaultRssVersion = followlistsDescRssVersion.Default.(int8)
+	// followlistsDescURL is the schema descriptor for url field.
+	followlistsDescURL := followlistsFields[3].Descriptor()
+	// followlists.DefaultURL holds the default value on creation for the url field.
+	followlists.DefaultURL = followlistsDescURL.Default.(string)
+	// followlists.URLValidator is a validator for the "url" field. It is called by the builders before save.
+	followlists.URLValidator = followlistsDescURL.Validators[0].(func(string) error)
+	// followlistsDescTitle is the schema descriptor for title field.
+	followlistsDescTitle := followlistsFields[4].Descriptor()
+	// followlists.DefaultTitle holds the default value on creation for the title field.
+	followlists.DefaultTitle = followlistsDescTitle.Default.(string)
+	// followlistsDescDescription is the schema descriptor for description field.
+	followlistsDescDescription := followlistsFields[5].Descriptor()
+	// followlists.DefaultDescription holds the default value on creation for the description field.
+	followlists.DefaultDescription = followlistsDescDescription.Default.(string)
+	// followlistsDescLink is the schema descriptor for link field.
+	followlistsDescLink := followlistsFields[6].Descriptor()
+	// followlists.DefaultLink holds the default value on creation for the link field.
+	followlists.DefaultLink = followlistsDescLink.Default.(string)
+	// followlistsDescLinks is the schema descriptor for links field.
+	followlistsDescLinks := followlistsFields[7].Descriptor()
+	// followlists.DefaultLinks holds the default value on creation for the links field.
+	followlists.DefaultLinks = followlistsDescLinks.Default.(baseFeeds.FeedLink)
+	// followlistsDescLanguage is the schema descriptor for language field.
+	followlistsDescLanguage := followlistsFields[9].Descriptor()
+	// followlists.DefaultLanguage holds the default value on creation for the language field.
+	followlists.DefaultLanguage = followlistsDescLanguage.Default.(string)
+	// followlists.LanguageValidator is a validator for the "language" field. It is called by the builders before save.
+	followlists.LanguageValidator = followlistsDescLanguage.Validators[0].(func(string) error)
+	// followlistsDescDtCreated is the schema descriptor for dt_created field.
+	followlistsDescDtCreated := followlistsFields[10].Descriptor()
+	// followlists.DefaultDtCreated holds the default value on creation for the dt_created field.
+	followlists.DefaultDtCreated = followlistsDescDtCreated.Default.(time.Time)
+	// followlistsDescDtUpdated is the schema descriptor for dt_updated field.
+	followlistsDescDtUpdated := followlistsFields[11].Descriptor()
+	// followlists.DefaultDtUpdated holds the default value on creation for the dt_updated field.
+	followlists.DefaultDtUpdated = followlistsDescDtUpdated.Default.(time.Time)
+	// followlistsDescDtLastInserted is the schema descriptor for dt_last_inserted field.
+	followlistsDescDtLastInserted := followlistsFields[12].Descriptor()
+	// followlists.DefaultDtLastInserted holds the default value on creation for the dt_last_inserted field.
+	followlists.DefaultDtLastInserted = followlistsDescDtLastInserted.Default.(time.Time)
+	// followlistsDescFeedCategory is the schema descriptor for feed_category field.
+	followlistsDescFeedCategory := followlistsFields[13].Descriptor()
+	// followlists.DefaultFeedCategory holds the default value on creation for the feed_category field.
+	followlists.DefaultFeedCategory = followlistsDescFeedCategory.Default.(int)
+	// followlistsDescIsActive is the schema descriptor for is_active field.
+	followlistsDescIsActive := followlistsFields[14].Descriptor()
+	// followlists.DefaultIsActive holds the default value on creation for the is_active field.
+	followlists.DefaultIsActive = followlistsDescIsActive.Default.(bool)
+	// followlistsDescIsFavorite is the schema descriptor for is_favorite field.
+	followlistsDescIsFavorite := followlistsFields[15].Descriptor()
+	// followlists.DefaultIsFavorite holds the default value on creation for the is_favorite field.
+	followlists.DefaultIsFavorite = followlistsDescIsFavorite.Default.(bool)
+	// followlistsDescIsRead is the schema descriptor for is_read field.
+	followlistsDescIsRead := followlistsFields[16].Descriptor()
+	// followlists.DefaultIsRead holds the default value on creation for the is_read field.
+	followlists.DefaultIsRead = followlistsDescIsRead.Default.(bool)
+	// followlistsDescIsUpdated is the schema descriptor for is_updated field.
+	followlistsDescIsUpdated := followlistsFields[17].Descriptor()
+	// followlists.DefaultIsUpdated holds the default value on creation for the is_updated field.
+	followlists.DefaultIsUpdated = followlistsDescIsUpdated.Default.(bool)
 	usersFields := schema.Users{}.Fields()
 	_ = usersFields
 	// usersDescUsername is the schema descriptor for username field.

@@ -171,7 +171,7 @@ var (
 		PrimaryKey: []*schema.Column{FollowListsColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "followlist_uuid",
+				Name:    "followlists_uuid",
 				Unique:  true,
 				Columns: []*schema.Column{FollowListsColumns[1]},
 			},

@@ -11,7 +11,7 @@ import (
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
 	"insightstream/ent/feeds"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"insightstream/ent/predicate"
 	"insightstream/ent/users"
 	"sync"
@@ -36,7 +36,7 @@ const (
 	TypeFeedAuditTrailAction    = "FeedAuditTrailAction"
 	TypeFeedAuditTrailLog       = "FeedAuditTrailLog"
 	TypeFeeds                   = "Feeds"
-	TypeFollowList              = "FollowList"
+	TypeFollowLists             = "FollowLists"
 	TypeUsers                   = "Users"
 )
 
@@ -2052,8 +2052,8 @@ func (m *FeedsMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Feeds edge %s", name)
 }
 
-// FollowListMutation represents an operation that mutates the FollowList nodes in the graph.
-type FollowListMutation struct {
+// FollowListsMutation represents an operation that mutates the FollowLists nodes in the graph.
+type FollowListsMutation struct {
 	config
 	op                     Op
 	typ                    string
@@ -2082,21 +2082,21 @@ type FollowListMutation struct {
 	is_updated             *bool
 	clearedFields          map[string]struct{}
 	done                   bool
-	oldValue               func(context.Context) (*FollowList, error)
-	predicates             []predicate.FollowList
+	oldValue               func(context.Context) (*FollowLists, error)
+	predicates             []predicate.FollowLists
 }
 
-var _ ent.Mutation = (*FollowListMutation)(nil)
+var _ ent.Mutation = (*FollowListsMutation)(nil)
 
-// followlistOption allows management of the mutation configuration using functional options.
-type followlistOption func(*FollowListMutation)
+// followlistsOption allows management of the mutation configuration using functional options.
+type followlistsOption func(*FollowListsMutation)
 
-// newFollowListMutation creates new mutation for the FollowList entity.
-func newFollowListMutation(c config, op Op, opts ...followlistOption) *FollowListMutation {
-	m := &FollowListMutation{
+// newFollowListsMutation creates new mutation for the FollowLists entity.
+func newFollowListsMutation(c config, op Op, opts ...followlistsOption) *FollowListsMutation {
+	m := &FollowListsMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeFollowList,
+		typ:           TypeFollowLists,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -2105,20 +2105,20 @@ func newFollowListMutation(c config, op Op, opts ...followlistOption) *FollowLis
 	return m
 }
 
-// withFollowListID sets the ID field of the mutation.
-func withFollowListID(id int) followlistOption {
-	return func(m *FollowListMutation) {
+// withFollowListsID sets the ID field of the mutation.
+func withFollowListsID(id int) followlistsOption {
+	return func(m *FollowListsMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *FollowList
+			value *FollowLists
 		)
-		m.oldValue = func(ctx context.Context) (*FollowList, error) {
+		m.oldValue = func(ctx context.Context) (*FollowLists, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().FollowList.Get(ctx, id)
+					value, err = m.Client().FollowLists.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -2127,10 +2127,10 @@ func withFollowListID(id int) followlistOption {
 	}
 }
 
-// withFollowList sets the old FollowList of the mutation.
-func withFollowList(node *FollowList) followlistOption {
-	return func(m *FollowListMutation) {
-		m.oldValue = func(context.Context) (*FollowList, error) {
+// withFollowLists sets the old FollowLists of the mutation.
+func withFollowLists(node *FollowLists) followlistsOption {
+	return func(m *FollowListsMutation) {
+		m.oldValue = func(context.Context) (*FollowLists, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -2139,7 +2139,7 @@ func withFollowList(node *FollowList) followlistOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m FollowListMutation) Client() *Client {
+func (m FollowListsMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -2147,7 +2147,7 @@ func (m FollowListMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m FollowListMutation) Tx() (*Tx, error) {
+func (m FollowListsMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -2158,7 +2158,7 @@ func (m FollowListMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FollowListMutation) ID() (id int, exists bool) {
+func (m *FollowListsMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2169,7 +2169,7 @@ func (m *FollowListMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FollowListMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *FollowListsMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -2178,19 +2178,19 @@ func (m *FollowListMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().FollowList.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().FollowLists.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetUUID sets the "uuid" field.
-func (m *FollowListMutation) SetUUID(u uuid.UUID) {
+func (m *FollowListsMutation) SetUUID(u uuid.UUID) {
 	m.uuid = &u
 }
 
 // UUID returns the value of the "uuid" field in the mutation.
-func (m *FollowListMutation) UUID() (r uuid.UUID, exists bool) {
+func (m *FollowListsMutation) UUID() (r uuid.UUID, exists bool) {
 	v := m.uuid
 	if v == nil {
 		return
@@ -2198,10 +2198,10 @@ func (m *FollowListMutation) UUID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldUUID returns the old "uuid" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldUUID returns the old "uuid" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FollowListsMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUUID is only allowed on UpdateOne operations")
 	}
@@ -2216,18 +2216,18 @@ func (m *FollowListMutation) OldUUID(ctx context.Context) (v uuid.UUID, err erro
 }
 
 // ResetUUID resets all changes to the "uuid" field.
-func (m *FollowListMutation) ResetUUID() {
+func (m *FollowListsMutation) ResetUUID() {
 	m.uuid = nil
 }
 
 // SetXMLVersion sets the "xml_version" field.
-func (m *FollowListMutation) SetXMLVersion(i int8) {
+func (m *FollowListsMutation) SetXMLVersion(i int8) {
 	m.xml_version = &i
 	m.addxml_version = nil
 }
 
 // XMLVersion returns the value of the "xml_version" field in the mutation.
-func (m *FollowListMutation) XMLVersion() (r int8, exists bool) {
+func (m *FollowListsMutation) XMLVersion() (r int8, exists bool) {
 	v := m.xml_version
 	if v == nil {
 		return
@@ -2235,10 +2235,10 @@ func (m *FollowListMutation) XMLVersion() (r int8, exists bool) {
 	return *v, true
 }
 
-// OldXMLVersion returns the old "xml_version" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldXMLVersion returns the old "xml_version" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldXMLVersion(ctx context.Context) (v int8, err error) {
+func (m *FollowListsMutation) OldXMLVersion(ctx context.Context) (v int8, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldXMLVersion is only allowed on UpdateOne operations")
 	}
@@ -2253,7 +2253,7 @@ func (m *FollowListMutation) OldXMLVersion(ctx context.Context) (v int8, err err
 }
 
 // AddXMLVersion adds i to the "xml_version" field.
-func (m *FollowListMutation) AddXMLVersion(i int8) {
+func (m *FollowListsMutation) AddXMLVersion(i int8) {
 	if m.addxml_version != nil {
 		*m.addxml_version += i
 	} else {
@@ -2262,7 +2262,7 @@ func (m *FollowListMutation) AddXMLVersion(i int8) {
 }
 
 // AddedXMLVersion returns the value that was added to the "xml_version" field in this mutation.
-func (m *FollowListMutation) AddedXMLVersion() (r int8, exists bool) {
+func (m *FollowListsMutation) AddedXMLVersion() (r int8, exists bool) {
 	v := m.addxml_version
 	if v == nil {
 		return
@@ -2271,19 +2271,19 @@ func (m *FollowListMutation) AddedXMLVersion() (r int8, exists bool) {
 }
 
 // ResetXMLVersion resets all changes to the "xml_version" field.
-func (m *FollowListMutation) ResetXMLVersion() {
+func (m *FollowListsMutation) ResetXMLVersion() {
 	m.xml_version = nil
 	m.addxml_version = nil
 }
 
 // SetRssVersion sets the "rss_version" field.
-func (m *FollowListMutation) SetRssVersion(i int8) {
+func (m *FollowListsMutation) SetRssVersion(i int8) {
 	m.rss_version = &i
 	m.addrss_version = nil
 }
 
 // RssVersion returns the value of the "rss_version" field in the mutation.
-func (m *FollowListMutation) RssVersion() (r int8, exists bool) {
+func (m *FollowListsMutation) RssVersion() (r int8, exists bool) {
 	v := m.rss_version
 	if v == nil {
 		return
@@ -2291,10 +2291,10 @@ func (m *FollowListMutation) RssVersion() (r int8, exists bool) {
 	return *v, true
 }
 
-// OldRssVersion returns the old "rss_version" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldRssVersion returns the old "rss_version" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldRssVersion(ctx context.Context) (v int8, err error) {
+func (m *FollowListsMutation) OldRssVersion(ctx context.Context) (v int8, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRssVersion is only allowed on UpdateOne operations")
 	}
@@ -2309,7 +2309,7 @@ func (m *FollowListMutation) OldRssVersion(ctx context.Context) (v int8, err err
 }
 
 // AddRssVersion adds i to the "rss_version" field.
-func (m *FollowListMutation) AddRssVersion(i int8) {
+func (m *FollowListsMutation) AddRssVersion(i int8) {
 	if m.addrss_version != nil {
 		*m.addrss_version += i
 	} else {
@@ -2318,7 +2318,7 @@ func (m *FollowListMutation) AddRssVersion(i int8) {
 }
 
 // AddedRssVersion returns the value that was added to the "rss_version" field in this mutation.
-func (m *FollowListMutation) AddedRssVersion() (r int8, exists bool) {
+func (m *FollowListsMutation) AddedRssVersion() (r int8, exists bool) {
 	v := m.addrss_version
 	if v == nil {
 		return
@@ -2327,18 +2327,18 @@ func (m *FollowListMutation) AddedRssVersion() (r int8, exists bool) {
 }
 
 // ResetRssVersion resets all changes to the "rss_version" field.
-func (m *FollowListMutation) ResetRssVersion() {
+func (m *FollowListsMutation) ResetRssVersion() {
 	m.rss_version = nil
 	m.addrss_version = nil
 }
 
 // SetURL sets the "url" field.
-func (m *FollowListMutation) SetURL(s string) {
+func (m *FollowListsMutation) SetURL(s string) {
 	m.url = &s
 }
 
 // URL returns the value of the "url" field in the mutation.
-func (m *FollowListMutation) URL() (r string, exists bool) {
+func (m *FollowListsMutation) URL() (r string, exists bool) {
 	v := m.url
 	if v == nil {
 		return
@@ -2346,10 +2346,10 @@ func (m *FollowListMutation) URL() (r string, exists bool) {
 	return *v, true
 }
 
-// OldURL returns the old "url" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldURL returns the old "url" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldURL(ctx context.Context) (v string, err error) {
+func (m *FollowListsMutation) OldURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldURL is only allowed on UpdateOne operations")
 	}
@@ -2364,17 +2364,17 @@ func (m *FollowListMutation) OldURL(ctx context.Context) (v string, err error) {
 }
 
 // ResetURL resets all changes to the "url" field.
-func (m *FollowListMutation) ResetURL() {
+func (m *FollowListsMutation) ResetURL() {
 	m.url = nil
 }
 
 // SetTitle sets the "title" field.
-func (m *FollowListMutation) SetTitle(s string) {
+func (m *FollowListsMutation) SetTitle(s string) {
 	m.title = &s
 }
 
 // Title returns the value of the "title" field in the mutation.
-func (m *FollowListMutation) Title() (r string, exists bool) {
+func (m *FollowListsMutation) Title() (r string, exists bool) {
 	v := m.title
 	if v == nil {
 		return
@@ -2382,10 +2382,10 @@ func (m *FollowListMutation) Title() (r string, exists bool) {
 	return *v, true
 }
 
-// OldTitle returns the old "title" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldTitle returns the old "title" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldTitle(ctx context.Context) (v string, err error) {
+func (m *FollowListsMutation) OldTitle(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
 	}
@@ -2400,17 +2400,17 @@ func (m *FollowListMutation) OldTitle(ctx context.Context) (v string, err error)
 }
 
 // ResetTitle resets all changes to the "title" field.
-func (m *FollowListMutation) ResetTitle() {
+func (m *FollowListsMutation) ResetTitle() {
 	m.title = nil
 }
 
 // SetDescription sets the "description" field.
-func (m *FollowListMutation) SetDescription(s string) {
+func (m *FollowListsMutation) SetDescription(s string) {
 	m.description = &s
 }
 
 // Description returns the value of the "description" field in the mutation.
-func (m *FollowListMutation) Description() (r string, exists bool) {
+func (m *FollowListsMutation) Description() (r string, exists bool) {
 	v := m.description
 	if v == nil {
 		return
@@ -2418,10 +2418,10 @@ func (m *FollowListMutation) Description() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDescription returns the old "description" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldDescription returns the old "description" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldDescription(ctx context.Context) (v string, err error) {
+func (m *FollowListsMutation) OldDescription(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
@@ -2436,17 +2436,17 @@ func (m *FollowListMutation) OldDescription(ctx context.Context) (v string, err 
 }
 
 // ResetDescription resets all changes to the "description" field.
-func (m *FollowListMutation) ResetDescription() {
+func (m *FollowListsMutation) ResetDescription() {
 	m.description = nil
 }
 
 // SetLink sets the "link" field.
-func (m *FollowListMutation) SetLink(s string) {
+func (m *FollowListsMutation) SetLink(s string) {
 	m.link = &s
 }
 
 // Link returns the value of the "link" field in the mutation.
-func (m *FollowListMutation) Link() (r string, exists bool) {
+func (m *FollowListsMutation) Link() (r string, exists bool) {
 	v := m.link
 	if v == nil {
 		return
@@ -2454,10 +2454,10 @@ func (m *FollowListMutation) Link() (r string, exists bool) {
 	return *v, true
 }
 
-// OldLink returns the old "link" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldLink returns the old "link" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldLink(ctx context.Context) (v string, err error) {
+func (m *FollowListsMutation) OldLink(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLink is only allowed on UpdateOne operations")
 	}
@@ -2472,17 +2472,17 @@ func (m *FollowListMutation) OldLink(ctx context.Context) (v string, err error) 
 }
 
 // ResetLink resets all changes to the "link" field.
-func (m *FollowListMutation) ResetLink() {
+func (m *FollowListsMutation) ResetLink() {
 	m.link = nil
 }
 
 // SetLinks sets the "links" field.
-func (m *FollowListMutation) SetLinks(bfl baseFeeds.FeedLink) {
+func (m *FollowListsMutation) SetLinks(bfl baseFeeds.FeedLink) {
 	m.links = &bfl
 }
 
 // Links returns the value of the "links" field in the mutation.
-func (m *FollowListMutation) Links() (r baseFeeds.FeedLink, exists bool) {
+func (m *FollowListsMutation) Links() (r baseFeeds.FeedLink, exists bool) {
 	v := m.links
 	if v == nil {
 		return
@@ -2490,10 +2490,10 @@ func (m *FollowListMutation) Links() (r baseFeeds.FeedLink, exists bool) {
 	return *v, true
 }
 
-// OldLinks returns the old "links" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldLinks returns the old "links" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldLinks(ctx context.Context) (v baseFeeds.FeedLink, err error) {
+func (m *FollowListsMutation) OldLinks(ctx context.Context) (v baseFeeds.FeedLink, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLinks is only allowed on UpdateOne operations")
 	}
@@ -2508,18 +2508,18 @@ func (m *FollowListMutation) OldLinks(ctx context.Context) (v baseFeeds.FeedLink
 }
 
 // ResetLinks resets all changes to the "links" field.
-func (m *FollowListMutation) ResetLinks() {
+func (m *FollowListsMutation) ResetLinks() {
 	m.links = nil
 }
 
 // SetItemDescription sets the "item_description" field.
-func (m *FollowListMutation) SetItemDescription(bfi []baseFeeds.FeedItem) {
+func (m *FollowListsMutation) SetItemDescription(bfi []baseFeeds.FeedItem) {
 	m.item_description = &bfi
 	m.appenditem_description = nil
 }
 
 // ItemDescription returns the value of the "item_description" field in the mutation.
-func (m *FollowListMutation) ItemDescription() (r []baseFeeds.FeedItem, exists bool) {
+func (m *FollowListsMutation) ItemDescription() (r []baseFeeds.FeedItem, exists bool) {
 	v := m.item_description
 	if v == nil {
 		return
@@ -2527,10 +2527,10 @@ func (m *FollowListMutation) ItemDescription() (r []baseFeeds.FeedItem, exists b
 	return *v, true
 }
 
-// OldItemDescription returns the old "item_description" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldItemDescription returns the old "item_description" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []baseFeeds.FeedItem, err error) {
+func (m *FollowListsMutation) OldItemDescription(ctx context.Context) (v []baseFeeds.FeedItem, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldItemDescription is only allowed on UpdateOne operations")
 	}
@@ -2545,12 +2545,12 @@ func (m *FollowListMutation) OldItemDescription(ctx context.Context) (v []baseFe
 }
 
 // AppendItemDescription adds bfi to the "item_description" field.
-func (m *FollowListMutation) AppendItemDescription(bfi []baseFeeds.FeedItem) {
+func (m *FollowListsMutation) AppendItemDescription(bfi []baseFeeds.FeedItem) {
 	m.appenditem_description = append(m.appenditem_description, bfi...)
 }
 
 // AppendedItemDescription returns the list of values that were appended to the "item_description" field in this mutation.
-func (m *FollowListMutation) AppendedItemDescription() ([]baseFeeds.FeedItem, bool) {
+func (m *FollowListsMutation) AppendedItemDescription() ([]baseFeeds.FeedItem, bool) {
 	if len(m.appenditem_description) == 0 {
 		return nil, false
 	}
@@ -2558,18 +2558,18 @@ func (m *FollowListMutation) AppendedItemDescription() ([]baseFeeds.FeedItem, bo
 }
 
 // ResetItemDescription resets all changes to the "item_description" field.
-func (m *FollowListMutation) ResetItemDescription() {
+func (m *FollowListsMutation) ResetItemDescription() {
 	m.item_description = nil
 	m.appenditem_description = nil
 }
 
 // SetLanguage sets the "language" field.
-func (m *FollowListMutation) SetLanguage(s string) {
+func (m *FollowListsMutation) SetLanguage(s string) {
 	m.language = &s
 }
 
 // Language returns the value of the "language" field in the mutation.
-func (m *FollowListMutation) Language() (r string, exists bool) {
+func (m *FollowListsMutation) Language() (r string, exists bool) {
 	v := m.language
 	if v == nil {
 		return
@@ -2577,10 +2577,10 @@ func (m *FollowListMutation) Language() (r string, exists bool) {
 	return *v, true
 }
 
-// OldLanguage returns the old "language" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldLanguage returns the old "language" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldLanguage(ctx context.Context) (v string, err error) {
+func (m *FollowListsMutation) OldLanguage(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLanguage is only allowed on UpdateOne operations")
 	}
@@ -2595,17 +2595,17 @@ func (m *FollowListMutation) OldLanguage(ctx context.Context) (v string, err err
 }
 
 // ResetLanguage resets all changes to the "language" field.
-func (m *FollowListMutation) ResetLanguage() {
+func (m *FollowListsMutation) ResetLanguage() {
 	m.language = nil
 }
 
 // SetDtCreated sets the "dt_created" field.
-func (m *FollowListMutation) SetDtCreated(t time.Time) {
+func (m *FollowListsMutation) SetDtCreated(t time.Time) {
 	m.dt_created = &t
 }
 
 // DtCreated returns the value of the "dt_created" field in the mutation.
-func (m *FollowListMutation) DtCreated() (r time.Time, exists bool) {
+func (m *FollowListsMutation) DtCreated() (r time.Time, exists bool) {
 	v := m.dt_created
 	if v == nil {
 		return
@@ -2613,10 +2613,10 @@ func (m *FollowListMutation) DtCreated() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldDtCreated returns the old "dt_created" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldDtCreated returns the old "dt_created" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldDtCreated(ctx context.Context) (v time.Time, err error) {
+func (m *FollowListsMutation) OldDtCreated(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDtCreated is only allowed on UpdateOne operations")
 	}
@@ -2631,30 +2631,30 @@ func (m *FollowListMutation) OldDtCreated(ctx context.Context) (v time.Time, err
 }
 
 // ClearDtCreated clears the value of the "dt_created" field.
-func (m *FollowListMutation) ClearDtCreated() {
+func (m *FollowListsMutation) ClearDtCreated() {
 	m.dt_created = nil
-	m.clearedFields[followlist.FieldDtCreated] = struct{}{}
+	m.clearedFields[followlists.FieldDtCreated] = struct{}{}
 }
 
 // DtCreatedCleared returns if the "dt_created" field was cleared in this mutation.
-func (m *FollowListMutation) DtCreatedCleared() bool {
-	_, ok := m.clearedFields[followlist.FieldDtCreated]
+func (m *FollowListsMutation) DtCreatedCleared() bool {
+	_, ok := m.clearedFields[followlists.FieldDtCreated]
 	return ok
 }
 
 // ResetDtCreated resets all changes to the "dt_created" field.
-func (m *FollowListMutation) ResetDtCreated() {
+func (m *FollowListsMutation) ResetDtCreated() {
 	m.dt_created = nil
-	delete(m.clearedFields, followlist.FieldDtCreated)
+	delete(m.clearedFields, followlists.FieldDtCreated)
 }
 
 // SetDtUpdated sets the "dt_updated" field.
-func (m *FollowListMutation) SetDtUpdated(t time.Time) {
+func (m *FollowListsMutation) SetDtUpdated(t time.Time) {
 	m.dt_updated = &t
 }
 
 // DtUpdated returns the value of the "dt_updated" field in the mutation.
-func (m *FollowListMutation) DtUpdated() (r time.Time, exists bool) {
+func (m *FollowListsMutation) DtUpdated() (r time.Time, exists bool) {
 	v := m.dt_updated
 	if v == nil {
 		return
@@ -2662,10 +2662,10 @@ func (m *FollowListMutation) DtUpdated() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldDtUpdated returns the old "dt_updated" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldDtUpdated returns the old "dt_updated" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldDtUpdated(ctx context.Context) (v time.Time, err error) {
+func (m *FollowListsMutation) OldDtUpdated(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDtUpdated is only allowed on UpdateOne operations")
 	}
@@ -2680,30 +2680,30 @@ func (m *FollowListMutation) OldDtUpdated(ctx context.Context) (v time.Time, err
 }
 
 // ClearDtUpdated clears the value of the "dt_updated" field.
-func (m *FollowListMutation) ClearDtUpdated() {
+func (m *FollowListsMutation) ClearDtUpdated() {
 	m.dt_updated = nil
-	m.clearedFields[followlist.FieldDtUpdated] = struct{}{}
+	m.clearedFields[followlists.FieldDtUpdated] = struct{}{}
 }
 
 // DtUpdatedCleared returns if the "dt_updated" field was cleared in this mutation.
-func (m *FollowListMutation) DtUpdatedCleared() bool {
-	_, ok := m.clearedFields[followlist.FieldDtUpdated]
+func (m *FollowListsMutation) DtUpdatedCleared() bool {
+	_, ok := m.clearedFields[followlists.FieldDtUpdated]
 	return ok
 }
 
 // ResetDtUpdated resets all changes to the "dt_updated" field.
-func (m *FollowListMutation) ResetDtUpdated() {
+func (m *FollowListsMutation) ResetDtUpdated() {
 	m.dt_updated = nil
-	delete(m.clearedFields, followlist.FieldDtUpdated)
+	delete(m.clearedFields, followlists.FieldDtUpdated)
 }
 
 // SetDtLastInserted sets the "dt_last_inserted" field.
-func (m *FollowListMutation) SetDtLastInserted(t time.Time) {
+func (m *FollowListsMutation) SetDtLastInserted(t time.Time) {
 	m.dt_last_inserted = &t
 }
 
 // DtLastInserted returns the value of the "dt_last_inserted" field in the mutation.
-func (m *FollowListMutation) DtLastInserted() (r time.Time, exists bool) {
+func (m *FollowListsMutation) DtLastInserted() (r time.Time, exists bool) {
 	v := m.dt_last_inserted
 	if v == nil {
 		return
@@ -2711,10 +2711,10 @@ func (m *FollowListMutation) DtLastInserted() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldDtLastInserted returns the old "dt_last_inserted" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldDtLastInserted returns the old "dt_last_inserted" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldDtLastInserted(ctx context.Context) (v time.Time, err error) {
+func (m *FollowListsMutation) OldDtLastInserted(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDtLastInserted is only allowed on UpdateOne operations")
 	}
@@ -2729,31 +2729,31 @@ func (m *FollowListMutation) OldDtLastInserted(ctx context.Context) (v time.Time
 }
 
 // ClearDtLastInserted clears the value of the "dt_last_inserted" field.
-func (m *FollowListMutation) ClearDtLastInserted() {
+func (m *FollowListsMutation) ClearDtLastInserted() {
 	m.dt_last_inserted = nil
-	m.clearedFields[followlist.FieldDtLastInserted] = struct{}{}
+	m.clearedFields[followlists.FieldDtLastInserted] = struct{}{}
 }
 
 // DtLastInsertedCleared returns if the "dt_last_inserted" field was cleared in this mutation.
-func (m *FollowListMutation) DtLastInsertedCleared() bool {
-	_, ok := m.clearedFields[followlist.FieldDtLastInserted]
+func (m *FollowListsMutation) DtLastInsertedCleared() bool {
+	_, ok := m.clearedFields[followlists.FieldDtLastInserted]
 	return ok
 }
 
 // ResetDtLastInserted resets all changes to the "dt_last_inserted" field.
-func (m *FollowListMutation) ResetDtLastInserted() {
+func (m *FollowListsMutation) ResetDtLastInserted() {
 	m.dt_last_inserted = nil
-	delete(m.clearedFields, followlist.FieldDtLastInserted)
+	delete(m.clearedFields, followlists.FieldDtLastInserted)
 }
 
 // SetFeedCategory sets the "feed_category" field.
-func (m *FollowListMutation) SetFeedCategory(i int) {
+func (m *FollowListsMutation) SetFeedCategory(i int) {
 	m.feed_category = &i
 	m.addfeed_category = nil
 }
 
 // FeedCategory returns the value of the "feed_category" field in the mutation.
-func (m *FollowListMutation) FeedCategory() (r int, exists bool) {
+func (m *FollowListsMutation) FeedCategory() (r int, exists bool) {
 	v := m.feed_category
 	if v == nil {
 		return
@@ -2761,10 +2761,10 @@ func (m *FollowListMutation) FeedCategory() (r int, exists bool) {
 	return *v, true
 }
 
-// OldFeedCategory returns the old "feed_category" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldFeedCategory returns the old "feed_category" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldFeedCategory(ctx context.Context) (v int, err error) {
+func (m *FollowListsMutation) OldFeedCategory(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFeedCategory is only allowed on UpdateOne operations")
 	}
@@ -2779,7 +2779,7 @@ func (m *FollowListMutation) OldFeedCategory(ctx context.Context) (v int, err er
 }
 
 // AddFeedCategory adds i to the "feed_category" field.
-func (m *FollowListMutation) AddFeedCategory(i int) {
+func (m *FollowListsMutation) AddFeedCategory(i int) {
 	if m.addfeed_category != nil {
 		*m.addfeed_category += i
 	} else {
@@ -2788,7 +2788,7 @@ func (m *FollowListMutation) AddFeedCategory(i int) {
 }
 
 // AddedFeedCategory returns the value that was added to the "feed_category" field in this mutation.
-func (m *FollowListMutation) AddedFeedCategory() (r int, exists bool) {
+func (m *FollowListsMutation) AddedFeedCategory() (r int, exists bool) {
 	v := m.addfeed_category
 	if v == nil {
 		return
@@ -2797,18 +2797,18 @@ func (m *FollowListMutation) AddedFeedCategory() (r int, exists bool) {
 }
 
 // ResetFeedCategory resets all changes to the "feed_category" field.
-func (m *FollowListMutation) ResetFeedCategory() {
+func (m *FollowListsMutation) ResetFeedCategory() {
 	m.feed_category = nil
 	m.addfeed_category = nil
 }
 
 // SetIsActive sets the "is_active" field.
-func (m *FollowListMutation) SetIsActive(b bool) {
+func (m *FollowListsMutation) SetIsActive(b bool) {
 	m.is_active = &b
 }
 
 // IsActive returns the value of the "is_active" field in the mutation.
-func (m *FollowListMutation) IsActive() (r bool, exists bool) {
+func (m *FollowListsMutation) IsActive() (r bool, exists bool) {
 	v := m.is_active
 	if v == nil {
 		return
@@ -2816,10 +2816,10 @@ func (m *FollowListMutation) IsActive() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldIsActive returns the old "is_active" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldIsActive returns the old "is_active" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldIsActive(ctx context.Context) (v bool, err error) {
+func (m *FollowListsMutation) OldIsActive(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsActive is only allowed on UpdateOne operations")
 	}
@@ -2834,17 +2834,17 @@ func (m *FollowListMutation) OldIsActive(ctx context.Context) (v bool, err error
 }
 
 // ResetIsActive resets all changes to the "is_active" field.
-func (m *FollowListMutation) ResetIsActive() {
+func (m *FollowListsMutation) ResetIsActive() {
 	m.is_active = nil
 }
 
 // SetIsFavorite sets the "is_favorite" field.
-func (m *FollowListMutation) SetIsFavorite(b bool) {
+func (m *FollowListsMutation) SetIsFavorite(b bool) {
 	m.is_favorite = &b
 }
 
 // IsFavorite returns the value of the "is_favorite" field in the mutation.
-func (m *FollowListMutation) IsFavorite() (r bool, exists bool) {
+func (m *FollowListsMutation) IsFavorite() (r bool, exists bool) {
 	v := m.is_favorite
 	if v == nil {
 		return
@@ -2852,10 +2852,10 @@ func (m *FollowListMutation) IsFavorite() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldIsFavorite returns the old "is_favorite" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldIsFavorite returns the old "is_favorite" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldIsFavorite(ctx context.Context) (v bool, err error) {
+func (m *FollowListsMutation) OldIsFavorite(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsFavorite is only allowed on UpdateOne operations")
 	}
@@ -2870,17 +2870,17 @@ func (m *FollowListMutation) OldIsFavorite(ctx context.Context) (v bool, err err
 }
 
 // ResetIsFavorite resets all changes to the "is_favorite" field.
-func (m *FollowListMutation) ResetIsFavorite() {
+func (m *FollowListsMutation) ResetIsFavorite() {
 	m.is_favorite = nil
 }
 
 // SetIsRead sets the "is_read" field.
-func (m *FollowListMutation) SetIsRead(b bool) {
+func (m *FollowListsMutation) SetIsRead(b bool) {
 	m.is_read = &b
 }
 
 // IsRead returns the value of the "is_read" field in the mutation.
-func (m *FollowListMutation) IsRead() (r bool, exists bool) {
+func (m *FollowListsMutation) IsRead() (r bool, exists bool) {
 	v := m.is_read
 	if v == nil {
 		return
@@ -2888,10 +2888,10 @@ func (m *FollowListMutation) IsRead() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldIsRead returns the old "is_read" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldIsRead returns the old "is_read" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldIsRead(ctx context.Context) (v bool, err error) {
+func (m *FollowListsMutation) OldIsRead(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsRead is only allowed on UpdateOne operations")
 	}
@@ -2906,17 +2906,17 @@ func (m *FollowListMutation) OldIsRead(ctx context.Context) (v bool, err error) 
 }
 
 // ResetIsRead resets all changes to the "is_read" field.
-func (m *FollowListMutation) ResetIsRead() {
+func (m *FollowListsMutation) ResetIsRead() {
 	m.is_read = nil
 }
 
 // SetIsUpdated sets the "is_updated" field.
-func (m *FollowListMutation) SetIsUpdated(b bool) {
+func (m *FollowListsMutation) SetIsUpdated(b bool) {
 	m.is_updated = &b
 }
 
 // IsUpdated returns the value of the "is_updated" field in the mutation.
-func (m *FollowListMutation) IsUpdated() (r bool, exists bool) {
+func (m *FollowListsMutation) IsUpdated() (r bool, exists bool) {
 	v := m.is_updated
 	if v == nil {
 		return
@@ -2924,10 +2924,10 @@ func (m *FollowListMutation) IsUpdated() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldIsUpdated returns the old "is_updated" field's value of the FollowList entity.
-// If the FollowList object wasn't provided to the builder, the object is fetched from the database.
+// OldIsUpdated returns the old "is_updated" field's value of the FollowLists entity.
+// If the FollowLists object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FollowListMutation) OldIsUpdated(ctx context.Context) (v bool, err error) {
+func (m *FollowListsMutation) OldIsUpdated(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsUpdated is only allowed on UpdateOne operations")
 	}
@@ -2942,19 +2942,19 @@ func (m *FollowListMutation) OldIsUpdated(ctx context.Context) (v bool, err erro
 }
 
 // ResetIsUpdated resets all changes to the "is_updated" field.
-func (m *FollowListMutation) ResetIsUpdated() {
+func (m *FollowListsMutation) ResetIsUpdated() {
 	m.is_updated = nil
 }
 
-// Where appends a list predicates to the FollowListMutation builder.
-func (m *FollowListMutation) Where(ps ...predicate.FollowList) {
+// Where appends a list predicates to the FollowListsMutation builder.
+func (m *FollowListsMutation) Where(ps ...predicate.FollowLists) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the FollowListMutation builder. Using this method,
+// WhereP appends storage-level predicates to the FollowListsMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *FollowListMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.FollowList, len(ps))
+func (m *FollowListsMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FollowLists, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -2962,78 +2962,78 @@ func (m *FollowListMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *FollowListMutation) Op() Op {
+func (m *FollowListsMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *FollowListMutation) SetOp(op Op) {
+func (m *FollowListsMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (FollowList).
-func (m *FollowListMutation) Type() string {
+// Type returns the node type of this mutation (FollowLists).
+func (m *FollowListsMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *FollowListMutation) Fields() []string {
+func (m *FollowListsMutation) Fields() []string {
 	fields := make([]string, 0, 18)
 	if m.uuid != nil {
-		fields = append(fields, followlist.FieldUUID)
+		fields = append(fields, followlists.FieldUUID)
 	}
 	if m.xml_version != nil {
-		fields = append(fields, followlist.FieldXMLVersion)
+		fields = append(fields, followlists.FieldXMLVersion)
 	}
 	if m.rss_version != nil {
-		fields = append(fields, followlist.FieldRssVersion)
+		fields = append(fields, followlists.FieldRssVersion)
 	}
 	if m.url != nil {
-		fields = append(fields, followlist.FieldURL)
+		fields = append(fields, followlists.FieldURL)
 	}
 	if m.title != nil {
-		fields = append(fields, followlist.FieldTitle)
+		fields = append(fields, followlists.FieldTitle)
 	}
 	if m.description != nil {
-		fields = append(fields, followlist.FieldDescription)
+		fields = append(fields, followlists.FieldDescription)
 	}
 	if m.link != nil {
-		fields = append(fields, followlist.FieldLink)
+		fields = append(fields, followlists.FieldLink)
 	}
 	if m.links != nil {
-		fields = append(fields, followlist.FieldLinks)
+		fields = append(fields, followlists.FieldLinks)
 	}
 	if m.item_description != nil {
-		fields = append(fields, followlist.FieldItemDescription)
+		fields = append(fields, followlists.FieldItemDescription)
 	}
 	if m.language != nil {
-		fields = append(fields, followlist.FieldLanguage)
+		fields = append(fields, followlists.FieldLanguage)
 	}
 	if m.dt_created != nil {
-		fields = append(fields, followlist.FieldDtCreated)
+		fields = append(fields, followlists.FieldDtCreated)
 	}
 	if m.dt_updated != nil {
-		fields = append(fields, followlist.FieldDtUpdated)
+		fields = append(fields, followlists.FieldDtUpdated)
 	}
 	if m.dt_last_inserted != nil {
-		fields = append(fields, followlist.FieldDtLastInserted)
+		fields = append(fields, followlists.FieldDtLastInserted)
 	}
 	if m.feed_category != nil {
-		fields = append(fields, followlist.FieldFeedCategory)
+		fields = append(fields, followlists.FieldFeedCategory)
 	}
 	if m.is_active != nil {
-		fields = append(fields, followlist.FieldIsActive)
+		fields = append(fields, followlists.FieldIsActive)
 	}
 	if m.is_favorite != nil {
-		fields = append(fields, followlist.FieldIsFavorite)
+		fields = append(fields, followlists.FieldIsFavorite)
 	}
 	if m.is_read != nil {
-		fields = append(fields, followlist.FieldIsRead)
+		fields = append(fields, followlists.FieldIsRead)
 	}
 	if m.is_updated != nil {
-		fields = append(fields, followlist.FieldIsUpdated)
+		fields = append(fields, followlists.FieldIsUpdated)
 	}
 	return fields
 }
@@ -3041,43 +3041,43 @@ func (m *FollowListMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *FollowListMutation) Field(name string) (ent.Value, bool) {
+func (m *FollowListsMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case followlist.FieldUUID:
+	case followlists.FieldUUID:
 		return m.UUID()
-	case followlist.FieldXMLVersion:
+	case followlists.FieldXMLVersion:
 		return m.XMLVersion()
-	case followlist.FieldRssVersion:
+	case followlists.FieldRssVersion:
 		return m.RssVersion()
-	case followlist.FieldURL:
+	case followlists.FieldURL:
 		return m.URL()
-	case followlist.FieldTitle:
+	case followlists.FieldTitle:
 		return m.Title()
-	case followlist.FieldDescription:
+	case followlists.FieldDescription:
 		return m.Description()
-	case followlist.FieldLink:
+	case followlists.FieldLink:
 		return m.Link()
-	case followlist.FieldLinks:
+	case followlists.FieldLinks:
 		return m.Links()
-	case followlist.FieldItemDescription:
+	case followlists.FieldItemDescription:
 		return m.ItemDescription()
-	case followlist.FieldLanguage:
+	case followlists.FieldLanguage:
 		return m.Language()
-	case followlist.FieldDtCreated:
+	case followlists.FieldDtCreated:
 		return m.DtCreated()
-	case followlist.FieldDtUpdated:
+	case followlists.FieldDtUpdated:
 		return m.DtUpdated()
-	case followlist.FieldDtLastInserted:
+	case followlists.FieldDtLastInserted:
 		return m.DtLastInserted()
-	case followlist.FieldFeedCategory:
+	case followlists.FieldFeedCategory:
 		return m.FeedCategory()
-	case followlist.FieldIsActive:
+	case followlists.FieldIsActive:
 		return m.IsActive()
-	case followlist.FieldIsFavorite:
+	case followlists.FieldIsFavorite:
 		return m.IsFavorite()
-	case followlist.FieldIsRead:
+	case followlists.FieldIsRead:
 		return m.IsRead()
-	case followlist.FieldIsUpdated:
+	case followlists.FieldIsUpdated:
 		return m.IsUpdated()
 	}
 	return nil, false
@@ -3086,173 +3086,173 @@ func (m *FollowListMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *FollowListMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *FollowListsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case followlist.FieldUUID:
+	case followlists.FieldUUID:
 		return m.OldUUID(ctx)
-	case followlist.FieldXMLVersion:
+	case followlists.FieldXMLVersion:
 		return m.OldXMLVersion(ctx)
-	case followlist.FieldRssVersion:
+	case followlists.FieldRssVersion:
 		return m.OldRssVersion(ctx)
-	case followlist.FieldURL:
+	case followlists.FieldURL:
 		return m.OldURL(ctx)
-	case followlist.FieldTitle:
+	case followlists.FieldTitle:
 		return m.OldTitle(ctx)
-	case followlist.FieldDescription:
+	case followlists.FieldDescription:
 		return m.OldDescription(ctx)
-	case followlist.FieldLink:
+	case followlists.FieldLink:
 		return m.OldLink(ctx)
-	case followlist.FieldLinks:
+	case followlists.FieldLinks:
 		return m.OldLinks(ctx)
-	case followlist.FieldItemDescription:
+	case followlists.FieldItemDescription:
 		return m.OldItemDescription(ctx)
-	case followlist.FieldLanguage:
+	case followlists.FieldLanguage:
 		return m.OldLanguage(ctx)
-	case followlist.FieldDtCreated:
+	case followlists.FieldDtCreated:
 		return m.OldDtCreated(ctx)
-	case followlist.FieldDtUpdated:
+	case followlists.FieldDtUpdated:
 		return m.OldDtUpdated(ctx)
-	case followlist.FieldDtLastInserted:
+	case followlists.FieldDtLastInserted:
 		return m.OldDtLastInserted(ctx)
-	case followlist.FieldFeedCategory:
+	case followlists.FieldFeedCategory:
 		return m.OldFeedCategory(ctx)
-	case followlist.FieldIsActive:
+	case followlists.FieldIsActive:
 		return m.OldIsActive(ctx)
-	case followlist.FieldIsFavorite:
+	case followlists.FieldIsFavorite:
 		return m.OldIsFavorite(ctx)
-	case followlist.FieldIsRead:
+	case followlists.FieldIsRead:
 		return m.OldIsRead(ctx)
-	case followlist.FieldIsUpdated:
+	case followlists.FieldIsUpdated:
 		return m.OldIsUpdated(ctx)
 	}
-	return nil, fmt.Errorf("unknown FollowList field %s", name)
+	return nil, fmt.Errorf("unknown FollowLists field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FollowListMutation) SetField(name string, value ent.Value) error {
+func (m *FollowListsMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case followlist.FieldUUID:
+	case followlists.FieldUUID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUUID(v)
 		return nil
-	case followlist.FieldXMLVersion:
+	case followlists.FieldXMLVersion:
 		v, ok := value.(int8)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetXMLVersion(v)
 		return nil
-	case followlist.FieldRssVersion:
+	case followlists.FieldRssVersion:
 		v, ok := value.(int8)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRssVersion(v)
 		return nil
-	case followlist.FieldURL:
+	case followlists.FieldURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetURL(v)
 		return nil
-	case followlist.FieldTitle:
+	case followlists.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTitle(v)
 		return nil
-	case followlist.FieldDescription:
+	case followlists.FieldDescription:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDescription(v)
 		return nil
-	case followlist.FieldLink:
+	case followlists.FieldLink:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLink(v)
 		return nil
-	case followlist.FieldLinks:
+	case followlists.FieldLinks:
 		v, ok := value.(baseFeeds.FeedLink)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLinks(v)
 		return nil
-	case followlist.FieldItemDescription:
+	case followlists.FieldItemDescription:
 		v, ok := value.([]baseFeeds.FeedItem)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetItemDescription(v)
 		return nil
-	case followlist.FieldLanguage:
+	case followlists.FieldLanguage:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLanguage(v)
 		return nil
-	case followlist.FieldDtCreated:
+	case followlists.FieldDtCreated:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDtCreated(v)
 		return nil
-	case followlist.FieldDtUpdated:
+	case followlists.FieldDtUpdated:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDtUpdated(v)
 		return nil
-	case followlist.FieldDtLastInserted:
+	case followlists.FieldDtLastInserted:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDtLastInserted(v)
 		return nil
-	case followlist.FieldFeedCategory:
+	case followlists.FieldFeedCategory:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFeedCategory(v)
 		return nil
-	case followlist.FieldIsActive:
+	case followlists.FieldIsActive:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIsActive(v)
 		return nil
-	case followlist.FieldIsFavorite:
+	case followlists.FieldIsFavorite:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIsFavorite(v)
 		return nil
-	case followlist.FieldIsRead:
+	case followlists.FieldIsRead:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIsRead(v)
 		return nil
-	case followlist.FieldIsUpdated:
+	case followlists.FieldIsUpdated:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -3260,21 +3260,21 @@ func (m *FollowListMutation) SetField(name string, value ent.Value) error {
 		m.SetIsUpdated(v)
 		return nil
 	}
-	return fmt.Errorf("unknown FollowList field %s", name)
+	return fmt.Errorf("unknown FollowLists field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *FollowListMutation) AddedFields() []string {
+func (m *FollowListsMutation) AddedFields() []string {
 	var fields []string
 	if m.addxml_version != nil {
-		fields = append(fields, followlist.FieldXMLVersion)
+		fields = append(fields, followlists.FieldXMLVersion)
 	}
 	if m.addrss_version != nil {
-		fields = append(fields, followlist.FieldRssVersion)
+		fields = append(fields, followlists.FieldRssVersion)
 	}
 	if m.addfeed_category != nil {
-		fields = append(fields, followlist.FieldFeedCategory)
+		fields = append(fields, followlists.FieldFeedCategory)
 	}
 	return fields
 }
@@ -3282,13 +3282,13 @@ func (m *FollowListMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *FollowListMutation) AddedField(name string) (ent.Value, bool) {
+func (m *FollowListsMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case followlist.FieldXMLVersion:
+	case followlists.FieldXMLVersion:
 		return m.AddedXMLVersion()
-	case followlist.FieldRssVersion:
+	case followlists.FieldRssVersion:
 		return m.AddedRssVersion()
-	case followlist.FieldFeedCategory:
+	case followlists.FieldFeedCategory:
 		return m.AddedFeedCategory()
 	}
 	return nil, false
@@ -3297,23 +3297,23 @@ func (m *FollowListMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FollowListMutation) AddField(name string, value ent.Value) error {
+func (m *FollowListsMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case followlist.FieldXMLVersion:
+	case followlists.FieldXMLVersion:
 		v, ok := value.(int8)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddXMLVersion(v)
 		return nil
-	case followlist.FieldRssVersion:
+	case followlists.FieldRssVersion:
 		v, ok := value.(int8)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRssVersion(v)
 		return nil
-	case followlist.FieldFeedCategory:
+	case followlists.FieldFeedCategory:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -3321,157 +3321,157 @@ func (m *FollowListMutation) AddField(name string, value ent.Value) error {
 		m.AddFeedCategory(v)
 		return nil
 	}
-	return fmt.Errorf("unknown FollowList numeric field %s", name)
+	return fmt.Errorf("unknown FollowLists numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *FollowListMutation) ClearedFields() []string {
+func (m *FollowListsMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(followlist.FieldDtCreated) {
-		fields = append(fields, followlist.FieldDtCreated)
+	if m.FieldCleared(followlists.FieldDtCreated) {
+		fields = append(fields, followlists.FieldDtCreated)
 	}
-	if m.FieldCleared(followlist.FieldDtUpdated) {
-		fields = append(fields, followlist.FieldDtUpdated)
+	if m.FieldCleared(followlists.FieldDtUpdated) {
+		fields = append(fields, followlists.FieldDtUpdated)
 	}
-	if m.FieldCleared(followlist.FieldDtLastInserted) {
-		fields = append(fields, followlist.FieldDtLastInserted)
+	if m.FieldCleared(followlists.FieldDtLastInserted) {
+		fields = append(fields, followlists.FieldDtLastInserted)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *FollowListMutation) FieldCleared(name string) bool {
+func (m *FollowListsMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *FollowListMutation) ClearField(name string) error {
+func (m *FollowListsMutation) ClearField(name string) error {
 	switch name {
-	case followlist.FieldDtCreated:
+	case followlists.FieldDtCreated:
 		m.ClearDtCreated()
 		return nil
-	case followlist.FieldDtUpdated:
+	case followlists.FieldDtUpdated:
 		m.ClearDtUpdated()
 		return nil
-	case followlist.FieldDtLastInserted:
+	case followlists.FieldDtLastInserted:
 		m.ClearDtLastInserted()
 		return nil
 	}
-	return fmt.Errorf("unknown FollowList nullable field %s", name)
+	return fmt.Errorf("unknown FollowLists nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *FollowListMutation) ResetField(name string) error {
+func (m *FollowListsMutation) ResetField(name string) error {
 	switch name {
-	case followlist.FieldUUID:
+	case followlists.FieldUUID:
 		m.ResetUUID()
 		return nil
-	case followlist.FieldXMLVersion:
+	case followlists.FieldXMLVersion:
 		m.ResetXMLVersion()
 		return nil
-	case followlist.FieldRssVersion:
+	case followlists.FieldRssVersion:
 		m.ResetRssVersion()
 		return nil
-	case followlist.FieldURL:
+	case followlists.FieldURL:
 		m.ResetURL()
 		return nil
-	case followlist.FieldTitle:
+	case followlists.FieldTitle:
 		m.ResetTitle()
 		return nil
-	case followlist.FieldDescription:
+	case followlists.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case followlist.FieldLink:
+	case followlists.FieldLink:
 		m.ResetLink()
 		return nil
-	case followlist.FieldLinks:
+	case followlists.FieldLinks:
 		m.ResetLinks()
 		return nil
-	case followlist.FieldItemDescription:
+	case followlists.FieldItemDescription:
 		m.ResetItemDescription()
 		return nil
-	case followlist.FieldLanguage:
+	case followlists.FieldLanguage:
 		m.ResetLanguage()
 		return nil
-	case followlist.FieldDtCreated:
+	case followlists.FieldDtCreated:
 		m.ResetDtCreated()
 		return nil
-	case followlist.FieldDtUpdated:
+	case followlists.FieldDtUpdated:
 		m.ResetDtUpdated()
 		return nil
-	case followlist.FieldDtLastInserted:
+	case followlists.FieldDtLastInserted:
 		m.ResetDtLastInserted()
 		return nil
-	case followlist.FieldFeedCategory:
+	case followlists.FieldFeedCategory:
 		m.ResetFeedCategory()
 		return nil
-	case followlist.FieldIsActive:
+	case followlists.FieldIsActive:
 		m.ResetIsActive()
 		return nil
-	case followlist.FieldIsFavorite:
+	case followlists.FieldIsFavorite:
 		m.ResetIsFavorite()
 		return nil
-	case followlist.FieldIsRead:
+	case followlists.FieldIsRead:
 		m.ResetIsRead()
 		return nil
-	case followlist.FieldIsUpdated:
+	case followlists.FieldIsUpdated:
 		m.ResetIsUpdated()
 		return nil
 	}
-	return fmt.Errorf("unknown FollowList field %s", name)
+	return fmt.Errorf("unknown FollowLists field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *FollowListMutation) AddedEdges() []string {
+func (m *FollowListsMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *FollowListMutation) AddedIDs(name string) []ent.Value {
+func (m *FollowListsMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *FollowListMutation) RemovedEdges() []string {
+func (m *FollowListsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *FollowListMutation) RemovedIDs(name string) []ent.Value {
+func (m *FollowListsMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *FollowListMutation) ClearedEdges() []string {
+func (m *FollowListsMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *FollowListMutation) EdgeCleared(name string) bool {
+func (m *FollowListsMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *FollowListMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown FollowList unique edge %s", name)
+func (m *FollowListsMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown FollowLists unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *FollowListMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown FollowList edge %s", name)
+func (m *FollowListsMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown FollowLists edge %s", name)
 }
 
 // UsersMutation represents an operation that mutates the Users nodes in the graph.

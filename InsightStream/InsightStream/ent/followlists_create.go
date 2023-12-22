@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"insightstream/domain/baseFeeds"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -15,21 +15,21 @@ import (
 	"github.com/google/uuid"
 )
 
-// FollowListCreate is the builder for creating a FollowList entity.
-type FollowListCreate struct {
+// FollowListsCreate is the builder for creating a FollowLists entity.
+type FollowListsCreate struct {
 	config
-	mutation *FollowListMutation
+	mutation *FollowListsMutation
 	hooks    []Hook
 }
 
 // SetUUID sets the "uuid" field.
-func (flc *FollowListCreate) SetUUID(u uuid.UUID) *FollowListCreate {
+func (flc *FollowListsCreate) SetUUID(u uuid.UUID) *FollowListsCreate {
 	flc.mutation.SetUUID(u)
 	return flc
 }
 
 // SetNillableUUID sets the "uuid" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableUUID(u *uuid.UUID) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableUUID(u *uuid.UUID) *FollowListsCreate {
 	if u != nil {
 		flc.SetUUID(*u)
 	}
@@ -37,13 +37,13 @@ func (flc *FollowListCreate) SetNillableUUID(u *uuid.UUID) *FollowListCreate {
 }
 
 // SetXMLVersion sets the "xml_version" field.
-func (flc *FollowListCreate) SetXMLVersion(i int8) *FollowListCreate {
+func (flc *FollowListsCreate) SetXMLVersion(i int8) *FollowListsCreate {
 	flc.mutation.SetXMLVersion(i)
 	return flc
 }
 
 // SetNillableXMLVersion sets the "xml_version" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableXMLVersion(i *int8) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableXMLVersion(i *int8) *FollowListsCreate {
 	if i != nil {
 		flc.SetXMLVersion(*i)
 	}
@@ -51,13 +51,13 @@ func (flc *FollowListCreate) SetNillableXMLVersion(i *int8) *FollowListCreate {
 }
 
 // SetRssVersion sets the "rss_version" field.
-func (flc *FollowListCreate) SetRssVersion(i int8) *FollowListCreate {
+func (flc *FollowListsCreate) SetRssVersion(i int8) *FollowListsCreate {
 	flc.mutation.SetRssVersion(i)
 	return flc
 }
 
 // SetNillableRssVersion sets the "rss_version" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableRssVersion(i *int8) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableRssVersion(i *int8) *FollowListsCreate {
 	if i != nil {
 		flc.SetRssVersion(*i)
 	}
@@ -65,13 +65,13 @@ func (flc *FollowListCreate) SetNillableRssVersion(i *int8) *FollowListCreate {
 }
 
 // SetURL sets the "url" field.
-func (flc *FollowListCreate) SetURL(s string) *FollowListCreate {
+func (flc *FollowListsCreate) SetURL(s string) *FollowListsCreate {
 	flc.mutation.SetURL(s)
 	return flc
 }
 
 // SetNillableURL sets the "url" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableURL(s *string) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableURL(s *string) *FollowListsCreate {
 	if s != nil {
 		flc.SetURL(*s)
 	}
@@ -79,13 +79,13 @@ func (flc *FollowListCreate) SetNillableURL(s *string) *FollowListCreate {
 }
 
 // SetTitle sets the "title" field.
-func (flc *FollowListCreate) SetTitle(s string) *FollowListCreate {
+func (flc *FollowListsCreate) SetTitle(s string) *FollowListsCreate {
 	flc.mutation.SetTitle(s)
 	return flc
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableTitle(s *string) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableTitle(s *string) *FollowListsCreate {
 	if s != nil {
 		flc.SetTitle(*s)
 	}
@@ -93,13 +93,13 @@ func (flc *FollowListCreate) SetNillableTitle(s *string) *FollowListCreate {
 }
 
 // SetDescription sets the "description" field.
-func (flc *FollowListCreate) SetDescription(s string) *FollowListCreate {
+func (flc *FollowListsCreate) SetDescription(s string) *FollowListsCreate {
 	flc.mutation.SetDescription(s)
 	return flc
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableDescription(s *string) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableDescription(s *string) *FollowListsCreate {
 	if s != nil {
 		flc.SetDescription(*s)
 	}
@@ -107,13 +107,13 @@ func (flc *FollowListCreate) SetNillableDescription(s *string) *FollowListCreate
 }
 
 // SetLink sets the "link" field.
-func (flc *FollowListCreate) SetLink(s string) *FollowListCreate {
+func (flc *FollowListsCreate) SetLink(s string) *FollowListsCreate {
 	flc.mutation.SetLink(s)
 	return flc
 }
 
 // SetNillableLink sets the "link" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableLink(s *string) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableLink(s *string) *FollowListsCreate {
 	if s != nil {
 		flc.SetLink(*s)
 	}
@@ -121,13 +121,13 @@ func (flc *FollowListCreate) SetNillableLink(s *string) *FollowListCreate {
 }
 
 // SetLinks sets the "links" field.
-func (flc *FollowListCreate) SetLinks(bfl baseFeeds.FeedLink) *FollowListCreate {
+func (flc *FollowListsCreate) SetLinks(bfl baseFeeds.FeedLink) *FollowListsCreate {
 	flc.mutation.SetLinks(bfl)
 	return flc
 }
 
 // SetNillableLinks sets the "links" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableLinks(bfl *baseFeeds.FeedLink) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableLinks(bfl *baseFeeds.FeedLink) *FollowListsCreate {
 	if bfl != nil {
 		flc.SetLinks(*bfl)
 	}
@@ -135,19 +135,19 @@ func (flc *FollowListCreate) SetNillableLinks(bfl *baseFeeds.FeedLink) *FollowLi
 }
 
 // SetItemDescription sets the "item_description" field.
-func (flc *FollowListCreate) SetItemDescription(bfi []baseFeeds.FeedItem) *FollowListCreate {
+func (flc *FollowListsCreate) SetItemDescription(bfi []baseFeeds.FeedItem) *FollowListsCreate {
 	flc.mutation.SetItemDescription(bfi)
 	return flc
 }
 
 // SetLanguage sets the "language" field.
-func (flc *FollowListCreate) SetLanguage(s string) *FollowListCreate {
+func (flc *FollowListsCreate) SetLanguage(s string) *FollowListsCreate {
 	flc.mutation.SetLanguage(s)
 	return flc
 }
 
 // SetNillableLanguage sets the "language" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableLanguage(s *string) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableLanguage(s *string) *FollowListsCreate {
 	if s != nil {
 		flc.SetLanguage(*s)
 	}
@@ -155,13 +155,13 @@ func (flc *FollowListCreate) SetNillableLanguage(s *string) *FollowListCreate {
 }
 
 // SetDtCreated sets the "dt_created" field.
-func (flc *FollowListCreate) SetDtCreated(t time.Time) *FollowListCreate {
+func (flc *FollowListsCreate) SetDtCreated(t time.Time) *FollowListsCreate {
 	flc.mutation.SetDtCreated(t)
 	return flc
 }
 
 // SetNillableDtCreated sets the "dt_created" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableDtCreated(t *time.Time) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableDtCreated(t *time.Time) *FollowListsCreate {
 	if t != nil {
 		flc.SetDtCreated(*t)
 	}
@@ -169,13 +169,13 @@ func (flc *FollowListCreate) SetNillableDtCreated(t *time.Time) *FollowListCreat
 }
 
 // SetDtUpdated sets the "dt_updated" field.
-func (flc *FollowListCreate) SetDtUpdated(t time.Time) *FollowListCreate {
+func (flc *FollowListsCreate) SetDtUpdated(t time.Time) *FollowListsCreate {
 	flc.mutation.SetDtUpdated(t)
 	return flc
 }
 
 // SetNillableDtUpdated sets the "dt_updated" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableDtUpdated(t *time.Time) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableDtUpdated(t *time.Time) *FollowListsCreate {
 	if t != nil {
 		flc.SetDtUpdated(*t)
 	}
@@ -183,13 +183,13 @@ func (flc *FollowListCreate) SetNillableDtUpdated(t *time.Time) *FollowListCreat
 }
 
 // SetDtLastInserted sets the "dt_last_inserted" field.
-func (flc *FollowListCreate) SetDtLastInserted(t time.Time) *FollowListCreate {
+func (flc *FollowListsCreate) SetDtLastInserted(t time.Time) *FollowListsCreate {
 	flc.mutation.SetDtLastInserted(t)
 	return flc
 }
 
 // SetNillableDtLastInserted sets the "dt_last_inserted" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableDtLastInserted(t *time.Time) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableDtLastInserted(t *time.Time) *FollowListsCreate {
 	if t != nil {
 		flc.SetDtLastInserted(*t)
 	}
@@ -197,13 +197,13 @@ func (flc *FollowListCreate) SetNillableDtLastInserted(t *time.Time) *FollowList
 }
 
 // SetFeedCategory sets the "feed_category" field.
-func (flc *FollowListCreate) SetFeedCategory(i int) *FollowListCreate {
+func (flc *FollowListsCreate) SetFeedCategory(i int) *FollowListsCreate {
 	flc.mutation.SetFeedCategory(i)
 	return flc
 }
 
 // SetNillableFeedCategory sets the "feed_category" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableFeedCategory(i *int) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableFeedCategory(i *int) *FollowListsCreate {
 	if i != nil {
 		flc.SetFeedCategory(*i)
 	}
@@ -211,13 +211,13 @@ func (flc *FollowListCreate) SetNillableFeedCategory(i *int) *FollowListCreate {
 }
 
 // SetIsActive sets the "is_active" field.
-func (flc *FollowListCreate) SetIsActive(b bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetIsActive(b bool) *FollowListsCreate {
 	flc.mutation.SetIsActive(b)
 	return flc
 }
 
 // SetNillableIsActive sets the "is_active" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableIsActive(b *bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableIsActive(b *bool) *FollowListsCreate {
 	if b != nil {
 		flc.SetIsActive(*b)
 	}
@@ -225,13 +225,13 @@ func (flc *FollowListCreate) SetNillableIsActive(b *bool) *FollowListCreate {
 }
 
 // SetIsFavorite sets the "is_favorite" field.
-func (flc *FollowListCreate) SetIsFavorite(b bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetIsFavorite(b bool) *FollowListsCreate {
 	flc.mutation.SetIsFavorite(b)
 	return flc
 }
 
 // SetNillableIsFavorite sets the "is_favorite" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableIsFavorite(b *bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableIsFavorite(b *bool) *FollowListsCreate {
 	if b != nil {
 		flc.SetIsFavorite(*b)
 	}
@@ -239,13 +239,13 @@ func (flc *FollowListCreate) SetNillableIsFavorite(b *bool) *FollowListCreate {
 }
 
 // SetIsRead sets the "is_read" field.
-func (flc *FollowListCreate) SetIsRead(b bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetIsRead(b bool) *FollowListsCreate {
 	flc.mutation.SetIsRead(b)
 	return flc
 }
 
 // SetNillableIsRead sets the "is_read" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableIsRead(b *bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableIsRead(b *bool) *FollowListsCreate {
 	if b != nil {
 		flc.SetIsRead(*b)
 	}
@@ -253,32 +253,32 @@ func (flc *FollowListCreate) SetNillableIsRead(b *bool) *FollowListCreate {
 }
 
 // SetIsUpdated sets the "is_updated" field.
-func (flc *FollowListCreate) SetIsUpdated(b bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetIsUpdated(b bool) *FollowListsCreate {
 	flc.mutation.SetIsUpdated(b)
 	return flc
 }
 
 // SetNillableIsUpdated sets the "is_updated" field if the given value is not nil.
-func (flc *FollowListCreate) SetNillableIsUpdated(b *bool) *FollowListCreate {
+func (flc *FollowListsCreate) SetNillableIsUpdated(b *bool) *FollowListsCreate {
 	if b != nil {
 		flc.SetIsUpdated(*b)
 	}
 	return flc
 }
 
-// Mutation returns the FollowListMutation object of the builder.
-func (flc *FollowListCreate) Mutation() *FollowListMutation {
+// Mutation returns the FollowListsMutation object of the builder.
+func (flc *FollowListsCreate) Mutation() *FollowListsMutation {
 	return flc.mutation
 }
 
-// Save creates the FollowList in the database.
-func (flc *FollowListCreate) Save(ctx context.Context) (*FollowList, error) {
+// Save creates the FollowLists in the database.
+func (flc *FollowListsCreate) Save(ctx context.Context) (*FollowLists, error) {
 	flc.defaults()
-	return withHooks[*FollowList, FollowListMutation](ctx, flc.sqlSave, flc.mutation, flc.hooks)
+	return withHooks[*FollowLists, FollowListsMutation](ctx, flc.sqlSave, flc.mutation, flc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (flc *FollowListCreate) SaveX(ctx context.Context) *FollowList {
+func (flc *FollowListsCreate) SaveX(ctx context.Context) *FollowLists {
 	v, err := flc.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -287,151 +287,151 @@ func (flc *FollowListCreate) SaveX(ctx context.Context) *FollowList {
 }
 
 // Exec executes the query.
-func (flc *FollowListCreate) Exec(ctx context.Context) error {
+func (flc *FollowListsCreate) Exec(ctx context.Context) error {
 	_, err := flc.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (flc *FollowListCreate) ExecX(ctx context.Context) {
+func (flc *FollowListsCreate) ExecX(ctx context.Context) {
 	if err := flc.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (flc *FollowListCreate) defaults() {
+func (flc *FollowListsCreate) defaults() {
 	if _, ok := flc.mutation.UUID(); !ok {
-		v := followlist.DefaultUUID()
+		v := followlists.DefaultUUID()
 		flc.mutation.SetUUID(v)
 	}
 	if _, ok := flc.mutation.XMLVersion(); !ok {
-		v := followlist.DefaultXMLVersion
+		v := followlists.DefaultXMLVersion
 		flc.mutation.SetXMLVersion(v)
 	}
 	if _, ok := flc.mutation.RssVersion(); !ok {
-		v := followlist.DefaultRssVersion
+		v := followlists.DefaultRssVersion
 		flc.mutation.SetRssVersion(v)
 	}
 	if _, ok := flc.mutation.URL(); !ok {
-		v := followlist.DefaultURL
+		v := followlists.DefaultURL
 		flc.mutation.SetURL(v)
 	}
 	if _, ok := flc.mutation.Title(); !ok {
-		v := followlist.DefaultTitle
+		v := followlists.DefaultTitle
 		flc.mutation.SetTitle(v)
 	}
 	if _, ok := flc.mutation.Description(); !ok {
-		v := followlist.DefaultDescription
+		v := followlists.DefaultDescription
 		flc.mutation.SetDescription(v)
 	}
 	if _, ok := flc.mutation.Link(); !ok {
-		v := followlist.DefaultLink
+		v := followlists.DefaultLink
 		flc.mutation.SetLink(v)
 	}
 	if _, ok := flc.mutation.Links(); !ok {
-		v := followlist.DefaultLinks
+		v := followlists.DefaultLinks
 		flc.mutation.SetLinks(v)
 	}
 	if _, ok := flc.mutation.Language(); !ok {
-		v := followlist.DefaultLanguage
+		v := followlists.DefaultLanguage
 		flc.mutation.SetLanguage(v)
 	}
 	if _, ok := flc.mutation.DtCreated(); !ok {
-		v := followlist.DefaultDtCreated
+		v := followlists.DefaultDtCreated
 		flc.mutation.SetDtCreated(v)
 	}
 	if _, ok := flc.mutation.DtUpdated(); !ok {
-		v := followlist.DefaultDtUpdated
+		v := followlists.DefaultDtUpdated
 		flc.mutation.SetDtUpdated(v)
 	}
 	if _, ok := flc.mutation.DtLastInserted(); !ok {
-		v := followlist.DefaultDtLastInserted
+		v := followlists.DefaultDtLastInserted
 		flc.mutation.SetDtLastInserted(v)
 	}
 	if _, ok := flc.mutation.FeedCategory(); !ok {
-		v := followlist.DefaultFeedCategory
+		v := followlists.DefaultFeedCategory
 		flc.mutation.SetFeedCategory(v)
 	}
 	if _, ok := flc.mutation.IsActive(); !ok {
-		v := followlist.DefaultIsActive
+		v := followlists.DefaultIsActive
 		flc.mutation.SetIsActive(v)
 	}
 	if _, ok := flc.mutation.IsFavorite(); !ok {
-		v := followlist.DefaultIsFavorite
+		v := followlists.DefaultIsFavorite
 		flc.mutation.SetIsFavorite(v)
 	}
 	if _, ok := flc.mutation.IsRead(); !ok {
-		v := followlist.DefaultIsRead
+		v := followlists.DefaultIsRead
 		flc.mutation.SetIsRead(v)
 	}
 	if _, ok := flc.mutation.IsUpdated(); !ok {
-		v := followlist.DefaultIsUpdated
+		v := followlists.DefaultIsUpdated
 		flc.mutation.SetIsUpdated(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (flc *FollowListCreate) check() error {
+func (flc *FollowListsCreate) check() error {
 	if _, ok := flc.mutation.UUID(); !ok {
-		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "FollowList.uuid"`)}
+		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "FollowLists.uuid"`)}
 	}
 	if _, ok := flc.mutation.XMLVersion(); !ok {
-		return &ValidationError{Name: "xml_version", err: errors.New(`ent: missing required field "FollowList.xml_version"`)}
+		return &ValidationError{Name: "xml_version", err: errors.New(`ent: missing required field "FollowLists.xml_version"`)}
 	}
 	if _, ok := flc.mutation.RssVersion(); !ok {
-		return &ValidationError{Name: "rss_version", err: errors.New(`ent: missing required field "FollowList.rss_version"`)}
+		return &ValidationError{Name: "rss_version", err: errors.New(`ent: missing required field "FollowLists.rss_version"`)}
 	}
 	if _, ok := flc.mutation.URL(); !ok {
-		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "FollowList.url"`)}
+		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "FollowLists.url"`)}
 	}
 	if v, ok := flc.mutation.URL(); ok {
-		if err := followlist.URLValidator(v); err != nil {
-			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "FollowList.url": %w`, err)}
+		if err := followlists.URLValidator(v); err != nil {
+			return &ValidationError{Name: "url", err: fmt.Errorf(`ent: validator failed for field "FollowLists.url": %w`, err)}
 		}
 	}
 	if _, ok := flc.mutation.Title(); !ok {
-		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "FollowList.title"`)}
+		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "FollowLists.title"`)}
 	}
 	if _, ok := flc.mutation.Description(); !ok {
-		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FollowList.description"`)}
+		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FollowLists.description"`)}
 	}
 	if _, ok := flc.mutation.Link(); !ok {
-		return &ValidationError{Name: "link", err: errors.New(`ent: missing required field "FollowList.link"`)}
+		return &ValidationError{Name: "link", err: errors.New(`ent: missing required field "FollowLists.link"`)}
 	}
 	if _, ok := flc.mutation.Links(); !ok {
-		return &ValidationError{Name: "links", err: errors.New(`ent: missing required field "FollowList.links"`)}
+		return &ValidationError{Name: "links", err: errors.New(`ent: missing required field "FollowLists.links"`)}
 	}
 	if _, ok := flc.mutation.ItemDescription(); !ok {
-		return &ValidationError{Name: "item_description", err: errors.New(`ent: missing required field "FollowList.item_description"`)}
+		return &ValidationError{Name: "item_description", err: errors.New(`ent: missing required field "FollowLists.item_description"`)}
 	}
 	if _, ok := flc.mutation.Language(); !ok {
-		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "FollowList.language"`)}
+		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "FollowLists.language"`)}
 	}
 	if v, ok := flc.mutation.Language(); ok {
-		if err := followlist.LanguageValidator(v); err != nil {
-			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "FollowList.language": %w`, err)}
+		if err := followlists.LanguageValidator(v); err != nil {
+			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "FollowLists.language": %w`, err)}
 		}
 	}
 	if _, ok := flc.mutation.FeedCategory(); !ok {
-		return &ValidationError{Name: "feed_category", err: errors.New(`ent: missing required field "FollowList.feed_category"`)}
+		return &ValidationError{Name: "feed_category", err: errors.New(`ent: missing required field "FollowLists.feed_category"`)}
 	}
 	if _, ok := flc.mutation.IsActive(); !ok {
-		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "FollowList.is_active"`)}
+		return &ValidationError{Name: "is_active", err: errors.New(`ent: missing required field "FollowLists.is_active"`)}
 	}
 	if _, ok := flc.mutation.IsFavorite(); !ok {
-		return &ValidationError{Name: "is_favorite", err: errors.New(`ent: missing required field "FollowList.is_favorite"`)}
+		return &ValidationError{Name: "is_favorite", err: errors.New(`ent: missing required field "FollowLists.is_favorite"`)}
 	}
 	if _, ok := flc.mutation.IsRead(); !ok {
-		return &ValidationError{Name: "is_read", err: errors.New(`ent: missing required field "FollowList.is_read"`)}
+		return &ValidationError{Name: "is_read", err: errors.New(`ent: missing required field "FollowLists.is_read"`)}
 	}
 	if _, ok := flc.mutation.IsUpdated(); !ok {
-		return &ValidationError{Name: "is_updated", err: errors.New(`ent: missing required field "FollowList.is_updated"`)}
+		return &ValidationError{Name: "is_updated", err: errors.New(`ent: missing required field "FollowLists.is_updated"`)}
 	}
 	return nil
 }
 
-func (flc *FollowListCreate) sqlSave(ctx context.Context) (*FollowList, error) {
+func (flc *FollowListsCreate) sqlSave(ctx context.Context) (*FollowLists, error) {
 	if err := flc.check(); err != nil {
 		return nil, err
 	}
@@ -449,109 +449,109 @@ func (flc *FollowListCreate) sqlSave(ctx context.Context) (*FollowList, error) {
 	return _node, nil
 }
 
-func (flc *FollowListCreate) createSpec() (*FollowList, *sqlgraph.CreateSpec) {
+func (flc *FollowListsCreate) createSpec() (*FollowLists, *sqlgraph.CreateSpec) {
 	var (
-		_node = &FollowList{config: flc.config}
+		_node = &FollowLists{config: flc.config}
 		_spec = &sqlgraph.CreateSpec{
-			Table: followlist.Table,
+			Table: followlists.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: followlist.FieldID,
+				Column: followlists.FieldID,
 			},
 		}
 	)
 	if value, ok := flc.mutation.UUID(); ok {
-		_spec.SetField(followlist.FieldUUID, field.TypeUUID, value)
+		_spec.SetField(followlists.FieldUUID, field.TypeUUID, value)
 		_node.UUID = value
 	}
 	if value, ok := flc.mutation.XMLVersion(); ok {
-		_spec.SetField(followlist.FieldXMLVersion, field.TypeInt8, value)
+		_spec.SetField(followlists.FieldXMLVersion, field.TypeInt8, value)
 		_node.XMLVersion = value
 	}
 	if value, ok := flc.mutation.RssVersion(); ok {
-		_spec.SetField(followlist.FieldRssVersion, field.TypeInt8, value)
+		_spec.SetField(followlists.FieldRssVersion, field.TypeInt8, value)
 		_node.RssVersion = value
 	}
 	if value, ok := flc.mutation.URL(); ok {
-		_spec.SetField(followlist.FieldURL, field.TypeString, value)
+		_spec.SetField(followlists.FieldURL, field.TypeString, value)
 		_node.URL = value
 	}
 	if value, ok := flc.mutation.Title(); ok {
-		_spec.SetField(followlist.FieldTitle, field.TypeString, value)
+		_spec.SetField(followlists.FieldTitle, field.TypeString, value)
 		_node.Title = value
 	}
 	if value, ok := flc.mutation.Description(); ok {
-		_spec.SetField(followlist.FieldDescription, field.TypeString, value)
+		_spec.SetField(followlists.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
 	if value, ok := flc.mutation.Link(); ok {
-		_spec.SetField(followlist.FieldLink, field.TypeString, value)
+		_spec.SetField(followlists.FieldLink, field.TypeString, value)
 		_node.Link = value
 	}
 	if value, ok := flc.mutation.Links(); ok {
-		_spec.SetField(followlist.FieldLinks, field.TypeJSON, value)
+		_spec.SetField(followlists.FieldLinks, field.TypeJSON, value)
 		_node.Links = value
 	}
 	if value, ok := flc.mutation.ItemDescription(); ok {
-		_spec.SetField(followlist.FieldItemDescription, field.TypeJSON, value)
+		_spec.SetField(followlists.FieldItemDescription, field.TypeJSON, value)
 		_node.ItemDescription = value
 	}
 	if value, ok := flc.mutation.Language(); ok {
-		_spec.SetField(followlist.FieldLanguage, field.TypeString, value)
+		_spec.SetField(followlists.FieldLanguage, field.TypeString, value)
 		_node.Language = value
 	}
 	if value, ok := flc.mutation.DtCreated(); ok {
-		_spec.SetField(followlist.FieldDtCreated, field.TypeTime, value)
+		_spec.SetField(followlists.FieldDtCreated, field.TypeTime, value)
 		_node.DtCreated = value
 	}
 	if value, ok := flc.mutation.DtUpdated(); ok {
-		_spec.SetField(followlist.FieldDtUpdated, field.TypeTime, value)
+		_spec.SetField(followlists.FieldDtUpdated, field.TypeTime, value)
 		_node.DtUpdated = value
 	}
 	if value, ok := flc.mutation.DtLastInserted(); ok {
-		_spec.SetField(followlist.FieldDtLastInserted, field.TypeTime, value)
+		_spec.SetField(followlists.FieldDtLastInserted, field.TypeTime, value)
 		_node.DtLastInserted = value
 	}
 	if value, ok := flc.mutation.FeedCategory(); ok {
-		_spec.SetField(followlist.FieldFeedCategory, field.TypeInt, value)
+		_spec.SetField(followlists.FieldFeedCategory, field.TypeInt, value)
 		_node.FeedCategory = value
 	}
 	if value, ok := flc.mutation.IsActive(); ok {
-		_spec.SetField(followlist.FieldIsActive, field.TypeBool, value)
+		_spec.SetField(followlists.FieldIsActive, field.TypeBool, value)
 		_node.IsActive = value
 	}
 	if value, ok := flc.mutation.IsFavorite(); ok {
-		_spec.SetField(followlist.FieldIsFavorite, field.TypeBool, value)
+		_spec.SetField(followlists.FieldIsFavorite, field.TypeBool, value)
 		_node.IsFavorite = value
 	}
 	if value, ok := flc.mutation.IsRead(); ok {
-		_spec.SetField(followlist.FieldIsRead, field.TypeBool, value)
+		_spec.SetField(followlists.FieldIsRead, field.TypeBool, value)
 		_node.IsRead = value
 	}
 	if value, ok := flc.mutation.IsUpdated(); ok {
-		_spec.SetField(followlist.FieldIsUpdated, field.TypeBool, value)
+		_spec.SetField(followlists.FieldIsUpdated, field.TypeBool, value)
 		_node.IsUpdated = value
 	}
 	return _node, _spec
 }
 
-// FollowListCreateBulk is the builder for creating many FollowList entities in bulk.
-type FollowListCreateBulk struct {
+// FollowListsCreateBulk is the builder for creating many FollowLists entities in bulk.
+type FollowListsCreateBulk struct {
 	config
-	builders []*FollowListCreate
+	builders []*FollowListsCreate
 }
 
-// Save creates the FollowList entities in the database.
-func (flcb *FollowListCreateBulk) Save(ctx context.Context) ([]*FollowList, error) {
+// Save creates the FollowLists entities in the database.
+func (flcb *FollowListsCreateBulk) Save(ctx context.Context) ([]*FollowLists, error) {
 	specs := make([]*sqlgraph.CreateSpec, len(flcb.builders))
-	nodes := make([]*FollowList, len(flcb.builders))
+	nodes := make([]*FollowLists, len(flcb.builders))
 	mutators := make([]Mutator, len(flcb.builders))
 	for i := range flcb.builders {
 		func(i int, root context.Context) {
 			builder := flcb.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				mutation, ok := m.(*FollowListMutation)
+				mutation, ok := m.(*FollowListsMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
 				}
@@ -598,7 +598,7 @@ func (flcb *FollowListCreateBulk) Save(ctx context.Context) ([]*FollowList, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (flcb *FollowListCreateBulk) SaveX(ctx context.Context) []*FollowList {
+func (flcb *FollowListsCreateBulk) SaveX(ctx context.Context) []*FollowLists {
 	v, err := flcb.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -607,13 +607,13 @@ func (flcb *FollowListCreateBulk) SaveX(ctx context.Context) []*FollowList {
 }
 
 // Exec executes the query.
-func (flcb *FollowListCreateBulk) Exec(ctx context.Context) error {
+func (flcb *FollowListsCreateBulk) Exec(ctx context.Context) error {
 	_, err := flcb.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (flcb *FollowListCreateBulk) ExecX(ctx context.Context) {
+func (flcb *FollowListsCreateBulk) ExecX(ctx context.Context) {
 	if err := flcb.Exec(ctx); err != nil {
 		panic(err)
 	}

@@ -4,7 +4,7 @@ package ent
 
 import (
 	"context"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"insightstream/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
@@ -12,26 +12,26 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// FollowListDelete is the builder for deleting a FollowList entity.
-type FollowListDelete struct {
+// FollowListsDelete is the builder for deleting a FollowLists entity.
+type FollowListsDelete struct {
 	config
 	hooks    []Hook
-	mutation *FollowListMutation
+	mutation *FollowListsMutation
 }
 
-// Where appends a list predicates to the FollowListDelete builder.
-func (fld *FollowListDelete) Where(ps ...predicate.FollowList) *FollowListDelete {
+// Where appends a list predicates to the FollowListsDelete builder.
+func (fld *FollowListsDelete) Where(ps ...predicate.FollowLists) *FollowListsDelete {
 	fld.mutation.Where(ps...)
 	return fld
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (fld *FollowListDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, FollowListMutation](ctx, fld.sqlExec, fld.mutation, fld.hooks)
+func (fld *FollowListsDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks[int, FollowListsMutation](ctx, fld.sqlExec, fld.mutation, fld.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fld *FollowListDelete) ExecX(ctx context.Context) int {
+func (fld *FollowListsDelete) ExecX(ctx context.Context) int {
 	n, err := fld.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,13 +39,13 @@ func (fld *FollowListDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (fld *FollowListDelete) sqlExec(ctx context.Context) (int, error) {
+func (fld *FollowListsDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: followlist.Table,
+			Table: followlists.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: followlist.FieldID,
+				Column: followlists.FieldID,
 			},
 		},
 	}
@@ -64,25 +64,25 @@ func (fld *FollowListDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// FollowListDeleteOne is the builder for deleting a single FollowList entity.
-type FollowListDeleteOne struct {
-	fld *FollowListDelete
+// FollowListsDeleteOne is the builder for deleting a single FollowLists entity.
+type FollowListsDeleteOne struct {
+	fld *FollowListsDelete
 }
 
 // Exec executes the deletion query.
-func (fldo *FollowListDeleteOne) Exec(ctx context.Context) error {
+func (fldo *FollowListsDeleteOne) Exec(ctx context.Context) error {
 	n, err := fldo.fld.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{followlist.Label}
+		return &NotFoundError{followlists.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fldo *FollowListDeleteOne) ExecX(ctx context.Context) {
+func (fldo *FollowListsDeleteOne) ExecX(ctx context.Context) {
 	fldo.fld.ExecX(ctx)
 }

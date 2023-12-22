@@ -20,8 +20,8 @@ type Tx struct {
 	FeedAuditTrailLog *FeedAuditTrailLogClient
 	// Feeds is the client for interacting with the Feeds builders.
 	Feeds *FeedsClient
-	// FollowList is the client for interacting with the FollowList builders.
-	FollowList *FollowListClient
+	// FollowLists is the client for interacting with the FollowLists builders.
+	FollowLists *FollowListsClient
 	// Users is the client for interacting with the Users builders.
 	Users *UsersClient
 
@@ -159,7 +159,7 @@ func (tx *Tx) init() {
 	tx.FeedAuditTrailAction = NewFeedAuditTrailActionClient(tx.config)
 	tx.FeedAuditTrailLog = NewFeedAuditTrailLogClient(tx.config)
 	tx.Feeds = NewFeedsClient(tx.config)
-	tx.FollowList = NewFollowListClient(tx.config)
+	tx.FollowLists = NewFollowListsClient(tx.config)
 	tx.Users = NewUsersClient(tx.config)
 }
 

@@ -7,10 +7,10 @@ import (
 	"insightstream/ent"
 )
 
-func QueryByTen(cl *ent.Client) ([]*ent.FollowList, error) {
+func QueryByTen(cl *ent.Client) ([]*ent.FollowLists, error) {
 	ctx := context.Background()
 
-	fl, err := cl.FollowList.Query().
+	fl, err := cl.FollowLists.Query().
 		Order(ent.Desc("id")).
 		Limit(10).
 		All(ctx)
@@ -23,7 +23,7 @@ func QueryByTen(cl *ent.Client) ([]*ent.FollowList, error) {
 
 }
 
-func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowList, bool, error) {
+func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowLists, bool, error) {
 	var hadExceeded bool
 
 	ctx := context.Background()
@@ -42,7 +42,7 @@ func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowList, bool, err
 		hadExceeded = false
 	}
 
-	fl, err := cl.FollowList.Query().
+	fl, err := cl.FollowLists.Query().
 		Order(ent.Desc("dt_updated")).
 		Order(ent.Desc("id")).
 		Limit(limit).
@@ -55,12 +55,12 @@ func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowList, bool, err
 	return fl, hadExceeded, nil
 }
 
-func trimFeedList(fl []*ent.FollowList, amount int) []*ent.FollowList {
+func trimFeedList(fl []*ent.FollowLists, amount int) []*ent.FollowLists {
 	const theLimit = 20
 
 	// if fl is nil or empty, return an empty slice
 	if fl == nil || len(fl) == 0 {
-		return []*ent.FollowList{}
+		return []*ent.FollowLists{}
 	}
 
 	// if amount is less than or equal to theLimit, return the full array

@@ -10,7 +10,7 @@ import (
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
 	"insightstream/ent/feeds"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"insightstream/ent/users"
 	"reflect"
 
@@ -47,7 +47,7 @@ func columnChecker(table string) func(string) error {
 		feedaudittrailaction.Table:    feedaudittrailaction.ValidColumn,
 		feedaudittraillog.Table:       feedaudittraillog.ValidColumn,
 		feeds.Table:                   feeds.ValidColumn,
-		followlist.Table:              followlist.ValidColumn,
+		followlists.Table:             followlists.ValidColumn,
 		users.Table:                   users.ValidColumn,
 	}
 	check, ok := checks[table]

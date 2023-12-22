@@ -1,13 +1,14 @@
 package restorerss
 
 import (
-	"github.com/mmcdole/gofeed"
 	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
+
+	"github.com/mmcdole/gofeed"
 )
 
 // TODO will implement unit tests
-func EntFollowListExchangeToGofeed(followLists []*ent.FollowList) ([]*gofeed.Feed, error) {
+func EntFollowListExchangeToGofeed(followLists []*ent.FollowLists) ([]*gofeed.Feed, error) {
 	// To reduce the amount of data fetched per feed, set a limit on the number of items to fetch per feed
 	const sendAmount = 3
 

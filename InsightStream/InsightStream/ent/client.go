@@ -14,7 +14,7 @@ import (
 	"insightstream/ent/feedaudittrailaction"
 	"insightstream/ent/feedaudittraillog"
 	"insightstream/ent/feeds"
-	"insightstream/ent/followlist"
+	"insightstream/ent/followlists"
 	"insightstream/ent/users"
 
 	"entgo.io/ent/dialect"
@@ -36,8 +36,8 @@ type Client struct {
 	FeedAuditTrailLog *FeedAuditTrailLogClient
 	// Feeds is the client for interacting with the Feeds builders.
 	Feeds *FeedsClient
-	// FollowList is the client for interacting with the FollowList builders.
-	FollowList *FollowListClient
+	// FollowLists is the client for interacting with the FollowLists builders.
+	FollowLists *FollowListsClient
 	// Users is the client for interacting with the Users builders.
 	Users *UsersClient
 }
@@ -57,7 +57,7 @@ func (c *Client) init() {
 	c.FeedAuditTrailAction = NewFeedAuditTrailActionClient(c.config)
 	c.FeedAuditTrailLog = NewFeedAuditTrailLogClient(c.config)
 	c.Feeds = NewFeedsClient(c.config)
-	c.FollowList = NewFollowListClient(c.config)
+	c.FollowLists = NewFollowListsClient(c.config)
 	c.Users = NewUsersClient(c.config)
 }
 
@@ -96,7 +96,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		FeedAuditTrailAction:    NewFeedAuditTrailActionClient(cfg),
 		FeedAuditTrailLog:       NewFeedAuditTrailLogClient(cfg),
 		Feeds:                   NewFeedsClient(cfg),
-		FollowList:              NewFollowListClient(cfg),
+		FollowLists:             NewFollowListsClient(cfg),
 		Users:                   NewUsersClient(cfg),
 	}, nil
 }
@@ -121,7 +121,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		FeedAuditTrailAction:    NewFeedAuditTrailActionClient(cfg),
 		FeedAuditTrailLog:       NewFeedAuditTrailLogClient(cfg),
 		Feeds:                   NewFeedsClient(cfg),
-		FollowList:              NewFollowListClient(cfg),
+		FollowLists:             NewFollowListsClient(cfg),
 		Users:                   NewUsersClient(cfg),
 	}, nil
 }
@@ -155,7 +155,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.FeedAuditTrailAction.Use(hooks...)
 	c.FeedAuditTrailLog.Use(hooks...)
 	c.Feeds.Use(hooks...)
-	c.FollowList.Use(hooks...)
+	c.FollowLists.Use(hooks...)
 	c.Users.Use(hooks...)
 }
 
@@ -166,7 +166,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.FeedAuditTrailAction.Intercept(interceptors...)
 	c.FeedAuditTrailLog.Intercept(interceptors...)
 	c.Feeds.Intercept(interceptors...)
-	c.FollowList.Intercept(interceptors...)
+	c.FollowLists.Intercept(interceptors...)
 	c.Users.Intercept(interceptors...)
 }
 
@@ -181,8 +181,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.FeedAuditTrailLog.mutate(ctx, m)
 	case *FeedsMutation:
 		return c.Feeds.mutate(ctx, m)
-	case *FollowListMutation:
-		return c.FollowList.mutate(ctx, m)
+	case *FollowListsMutation:
+		return c.FollowLists.mutate(ctx, m)
 	case *UsersMutation:
 		return c.Users.mutate(ctx, m)
 	default:
@@ -674,91 +674,91 @@ func (c *FeedsClient) mutate(ctx context.Context, m *FeedsMutation) (Value, erro
 	}
 }
 
-// FollowListClient is a client for the FollowList schema.
-type FollowListClient struct {
+// FollowListsClient is a client for the FollowLists schema.
+type FollowListsClient struct {
 	config
 }
 
-// NewFollowListClient returns a client for the FollowList from the given config.
-func NewFollowListClient(c config) *FollowListClient {
-	return &FollowListClient{config: c}
+// NewFollowListsClient returns a client for the FollowLists from the given config.
+func NewFollowListsClient(c config) *FollowListsClient {
+	return &FollowListsClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `followlist.Hooks(f(g(h())))`.
-func (c *FollowListClient) Use(hooks ...Hook) {
-	c.hooks.FollowList = append(c.hooks.FollowList, hooks...)
+// A call to `Use(f, g, h)` equals to `followlists.Hooks(f(g(h())))`.
+func (c *FollowListsClient) Use(hooks ...Hook) {
+	c.hooks.FollowLists = append(c.hooks.FollowLists, hooks...)
 }
 
 // Use adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `followlist.Intercept(f(g(h())))`.
-func (c *FollowListClient) Intercept(interceptors ...Interceptor) {
-	c.inters.FollowList = append(c.inters.FollowList, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `followlists.Intercept(f(g(h())))`.
+func (c *FollowListsClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FollowLists = append(c.inters.FollowLists, interceptors...)
 }
 
-// Create returns a builder for creating a FollowList entity.
-func (c *FollowListClient) Create() *FollowListCreate {
-	mutation := newFollowListMutation(c.config, OpCreate)
-	return &FollowListCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a FollowLists entity.
+func (c *FollowListsClient) Create() *FollowListsCreate {
+	mutation := newFollowListsMutation(c.config, OpCreate)
+	return &FollowListsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of FollowList entities.
-func (c *FollowListClient) CreateBulk(builders ...*FollowListCreate) *FollowListCreateBulk {
-	return &FollowListCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of FollowLists entities.
+func (c *FollowListsClient) CreateBulk(builders ...*FollowListsCreate) *FollowListsCreateBulk {
+	return &FollowListsCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for FollowList.
-func (c *FollowListClient) Update() *FollowListUpdate {
-	mutation := newFollowListMutation(c.config, OpUpdate)
-	return &FollowListUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for FollowLists.
+func (c *FollowListsClient) Update() *FollowListsUpdate {
+	mutation := newFollowListsMutation(c.config, OpUpdate)
+	return &FollowListsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *FollowListClient) UpdateOne(fl *FollowList) *FollowListUpdateOne {
-	mutation := newFollowListMutation(c.config, OpUpdateOne, withFollowList(fl))
-	return &FollowListUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *FollowListsClient) UpdateOne(fl *FollowLists) *FollowListsUpdateOne {
+	mutation := newFollowListsMutation(c.config, OpUpdateOne, withFollowLists(fl))
+	return &FollowListsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *FollowListClient) UpdateOneID(id int) *FollowListUpdateOne {
-	mutation := newFollowListMutation(c.config, OpUpdateOne, withFollowListID(id))
-	return &FollowListUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *FollowListsClient) UpdateOneID(id int) *FollowListsUpdateOne {
+	mutation := newFollowListsMutation(c.config, OpUpdateOne, withFollowListsID(id))
+	return &FollowListsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for FollowList.
-func (c *FollowListClient) Delete() *FollowListDelete {
-	mutation := newFollowListMutation(c.config, OpDelete)
-	return &FollowListDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for FollowLists.
+func (c *FollowListsClient) Delete() *FollowListsDelete {
+	mutation := newFollowListsMutation(c.config, OpDelete)
+	return &FollowListsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *FollowListClient) DeleteOne(fl *FollowList) *FollowListDeleteOne {
+func (c *FollowListsClient) DeleteOne(fl *FollowLists) *FollowListsDeleteOne {
 	return c.DeleteOneID(fl.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *FollowListClient) DeleteOneID(id int) *FollowListDeleteOne {
-	builder := c.Delete().Where(followlist.ID(id))
+func (c *FollowListsClient) DeleteOneID(id int) *FollowListsDeleteOne {
+	builder := c.Delete().Where(followlists.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &FollowListDeleteOne{builder}
+	return &FollowListsDeleteOne{builder}
 }
 
-// Query returns a query builder for FollowList.
-func (c *FollowListClient) Query() *FollowListQuery {
-	return &FollowListQuery{
+// Query returns a query builder for FollowLists.
+func (c *FollowListsClient) Query() *FollowListsQuery {
+	return &FollowListsQuery{
 		config: c.config,
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a FollowList entity by its id.
-func (c *FollowListClient) Get(ctx context.Context, id int) (*FollowList, error) {
-	return c.Query().Where(followlist.ID(id)).Only(ctx)
+// Get returns a FollowLists entity by its id.
+func (c *FollowListsClient) Get(ctx context.Context, id int) (*FollowLists, error) {
+	return c.Query().Where(followlists.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *FollowListClient) GetX(ctx context.Context, id int) *FollowList {
+func (c *FollowListsClient) GetX(ctx context.Context, id int) *FollowLists {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -767,27 +767,27 @@ func (c *FollowListClient) GetX(ctx context.Context, id int) *FollowList {
 }
 
 // Hooks returns the client hooks.
-func (c *FollowListClient) Hooks() []Hook {
-	return c.hooks.FollowList
+func (c *FollowListsClient) Hooks() []Hook {
+	return c.hooks.FollowLists
 }
 
 // Interceptors returns the client interceptors.
-func (c *FollowListClient) Interceptors() []Interceptor {
-	return c.inters.FollowList
+func (c *FollowListsClient) Interceptors() []Interceptor {
+	return c.inters.FollowLists
 }
 
-func (c *FollowListClient) mutate(ctx context.Context, m *FollowListMutation) (Value, error) {
+func (c *FollowListsClient) mutate(ctx context.Context, m *FollowListsMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&FollowListCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&FollowListsCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&FollowListUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&FollowListsUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&FollowListUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&FollowListsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&FollowListDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&FollowListsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown FollowList mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown FollowLists mutation op: %q", m.Op())
 	}
 }
 
