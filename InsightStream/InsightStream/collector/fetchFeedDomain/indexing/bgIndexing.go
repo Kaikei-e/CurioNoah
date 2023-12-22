@@ -3,13 +3,14 @@ package indexing
 import (
 	"errors"
 	"fmt"
-	"github.com/labstack/gommon/log"
 	"insightstream/collector/fetchFeedDomain"
 	register "insightstream/collector/registerFeed"
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
 	"sync"
+
+	"github.com/labstack/gommon/log"
 )
 
 type StoreManager struct {
@@ -25,11 +26,11 @@ func NewStoreManager(client *ent.Client) *StoreManager {
 	return &StoreManager{client}
 }
 
-func (s *StoreManager) FetchFollowList() ([]*ent.FollowList, error) {
+func (s *StoreManager) FetchFollowList() ([]*ent.FollowLists, error) {
 	return readfeed.QueryAll(s.client)
 }
 
-func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowList) error {
+func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowLists) error {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
@@ -187,8 +188,8 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 }
 
-func (s *StoreManager) mergeLists(result []*ent.FollowList, convertedFeeds []*ent.FollowList, idList []int) []*ent.FollowList {
-	var addingList []*ent.FollowList
+func (s *StoreManager) mergeLists(result []*ent.FollowLists, convertedFeeds []*ent.FollowLists, idList []int) []*ent.FollowLists {
+	var addingList []*ent.FollowLists
 	for _, id := range idList {
 		isAdded := false
 		for _, list := range result {

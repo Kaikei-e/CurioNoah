@@ -45,7 +45,7 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 
 	ctx := context.Background()
 
-	_, err := cl.FollowList.Create().
+	_, err := cl.FollowLists.Create().
 		SetTitle(feed.Title).
 		SetURL(feed.Link).
 		SetDescription(feed.Description).
@@ -69,10 +69,10 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 // TODO will implement unit tests
 func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error {
 	ctx := context.Background()
-	bulk := make([]*ent.FollowListCreate, 0, len(feeds))
+	bulk := make([]*ent.FollowListsCreate, 0, len(feeds))
 
 	for i, feed := range feeds {
-		bulk[i] = cl.FollowList.Create().
+		bulk[i] = cl.FollowLists.Create().
 			SetTitle(feed.Title).
 			SetURL(feed.Link).
 			SetDescription(feed.Description).
@@ -86,7 +86,7 @@ func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error {
 
 	}
 
-	if _, err := cl.FollowList.CreateBulk(bulk...).Save(ctx); err != nil {
+	if _, err := cl.FollowLists.CreateBulk(bulk...).Save(ctx); err != nil {
 		return errors.New(fmt.Sprintf("failed to register feed: %v", err))
 	}
 

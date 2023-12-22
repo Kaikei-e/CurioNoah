@@ -2,14 +2,14 @@ package registerFeed
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
+	"log"
 	"time"
 )
 
-func Update(fds []*ent.FollowList, cl *ent.Client) error {
+func Update(fds []*ent.FollowLists, cl *ent.Client) error {
 	ctx := context.Background()
 	n := time.Now()
 
@@ -40,7 +40,12 @@ func Update(fds []*ent.FollowList, cl *ent.Client) error {
 		var linksJson baseFeeds.FeedLink
 		linksJson.Link = links
 
-		_, err := cl.FollowList.UpdateOneID(fd.ID).
+		tx, err := cl.Tx(ctx)
+		if err != nil {
+			return fmt.Errorf("failed to create transaction: %v", err)
+		}
+
+		_, err = tx.FollowLists.UpdateOneID(fd.ID).
 			SetDtLastInserted(n). // is this necessary?
 			SetDtUpdated(n).
 			SetLink(fd.Link).
@@ -48,11 +53,21 @@ func Update(fds []*ent.FollowList, cl *ent.Client) error {
 			SetLinks(linksJson).
 			SetItemDescription(feedItems).
 			Save(ctx)
-
 		if err != nil {
-			fmt.Printf("failed to update: %v", err)
-			return errors.New(fmt.Sprintf("failed to update: %v", err))
+			return fmt.Errorf("failed to update: %v, feed id is %v", err, fd.ID)
 		}
+
+		commitErr := tx.Commit()
+		if commitErr != nil {
+			log.Printf("failed to commit transaction: %v", commitErr)
+			tx.Rollback()
+			return fmt.Errorf("failed to commit transaction: %v", commitErr)
+		}
+
+		if commitErr != nil {
+			return commitErr
+		}
+
 	}
 
 	return nil

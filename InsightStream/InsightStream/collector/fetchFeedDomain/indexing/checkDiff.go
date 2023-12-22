@@ -3,13 +3,14 @@ package indexing
 import (
 	"errors"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
-	"github.com/mmcdole/gofeed"
-	"golang.org/x/exp/slices"
 	"insightstream/collector/fetchFeedDomain"
 	"insightstream/ent"
 	"insightstream/restorerss"
 	"sort"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/mmcdole/gofeed"
+	"golang.org/x/exp/slices"
 )
 
 // maxLinks is the maximum number of links to be fetched
@@ -22,7 +23,7 @@ type linksItem struct {
 	ID    int
 }
 
-func CheckDiff(fl []*ent.FollowList) ([]int, []*gofeed.Feed, error) {
+func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 
 	// convert existing ent struct to gofeed struct
 	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(fl)
