@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package main
 
 import (
@@ -8,6 +11,9 @@ import (
 	"insightstream/server"
 	"log"
 	"time"
+
+	"entgo.io/ent/entc"
+	"entgo.io/ent/entc/gen"
 )
 
 func main() {
@@ -18,6 +24,15 @@ func main() {
 	cl := repository.InitConnection()
 
 	storeManager := indexing.NewStoreManager(cl)
+
+	err := entc.Generate("./ent/schema", &gen.Config{
+		Features: []gen.Feature{
+			gen.FeatureUpsert,
+		},
+	})
+	if err != nil {
+		log.Fatalf("running ent codegen: %v", err)
+	}
 
 	go func() {
 		for {
