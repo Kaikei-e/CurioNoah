@@ -110,7 +110,7 @@ export const InfiniteFeeds: React.FC<Props> = () => {
                   Like !
                 </Button>
               </Flex>
-              <Text mt={2} fontSize={"sm"}>{item.description}</Text>
+              <Text mt={2} fontSize={"sm"} textOverflow={"ellipsis"}>{item.description}</Text>
             </Box>
           ))}
         </Flex>
