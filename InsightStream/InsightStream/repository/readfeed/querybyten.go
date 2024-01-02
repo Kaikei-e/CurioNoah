@@ -2,7 +2,6 @@ package readfeed
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"insightstream/ent"
 )
@@ -16,7 +15,7 @@ func QueryByTen(cl *ent.Client) ([]*ent.FollowLists, error) {
 		All(ctx)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to query by ten: %v", err))
+		return nil, fmt.Errorf("failed to query by ten: %v", err)
 	}
 
 	return fl, nil
@@ -33,7 +32,7 @@ func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowLists, bool, er
 
 	rowAmount, err := CountFollowList()
 	if err != nil {
-		return nil, false, errors.New(fmt.Sprintf("failed to count the row: %v", err))
+		return nil, false, fmt.Errorf("failed to count followlist: %v", err)
 	}
 
 	if rowAmount < limit {
@@ -49,7 +48,7 @@ func QueryByTwenty(cl *ent.Client, queryParam int) ([]*ent.FollowLists, bool, er
 		Offset(offset).
 		All(ctx)
 	if err != nil {
-		return nil, false, errors.New(fmt.Sprintf("failed to query by ten: %v", err))
+		return nil, false, fmt.Errorf("failed to query by %v: %v", limit, err)
 	}
 
 	return fl, hadExceeded, nil

@@ -3,13 +3,13 @@ package readfeed
 import (
 	"database/sql"
 	"insightstream/repository"
-	"log"
+	"log/slog"
 )
 
 func CountFollowList() (int, error) {
 	result, err := repository.CoreDatabase.Query("SELECT COUNT(*) FROM follow_lists")
 	if err != nil {
-		log.Fatalln(err)
+		slog.Error("failed to query: %v", err)
 		return -1, err
 	}
 
