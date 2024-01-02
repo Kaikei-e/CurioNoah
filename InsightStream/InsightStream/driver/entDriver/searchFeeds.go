@@ -2,6 +2,7 @@ package entDriver
 
 import (
 	"context"
+	"fmt"
 	"insightstream/ent"
 	entFeeds "insightstream/ent/feeds"
 )
@@ -25,7 +26,7 @@ func SearchFeeds(keyword string, cl *ent.Client, ctx context.Context) ([]*ent.Fe
 		All(ctx)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query feeds: %w", err)
 	}
 
 	return feeds, nil
