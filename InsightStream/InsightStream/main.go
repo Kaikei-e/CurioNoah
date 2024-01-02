@@ -10,11 +10,17 @@ import (
 	"insightstream/repository"
 	"insightstream/server"
 	"log"
+	"log/slog"
+	"os"
 	"time"
 
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
 )
+
+func init() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, nil)))
+}
 
 func main() {
 	// 360 minute is not intentional value. Just for saving resources.
