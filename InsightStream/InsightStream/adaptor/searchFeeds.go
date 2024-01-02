@@ -2,12 +2,14 @@ package adaptor
 
 import (
 	"fmt"
-	"github.com/labstack/echo/v4"
 	"insightstream/domain/searchWord"
 	"insightstream/domain/searchedFeed"
 	"insightstream/driver/parser"
 	"insightstream/ent"
 	"insightstream/usecase/searchUsecase"
+	"log/slog"
+
+	"github.com/labstack/echo/v4"
 )
 
 func SearchFeeds(c echo.Context, cl *ent.Client) ([]searchedFeed.ByTitleOrDescription, error) {
@@ -23,7 +25,8 @@ func SearchFeeds(c echo.Context, cl *ent.Client) ([]searchedFeed.ByTitleOrDescri
 
 	titleOrDescription, err := searchUsecase.SearchByTitleOrDescription(keyword, cl)
 	if err != nil {
-		return nil, err
+		slog.Error("failed to search by title or description: %v", err)
+		return nil, fmt.Errorf("failed to search by title or description: %w", err)
 	}
 
 	var formattedFeeds []searchedFeed.ByTitleOrDescription
@@ -31,7 +34,7 @@ func SearchFeeds(c echo.Context, cl *ent.Client) ([]searchedFeed.ByTitleOrDescri
 		description, err := parser.HTMLToDoc(tod.Description)
 		if err != nil {
 			err := fmt.Errorf("failed to parse html: %v", err)
-			fmt.Println(err)
+			slog.Error(err.Error())
 			continue
 		}
 
