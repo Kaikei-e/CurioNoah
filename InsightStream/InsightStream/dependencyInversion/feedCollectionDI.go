@@ -2,12 +2,14 @@ package dependencyInversion
 
 import (
 	"fmt"
-	"golang.org/x/exp/slices"
 	"insightstream/domain/baseFeeds"
 	"insightstream/driver/parser"
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
+	"log/slog"
+
+	"golang.org/x/exp/slices"
 )
 
 type (
@@ -45,7 +47,7 @@ func (f *FeedCollectionImpl) FetchInfinite(page int, cl *ent.Client) ([]baseFeed
 		description, err := parser.HTMLToDoc(fd.Description)
 		if err != nil {
 			err := fmt.Errorf("failed to parse html: %v", err)
-			fmt.Println(err)
+			slog.Error(err.Error())
 			continue
 		}
 
@@ -55,12 +57,12 @@ func (f *FeedCollectionImpl) FetchInfinite(page int, cl *ent.Client) ([]baseFeed
 
 	exchangedFeeds, err := restorerss.ExchangeEntFeedsToGofeeds(fds)
 	if err != nil {
-		return nil, false, err
+		return nil, false, fmt.Errorf("failed to exchange ent feeds to gofeeds: %v", err)
 	}
 
 	compactedFeeds, err := f.CompactFeeds(exchangedFeeds)
 	if err != nil {
-		return nil, false, err
+		return nil, false, fmt.Errorf("failed to compact feeds: %v", err)
 	}
 
 	return compactedFeeds, hadExceeded, nil
@@ -74,7 +76,7 @@ func (f *FeedCollectionImpl) CompactFeeds(fds []baseFeeds.EachFeed) ([]baseFeeds
 
 	uniqueFeeds, err := removeDuplicateFeeds(fds)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to remove duplicate feeds: %w", err)
 	}
 
 	slices.SortStableFunc(uniqueFeeds, func(a, b baseFeeds.EachFeed) bool {
