@@ -2,10 +2,10 @@ package searchPort
 
 import (
 	"context"
-	"fmt"
 	"insightstream/domain/searchWord"
 	"insightstream/driver/entDriver"
 	"insightstream/ent"
+	"log/slog"
 )
 
 type SearchPort interface {
@@ -25,7 +25,7 @@ func (s *Impl) SearchByTitleOrDescription(sw searchWord.SearchWord, cl *ent.Clie
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("baseFeeds length is : ", len(feeds))
+	slog.Info("baseFeeds length is", "%v", len(feeds))
 
 	return feeds, nil
 }
