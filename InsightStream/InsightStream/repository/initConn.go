@@ -3,14 +3,15 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"entgo.io/ent/dialect"
-	"fmt"
-	"github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"insightstream/ent"
 	"log"
+	"log/slog"
 	"os"
 	"time"
+
+	"entgo.io/ent/dialect"
+	"github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -66,13 +67,13 @@ func InitConnection() *ent.Client {
 
 	//defer client.Close()
 
-	fmt.Println("connected to mysql database")
+	slog.Info("connected to mysql database")
 
 	if err := clt.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	log.Println("created schema resources")
+	slog.Info("created schema resources")
 
 	return clt
 }
