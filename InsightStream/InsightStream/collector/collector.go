@@ -1,8 +1,8 @@
 package collector
 
 import (
-	"errors"
 	"fmt"
+
 	"github.com/mmcdole/gofeed"
 )
 
@@ -26,11 +26,11 @@ func Collector(targetURL string) (*gofeed.Feed, error) {
 
 	feed, err := fp.ParseURL(targetURL)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("parse %s: %v", targetURL, err))
+		return nil, fmt.Errorf("failed to parse url: %s. error is %w", targetURL, err)
 	}
 
 	for _, author := range feed.Authors {
-		fmt.Println(author.Name)
+		fmt.Printf("author: %v \n", author.Name)
 	}
 
 	return feed, nil

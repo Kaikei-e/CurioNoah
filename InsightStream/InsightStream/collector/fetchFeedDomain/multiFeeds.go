@@ -1,7 +1,6 @@
 package fetchFeedDomain
 
 import (
-	"errors"
 	"fmt"
 	"insightstream/collector"
 	"time"
@@ -18,7 +17,7 @@ func MultiFeed(storedList []string) ([]*gofeed.Feed, error) {
 		time.Sleep(1 * time.Second)
 		feed, err := collector.Collector(url)
 		if err != nil {
-			return nil, errors.New(fmt.Sprintf("fetch %s: %v", url, err))
+			return nil, fmt.Errorf("failed to fetch feeds: %w", err)
 		}
 
 		feeds = append(feeds, feed)
