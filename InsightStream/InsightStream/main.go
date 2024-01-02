@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	// 20 minute is not intentional value. Just for testing.
+	// 360 minute is not intentional value. Just for saving resources.
 	ticker := time.NewTicker(360 * time.Minute)
 	done := make(chan bool)
 
