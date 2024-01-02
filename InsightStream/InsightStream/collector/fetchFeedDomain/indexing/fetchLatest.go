@@ -1,13 +1,12 @@
 package indexing
 
 import (
-	"errors"
+	"fmt"
 	"insightstream/collector/fetchFeedDomain"
 	"insightstream/ent"
 	"insightstream/restorerss"
+	"log/slog"
 	"sync"
-
-	"github.com/labstack/gommon/log"
 )
 
 func FetchLatestByClick(cl *ent.Client) error {
@@ -17,12 +16,12 @@ func FetchLatestByClick(cl *ent.Client) error {
 
 	result, err := s.FetchFollowList()
 	if err != nil {
-		return errors.New("failed to query all baseFeeds")
+		return fmt.Errorf("failed to query all baseFeeds: %w", err)
 	}
 
 	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(result)
 	if err != nil {
-		return errors.New("failed to convert ent struct to gofeed struct")
+		return fmt.Errorf("failed to exchange feeds: %w", err)
 	}
 
 	var targetLinks []string
@@ -32,12 +31,12 @@ func FetchLatestByClick(cl *ent.Client) error {
 
 	fetchedFeeds, err := fetchFeedDomain.ParallelizeFetch(targetLinks)
 	if err != nil {
-		return errors.New("failed to fetch feeds")
+		return fmt.Errorf("failed to fetch feeds: %w", err)
 	}
 
 	feedLinkList, err := CheckDiffByFeedItems(feedExchanged, fetchedFeeds)
 	if err != nil {
-		return errors.New("failed to check diff")
+		return fmt.Errorf("failed to check diff by feed items: %w", err)
 	}
 
 	var updateTargetList []updateList
@@ -72,7 +71,7 @@ func FetchLatestByClick(cl *ent.Client) error {
 
 	err = s.UpdateFeeds(followLists)
 	if err != nil {
-		return errors.New("failed to update feeds")
+		return fmt.Errorf("failed to update baseFeeds: %w", err)
 	}
 
 	wg.Add(1)
@@ -80,7 +79,7 @@ func FetchLatestByClick(cl *ent.Client) error {
 		defer wg.Done()
 		err = PingToSyncOnlyLatestFeeds()
 		if err != nil {
-			log.Errorf("failed to ping to sync only latest feeds: %v", err)
+			slog.Error("failed to ping to sync: %v", err)
 			return
 		}
 	}()

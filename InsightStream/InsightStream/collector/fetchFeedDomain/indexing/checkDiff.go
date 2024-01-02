@@ -1,11 +1,11 @@
 package indexing
 
 import (
-	"errors"
 	"fmt"
 	"insightstream/collector/fetchFeedDomain"
 	"insightstream/ent"
 	"insightstream/restorerss"
+	"log/slog"
 	"sort"
 
 	"github.com/google/go-cmp/cmp"
@@ -28,7 +28,7 @@ func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 	// convert existing ent struct to gofeed struct
 	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(fl)
 	if err != nil {
-		return nil, nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
+		return nil, nil, fmt.Errorf("failed to excahnge ent to gofeed struct. error: %w", err)
 	}
 
 	// list up target links
@@ -39,7 +39,7 @@ func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 
 	fetchedFeeds, err := fetchFeedDomain.ParallelizeFetch(targetLinks)
 	if err != nil {
-		return nil, nil, errors.New(fmt.Sprintf("failed to fetch feed. error: %v", err))
+		return nil, nil, fmt.Errorf("failed to fetch feeds. error: %w", err)
 	}
 
 	var fetchedLinks []linksItem
@@ -47,9 +47,7 @@ func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 		var sortedLink []string
 		var fetchedLink linksItem
 
-		for _, link := range feed.Links {
-			sortedLink = append(sortedLink, link)
-		}
+		sortedLink = append(sortedLink, feed.Links...)
 
 		sort.SliceStable(sortedLink, func(i, j int) bool {
 			return sortedLink[i] < sortedLink[j]
@@ -68,9 +66,7 @@ func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 		var sortedLink []string
 		var fetchedLink linksItem
 
-		for _, link := range feed.Links {
-			sortedLink = append(sortedLink, link)
-		}
+		sortedLink = append(sortedLink, feed.Links...)
 
 		sort.SliceStable(sortedLink, func(i, j int) bool {
 			return sortedLink[i] < sortedLink[j]
@@ -97,6 +93,7 @@ func CheckDiff(fl []*ent.FollowLists) ([]int, []*gofeed.Feed, error) {
 					}
 				}
 				if found {
+					slog.Info("found", "%v", fetchedLink.URL)
 					break
 				}
 			}

@@ -1,13 +1,13 @@
 package indexing
 
 import (
-	"errors"
 	"fmt"
 	"insightstream/collector/fetchFeedDomain"
 	register "insightstream/collector/registerFeed"
 	"insightstream/ent"
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
+	"log/slog"
 	"sync"
 
 	"github.com/labstack/gommon/log"
@@ -38,9 +38,7 @@ func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowLists) error {
 		defer wg.Done()
 		err := register.Update(feeds, s.client)
 		if err != nil {
-			log.Warnj(map[string]interface{}{
-				"error": err,
-			})
+			slog.Error("failed to update feeds: %v", err)
 		}
 	}()
 
@@ -55,12 +53,13 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 
 	result, err := s.FetchFollowList()
 	if err != nil {
-		return nil, errors.New("failed to query all baseFeeds")
+		slog.Error("failed to query all baseFeeds: %v", err)
+		return nil, fmt.Errorf("failed to query all baseFeeds: %w", err)
 	}
 
 	idList, newFeeds, err := CheckDiff(result)
 	if err != nil {
-		return nil, errors.New("failed to check diff")
+		return nil, fmt.Errorf("failed to check diff: %w", err)
 	}
 
 	convertedFeeds := restorerss.ExchangeToEnt(newFeeds)
@@ -72,8 +71,8 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 
 	err = s.UpdateFeeds(addingList)
 	if err != nil {
-		log.Errorf("failed to update baseFeeds: %v", err)
-		return nil, errors.New("failed to update baseFeeds")
+		slog.Error("failed to update baseFeeds: %v", err)
+		return nil, fmt.Errorf("failed to update baseFeeds: %w", err)
 	}
 
 	//wg.Add(1)
@@ -91,7 +90,7 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 		defer wg.Done()
 		err = PingToSync()
 		if err != nil {
-			log.Errorf("failed to ping to sync all baseFeeds: %v", err)
+			slog.Error("failed to ping to sync all baseFeeds: %v", err)
 			return
 		}
 	}()
@@ -104,13 +103,15 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 	result, err := s.FetchFollowList()
 	if err != nil {
-		return nil, errors.New("failed to query all baseFeeds")
+		slog.Error("failed to query all baseFeeds: %v", err)
+		return nil, fmt.Errorf("failed to query all baseFeeds: %w", err)
 	}
 
 	// convert existing ent struct to gofeed struct
 	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(result)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to excahnge ent to gofeed struct. error: %v", err))
+		slog.Error("failed to exchange ent struct to gofeed struct: %v", err)
+		return nil, fmt.Errorf("failed to exchange ent struct to gofeed struct: %w", err)
 	}
 
 	// list up target links
@@ -121,12 +122,13 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 	fetchedFeeds, err := fetchFeedDomain.ParallelizeFetch(targetLinks)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to fetch feed. error: %v", err))
+		slog.Error("failed to fetch feeds: %v", err)
+		return nil, fmt.Errorf("failed to fetch feeds: %w", err)
 	}
 
 	feedLinkList, err := CheckDiffByFeedItems(feedExchanged, fetchedFeeds)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("failed to check diff. error: %v", err))
+		return nil, fmt.Errorf("failed to check diff by feed items: %w", err)
 	}
 
 	var updateTargetList []updateList
@@ -151,7 +153,6 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 	}
 
 	// update baseFeeds
-	//fmt.Println("updateTargetIDList: ", updateTargetIDList)
 
 	if len(updateTargetList) == 0 {
 		return nil, nil
@@ -170,8 +171,7 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 	err = s.UpdateFeeds(followLists)
 	if err != nil {
-		log.Errorf("failed to update baseFeeds: %v", err)
-		return nil, errors.New("failed to update baseFeeds")
+		return nil, fmt.Errorf("failed to update baseFeeds: %w", err)
 	}
 
 	wg.Add(1)
@@ -179,7 +179,7 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 		defer wg.Done()
 		err = PingToSyncOnlyLatestFeeds()
 		if err != nil {
-			log.Errorf("failed to ping to sync all baseFeeds: %v", err)
+			slog.Error("failed to ping to sync only latest baseFeeds: %v", err)
 			return
 		}
 	}()
