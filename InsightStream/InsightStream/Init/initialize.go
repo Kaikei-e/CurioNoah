@@ -3,11 +3,12 @@ package Init
 import (
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
-	"golang.org/x/exp/slices"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/joho/godotenv"
+	"golang.org/x/exp/slices"
 )
 
 func getSlice() []string {
@@ -28,7 +29,7 @@ func Initialize() error {
 		if err != nil {
 			panic(err)
 		}
-		return errors.New("failed to get working directory")
+		return fmt.Errorf("failed to get working directory: %w", err)
 	}
 
 	projectRoot := filepath.Dir(wd)
@@ -42,13 +43,13 @@ func Initialize() error {
 			panic(err)
 		}
 
-		return errors.New("failed to open .env")
+		return fmt.Errorf("failed to open .env: %w", err)
 	}
 
 	var myEnv map[string]string
 	myEnv, err = godotenv.Read()
 	if err != nil {
-		return errors.New("failed to open .env")
+		return fmt.Errorf("failed to read .env: %w", err)
 	}
 
 	var envs []string
@@ -62,7 +63,7 @@ func Initialize() error {
 		if err != nil {
 			panic(err)
 		}
-		return errors.New("required env is not set")
+		return fmt.Errorf("required env variables are not set: %w", err)
 	}
 
 	return nil
@@ -76,7 +77,7 @@ func envRequired(envs []string, want []string) error {
 		if strings.Compare(env, want[i]) == 0 {
 			continue
 		} else {
-			return errors.New(fmt.Sprintf("failed to parse .env: %v is required", want[i]))
+			return fmt.Errorf("required env variables are not set: %w", errors.New(strings.Join(want, ", ")))
 		}
 	}
 	return nil
