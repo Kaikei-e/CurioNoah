@@ -35,7 +35,7 @@ impl FetchSiteUrlGroup for WordNetworkRepository {
         )
         .fetch_all(&self.pool)
         .await
-        .map_err(|e| anyhow::anyhow!(e));
+        .map_err(|e: sqlx::Error| anyhow::anyhow!(e));
 
         if let Err(e) = rows {
             println!("Failed to fetch all feeds: {}", e);
