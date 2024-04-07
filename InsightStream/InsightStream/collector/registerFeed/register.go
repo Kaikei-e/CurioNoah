@@ -6,7 +6,6 @@ import (
 	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
 
-	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 	"github.com/mmcdole/gofeed"
 )
@@ -50,10 +49,6 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 
 	ctx := context.Background()
 	err = cl.FollowLists.Create().
-		OnConflict(
-			sql.ConflictColumns("link"),
-		).
-		UpdateNewValues().
 		SetTitle(feed.Title).
 		SetURL(feed.Link).
 		SetDescription(feed.Description).
@@ -65,11 +60,10 @@ func RegisterSingle(inputLink string, feed *gofeed.Feed, cl *ent.Client) error {
 		SetIsUpdated(false).
 		SetLink(inputLink).
 		SetLinks(linksJson).
-		Ignore().
 		Exec(ctx)
 
 	if err != nil {
-		return fmt.Errorf("failed to register feed: %v", err)
+		return fmt.Errorf("failed to register feed. URL was conflicted!! : %v", err)
 	}
 
 	commitErr := tx.Commit()
@@ -87,10 +81,6 @@ func RegisterMulti(feeds []*gofeed.Feed, cl *ent.Client) error {
 	builders := make([]*ent.FollowListsCreate, len(feeds))
 
 	err := cl.FollowLists.CreateBulk(builders...).
-		OnConflict(
-			sql.ConflictColumns("link"),
-		).
-		UpdateNewValues().
 		Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to register feeds: %v", err)
