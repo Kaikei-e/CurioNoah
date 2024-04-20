@@ -163,7 +163,7 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.7
-        
+
   feed_harmony:
     build:
       context: ./FeedHarmony
@@ -182,7 +182,7 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.8
-        
+
   feed_oracle:
     build:
       context: ./FeedOracle
@@ -257,4 +257,3 @@ networks:
       driver: default
       config:
         - subnet: 192.168.100.0/24
-        
