@@ -10,4 +10,6 @@ RUN touch /usr/src/app/harmony.log
 
 WORKDIR /usr/src/app
 
+ENV SQLX_OFFLINE true
+
 EXPOSE 5100
