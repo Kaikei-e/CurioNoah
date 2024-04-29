@@ -1,6 +1,6 @@
 module insightstream
 
-go 1.21
+go 1.22
 
 require (
 	entgo.io/ent v0.11.5
