@@ -202,6 +202,33 @@ services:
       app-network:
         ipv4_address: 192.168.100.9
 
+  news_generator:
+    # News Generator that's powered by LLM
+    build:
+      context: ./newsGenerator
+      dockerfile: Dockerfile
+    container_name: news_generator
+    ports:
+      - '5555:5555'
+    environment:
+      timezone: 'Asia/Tokyo'
+      LLM_TARGET_LINK: ${LLM_TARGET_LINK}
+      DATABASE_URL: ${DATA_LAKE_URL}
+      DATABASE_USER: ${DATA_LAKE_USER}
+      DATABASE_PASSWORD: ${DATA_LAKE_PASSWORD}
+      DATABASE_NAME: ${DATA_LAKE_DB}
+    tty: true
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5555/v1/systems/alive"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.13
+
+
   core_database:
     # Database
     build:
