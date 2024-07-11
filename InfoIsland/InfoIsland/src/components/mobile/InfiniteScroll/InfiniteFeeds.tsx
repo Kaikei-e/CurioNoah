@@ -62,13 +62,13 @@ export const InfiniteFeeds: React.FC<Props> = () => {
   const loader = <CircularProgress isIndeterminate color="green.200" />;
 
   return (
-    <div style={
-      {
+    <div
+      style={{
         width: "100%",
         overflowY: "scroll",
         borderRadius: "2xl",
-      }
-    }>
+      }}
+    >
       <InfiniteScroll
         pageStart={0}
         loadMore={loadMore}

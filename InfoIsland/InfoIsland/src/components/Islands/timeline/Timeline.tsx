@@ -29,7 +29,11 @@ export const Timeline: React.FC<Props> = ({
   hadExceeded,
 }) => {
   const navigate = useNavigate();
-  const loader = <CircularProgress isIndeterminate color="green.300" />;
+  const loader = (
+    <Flex flexDirection={"column"} h={"85%"} w={"100%"}>
+      <CircularProgress isIndeterminate color="green.300" />
+    </Flex>
+  );
 
   return (
     <Flex flexDirection={"column"} h={"100%"} w={"100%"} fontFamily="Jost">
