@@ -1,6 +1,8 @@
 val kotlin_version: String by project
 val logback_version: String by project
 val prometheus_version: String by project
+val ktor_version: String by project
+
 
 plugins {
     kotlin("jvm") version "2.0.0"
@@ -34,6 +36,8 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("org.jsoup:jsoup:1.14.3")
 
     // modular monolith
 }
