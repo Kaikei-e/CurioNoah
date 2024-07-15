@@ -26,5 +26,7 @@ data class OllamaRequest(
     @SerialName("prompt")
     val prompt: String,
     @SerialName("stream")
-    val stream: Boolean
+    val stream: Boolean,
+    @SerialName("system")
+    val system: String = "You are an AI assistant that analyzes HTML content.",
 )

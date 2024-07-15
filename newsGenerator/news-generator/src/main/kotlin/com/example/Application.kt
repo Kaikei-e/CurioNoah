@@ -19,6 +19,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.jsoup.Jsoup
 import java.io.File
 
 fun main() {
@@ -82,19 +83,7 @@ fun Application.configureRouting() {
                     val contentType = res.headers[HttpHeaders.ContentType]
                     val charset = contentType?.let { ContentType.parse(it).charset() } ?: Charsets.UTF_8
 
-                    println(res)
-                    // for japanese text
-
                     val htmlContent = res.bodyAsText(charset)
-//                    println(htmlContent)
-
-//                    val doc = Jsoup.parse(htmlContent)
-//                    val textBody = doc.body().text().trim()
-
-                    //Print the document and text body for debugging
-//                    println(doc)
-//                    println(textBody)
-
                     val apiUrl = URLBuilder().apply {
                         protocol = URLProtocol.HTTP
                         host = summarizerAPIEndpoint
@@ -102,13 +91,22 @@ fun Application.configureRouting() {
                         path("api", "generate")
                     }.build()
 
-                    val prompt = "次のHTMLで構成された記事を要約して。また、キーとなる概念についても詳述して。"
-                    val combinedPrompt = "$prompt\n\nHTML Content:\n$htmlContent"
+                    val parsedHtml = Jsoup.parse(htmlContent)
+                    val body = parsedHtml.body().text()
+
+                    val prompt = """
+                        以下のHTMLのbodyを解説してください。その際は、以下のガイドラインを厳守してください。
+
+                        1. 記事の内容を非常に詳細にまとめてください。重要なポイントや詳細な説明を含めてください。
+                        2. キートピックや核となるコンセプトを必ず含めてください。それらが読者に明確に伝わるようにしてください。
+                        3. 解説の文字数は最低でも2000字としてください。短すぎるものは受け入れられません。
+                        4. 解説は必ず丁寧で詳細に行ってください。簡略化しすぎないように注意してください。
+                        5. 指示に従わなかった場合、再度指示を送ることになりますので、指示通りに出力を生成してください。
+                        """".trimMargin()
+                    val combinedPrompt = "$prompt\n\nBody Content:\n$body"
 
                     val summarizerRequest = OllamaRequest(
-                        model = "llama3-elyza:8b",
-                        prompt = combinedPrompt,
-                        stream = false
+                        model = "llama3-elyza:8b", prompt = combinedPrompt, stream = false
                     )
 
                     println(forSummarizerTuningJson.encodeToString(OllamaRequest.serializer(), summarizerRequest))
@@ -125,12 +123,10 @@ fun Application.configureRouting() {
                         e.printStackTrace()
                     }
 
-                    println(summarizedResponse)
-
-                    val escapedResponse = summarizedResponse.escapeSpecialCharacters()
+//                    val escapedResponse = summarizedResponse.escapeSpecialCharacters()
 
                     try {
-                        val response = forSummarizerTuningJson.decodeFromString<SummarizerResponse>(escapedResponse)
+                        val response = forSummarizerTuningJson.decodeFromString<SummarizerResponse>(summarizedResponse)
                         call.respondText(
                             Json.encodeToString(SummarizerResponse.serializer(), response), ContentType.Application.Json
                         )
