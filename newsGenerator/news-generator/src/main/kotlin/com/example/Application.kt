@@ -4,6 +4,7 @@ import com.example.plugins.configureHTTP
 import com.example.plugins.configureMonitoring
 import com.example.plugins.configureSecurity
 import com.example.plugins.configureSerialization
+import com.example.rest.OllamaRequest
 import com.example.rest.SummarizerResponse
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -18,7 +19,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import org.jsoup.Jsoup
 import java.io.File
 
 fun main() {
@@ -66,7 +66,7 @@ fun Application.configureRouting() {
         }
 
         get("/api/v1/news/summarize/today") {
-            val forSummarizerResponseJson = Json {
+            val forSummarizerTuningJson = Json {
                 ignoreUnknownKeys = true
                 isLenient = true
                 coerceInputValues = true
@@ -86,14 +86,14 @@ fun Application.configureRouting() {
                     // for japanese text
 
                     val htmlContent = res.bodyAsText(charset)
-                    println(htmlContent)
+//                    println(htmlContent)
 
-                    val doc = Jsoup.parse(htmlContent)
-                    val textBody = doc.body().text().trim()
+//                    val doc = Jsoup.parse(htmlContent)
+//                    val textBody = doc.body().text().trim()
 
                     //Print the document and text body for debugging
-                    println(doc)
-                    println(textBody)
+//                    println(doc)
+//                    println(textBody)
 
                     val apiUrl = URLBuilder().apply {
                         protocol = URLProtocol.HTTP
@@ -102,20 +102,35 @@ fun Application.configureRouting() {
                         path("api", "generate")
                     }.build()
 
-                    val summarizedResponse = client.post(apiUrl) {
-                        contentType(ContentType.Application.Json)
-                        setBody(
-                            body = """{"model": "llama3-elyza:8b", "prompt": "次の文章を要約して。また、キーとなる概念についても詳述して。> ($textBody)", stream: false}"""
-//                            body = """{"model": "llama3-elyza:8b", "prompt": "why sky is blue?", "stream": false}"""
-                        )
-                    }.bodyAsText()
+                    val prompt = "次のHTMLで構成された記事を要約して。また、キーとなる概念についても詳述して。"
+                    val combinedPrompt = "$prompt\n\nHTML Content:\n$htmlContent"
+
+                    val summarizerRequest = OllamaRequest(
+                        model = "llama3-elyza:8b",
+                        prompt = combinedPrompt,
+                        stream = false
+                    )
+
+                    println(forSummarizerTuningJson.encodeToString(OllamaRequest.serializer(), summarizerRequest))
+
+                    var summarizedResponse = ""
+                    try {
+                        summarizedResponse = client.post(apiUrl) {
+                            contentType(ContentType.Application.Json)
+                            setBody(
+                                forSummarizerTuningJson.encodeToString(OllamaRequest.serializer(), summarizerRequest)
+                            )
+                        }.bodyAsText()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 
                     println(summarizedResponse)
 
                     val escapedResponse = summarizedResponse.escapeSpecialCharacters()
 
                     try {
-                        val response = forSummarizerResponseJson.decodeFromString<SummarizerResponse>(escapedResponse)
+                        val response = forSummarizerTuningJson.decodeFromString<SummarizerResponse>(escapedResponse)
                         call.respondText(
                             Json.encodeToString(SummarizerResponse.serializer(), response), ContentType.Application.Json
                         )
