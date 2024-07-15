@@ -18,3 +18,13 @@ data class SummarizerResponse(
     @SerialName("eval_count") val evalCount: Int = 0,
     @SerialName("eval_duration") val evalDuration: Long = 0,
 )
+
+@Serializable
+data class OllamaRequest(
+    @SerialName("model")
+    val model: String,
+    @SerialName("prompt")
+    val prompt: String,
+    @SerialName("stream")
+    val stream: Boolean
+)
