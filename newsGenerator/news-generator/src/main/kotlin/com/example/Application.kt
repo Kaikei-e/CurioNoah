@@ -95,18 +95,21 @@ fun Application.configureRouting() {
                     val body = parsedHtml.body().text()
 
                     val prompt = """
-                        以下のHTMLのbodyを解説してください。その際は、以下のガイドラインを厳守してください。
-
+                        以下のHTMLのbodyを詳細に解説してください。その際は、以下のガイドラインを厳守してください。
+                        
                         1. 記事の内容を非常に詳細にまとめてください。重要なポイントや詳細な説明を含めてください。
                         2. キートピックや核となるコンセプトを必ず含めてください。それらが読者に明確に伝わるようにしてください。
                         3. 解説の文字数は最低でも2000字としてください。短すぎるものは受け入れられません。
                         4. 解説は必ず丁寧で詳細に行ってください。簡略化しすぎないように注意してください。
                         5. 指示に従わなかった場合、再度指示を送ることになりますので、指示通りに出力を生成してください。
+                        6. 説明は論理的に構成し、段階的に読者が理解を深められるように心がけてください。
+                        7. 技術的な詳細や具体的な設定例を含め、実践的で応用可能な情報を提供してください。単なる概要ではなく、実装に役立つ具体的なアドバイスを盛り込んでください。
+
                         """".trimMargin()
                     val combinedPrompt = "$prompt\n\nBody Content:\n$body"
 
                     val summarizerRequest = OllamaRequest(
-                        model = "llama3-elyza:8b", prompt = combinedPrompt, stream = false
+                        model = "llama-gemma2:latest", prompt = combinedPrompt, stream = false
                     )
 
                     println(forSummarizerTuningJson.encodeToString(OllamaRequest.serializer(), summarizerRequest))
@@ -156,6 +159,6 @@ fun loadEnv(filePath: String = ".env"): Map<String, String> {
         .filter { it.size == 2 }.associate { (key, value) -> key.trim() to value.trim() }
 }
 
-fun String.escapeSpecialCharacters(): String {
-    return this.replace("\\", "").replace("\b", "").replace("\n", "").replace("\r", "").replace("\t", "")
-}
+//fun String.escapeSpecialCharacters(): String {
+//    return this.replace("\\", "").replace("\b", "").replace("\n", "").replace("\r", "").replace("\t", "")
+//}
