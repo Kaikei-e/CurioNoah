@@ -17,11 +17,8 @@ import (
 // FeedAuditTrailActionQuery is the builder for querying FeedAuditTrailAction entities.
 type FeedAuditTrailActionQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
+	ctx        *QueryContext
+	order      []feedaudittrailaction.OrderOption
 	inters     []Interceptor
 	predicates []predicate.FeedAuditTrailAction
 	// intermediate query (i.e. traversal path).
@@ -37,25 +34,25 @@ func (fataq *FeedAuditTrailActionQuery) Where(ps ...predicate.FeedAuditTrailActi
 
 // Limit the number of records to be returned by this query.
 func (fataq *FeedAuditTrailActionQuery) Limit(limit int) *FeedAuditTrailActionQuery {
-	fataq.limit = &limit
+	fataq.ctx.Limit = &limit
 	return fataq
 }
 
 // Offset to start from.
 func (fataq *FeedAuditTrailActionQuery) Offset(offset int) *FeedAuditTrailActionQuery {
-	fataq.offset = &offset
+	fataq.ctx.Offset = &offset
 	return fataq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
 func (fataq *FeedAuditTrailActionQuery) Unique(unique bool) *FeedAuditTrailActionQuery {
-	fataq.unique = &unique
+	fataq.ctx.Unique = &unique
 	return fataq
 }
 
 // Order specifies how the records should be ordered.
-func (fataq *FeedAuditTrailActionQuery) Order(o ...OrderFunc) *FeedAuditTrailActionQuery {
+func (fataq *FeedAuditTrailActionQuery) Order(o ...feedaudittrailaction.OrderOption) *FeedAuditTrailActionQuery {
 	fataq.order = append(fataq.order, o...)
 	return fataq
 }
@@ -63,7 +60,7 @@ func (fataq *FeedAuditTrailActionQuery) Order(o ...OrderFunc) *FeedAuditTrailAct
 // First returns the first FeedAuditTrailAction entity from the query.
 // Returns a *NotFoundError when no FeedAuditTrailAction was found.
 func (fataq *FeedAuditTrailActionQuery) First(ctx context.Context) (*FeedAuditTrailAction, error) {
-	nodes, err := fataq.Limit(1).All(newQueryContext(ctx, TypeFeedAuditTrailAction, "First"))
+	nodes, err := fataq.Limit(1).All(setContextOp(ctx, fataq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +83,7 @@ func (fataq *FeedAuditTrailActionQuery) FirstX(ctx context.Context) *FeedAuditTr
 // Returns a *NotFoundError when no FeedAuditTrailAction ID was found.
 func (fataq *FeedAuditTrailActionQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fataq.Limit(1).IDs(newQueryContext(ctx, TypeFeedAuditTrailAction, "FirstID")); err != nil {
+	if ids, err = fataq.Limit(1).IDs(setContextOp(ctx, fataq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -109,7 +106,7 @@ func (fataq *FeedAuditTrailActionQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FeedAuditTrailAction entity is found.
 // Returns a *NotFoundError when no FeedAuditTrailAction entities are found.
 func (fataq *FeedAuditTrailActionQuery) Only(ctx context.Context) (*FeedAuditTrailAction, error) {
-	nodes, err := fataq.Limit(2).All(newQueryContext(ctx, TypeFeedAuditTrailAction, "Only"))
+	nodes, err := fataq.Limit(2).All(setContextOp(ctx, fataq.ctx, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +134,7 @@ func (fataq *FeedAuditTrailActionQuery) OnlyX(ctx context.Context) *FeedAuditTra
 // Returns a *NotFoundError when no entities are found.
 func (fataq *FeedAuditTrailActionQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fataq.Limit(2).IDs(newQueryContext(ctx, TypeFeedAuditTrailAction, "OnlyID")); err != nil {
+	if ids, err = fataq.Limit(2).IDs(setContextOp(ctx, fataq.ctx, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -162,7 +159,7 @@ func (fataq *FeedAuditTrailActionQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FeedAuditTrailActions.
 func (fataq *FeedAuditTrailActionQuery) All(ctx context.Context) ([]*FeedAuditTrailAction, error) {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailAction, "All")
+	ctx = setContextOp(ctx, fataq.ctx, "All")
 	if err := fataq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -180,10 +177,12 @@ func (fataq *FeedAuditTrailActionQuery) AllX(ctx context.Context) []*FeedAuditTr
 }
 
 // IDs executes the query and returns a list of FeedAuditTrailAction IDs.
-func (fataq *FeedAuditTrailActionQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailAction, "IDs")
-	if err := fataq.Select(feedaudittrailaction.FieldID).Scan(ctx, &ids); err != nil {
+func (fataq *FeedAuditTrailActionQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if fataq.ctx.Unique == nil && fataq.path != nil {
+		fataq.Unique(true)
+	}
+	ctx = setContextOp(ctx, fataq.ctx, "IDs")
+	if err = fataq.Select(feedaudittrailaction.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -200,7 +199,7 @@ func (fataq *FeedAuditTrailActionQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fataq *FeedAuditTrailActionQuery) Count(ctx context.Context) (int, error) {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailAction, "Count")
+	ctx = setContextOp(ctx, fataq.ctx, "Count")
 	if err := fataq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -218,7 +217,7 @@ func (fataq *FeedAuditTrailActionQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fataq *FeedAuditTrailActionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailAction, "Exist")
+	ctx = setContextOp(ctx, fataq.ctx, "Exist")
 	switch _, err := fataq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -246,15 +245,13 @@ func (fataq *FeedAuditTrailActionQuery) Clone() *FeedAuditTrailActionQuery {
 	}
 	return &FeedAuditTrailActionQuery{
 		config:     fataq.config,
-		limit:      fataq.limit,
-		offset:     fataq.offset,
-		order:      append([]OrderFunc{}, fataq.order...),
+		ctx:        fataq.ctx.Clone(),
+		order:      append([]feedaudittrailaction.OrderOption{}, fataq.order...),
 		inters:     append([]Interceptor{}, fataq.inters...),
 		predicates: append([]predicate.FeedAuditTrailAction{}, fataq.predicates...),
 		// clone intermediate query.
-		sql:    fataq.sql.Clone(),
-		path:   fataq.path,
-		unique: fataq.unique,
+		sql:  fataq.sql.Clone(),
+		path: fataq.path,
 	}
 }
 
@@ -273,9 +270,9 @@ func (fataq *FeedAuditTrailActionQuery) Clone() *FeedAuditTrailActionQuery {
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fataq *FeedAuditTrailActionQuery) GroupBy(field string, fields ...string) *FeedAuditTrailActionGroupBy {
-	fataq.fields = append([]string{field}, fields...)
+	fataq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &FeedAuditTrailActionGroupBy{build: fataq}
-	grbuild.flds = &fataq.fields
+	grbuild.flds = &fataq.ctx.Fields
 	grbuild.label = feedaudittrailaction.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -294,10 +291,10 @@ func (fataq *FeedAuditTrailActionQuery) GroupBy(field string, fields ...string) 
 //		Select(feedaudittrailaction.FieldAction).
 //		Scan(ctx, &v)
 func (fataq *FeedAuditTrailActionQuery) Select(fields ...string) *FeedAuditTrailActionSelect {
-	fataq.fields = append(fataq.fields, fields...)
+	fataq.ctx.Fields = append(fataq.ctx.Fields, fields...)
 	sbuild := &FeedAuditTrailActionSelect{FeedAuditTrailActionQuery: fataq}
 	sbuild.label = feedaudittrailaction.Label
-	sbuild.flds, sbuild.scan = &fataq.fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &fataq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
@@ -317,7 +314,7 @@ func (fataq *FeedAuditTrailActionQuery) prepareQuery(ctx context.Context) error 
 			}
 		}
 	}
-	for _, f := range fataq.fields {
+	for _, f := range fataq.ctx.Fields {
 		if !feedaudittrailaction.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
@@ -359,30 +356,22 @@ func (fataq *FeedAuditTrailActionQuery) sqlAll(ctx context.Context, hooks ...que
 
 func (fataq *FeedAuditTrailActionQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := fataq.querySpec()
-	_spec.Node.Columns = fataq.fields
-	if len(fataq.fields) > 0 {
-		_spec.Unique = fataq.unique != nil && *fataq.unique
+	_spec.Node.Columns = fataq.ctx.Fields
+	if len(fataq.ctx.Fields) > 0 {
+		_spec.Unique = fataq.ctx.Unique != nil && *fataq.ctx.Unique
 	}
 	return sqlgraph.CountNodes(ctx, fataq.driver, _spec)
 }
 
 func (fataq *FeedAuditTrailActionQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedaudittrailaction.Table,
-			Columns: feedaudittrailaction.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittrailaction.FieldID,
-			},
-		},
-		From:   fataq.sql,
-		Unique: true,
-	}
-	if unique := fataq.unique; unique != nil {
+	_spec := sqlgraph.NewQuerySpec(feedaudittrailaction.Table, feedaudittrailaction.Columns, sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt))
+	_spec.From = fataq.sql
+	if unique := fataq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if fataq.path != nil {
+		_spec.Unique = true
 	}
-	if fields := fataq.fields; len(fields) > 0 {
+	if fields := fataq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feedaudittrailaction.FieldID)
 		for i := range fields {
@@ -398,10 +387,10 @@ func (fataq *FeedAuditTrailActionQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if limit := fataq.limit; limit != nil {
+	if limit := fataq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := fataq.offset; offset != nil {
+	if offset := fataq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
 	if ps := fataq.order; len(ps) > 0 {
@@ -417,7 +406,7 @@ func (fataq *FeedAuditTrailActionQuery) querySpec() *sqlgraph.QuerySpec {
 func (fataq *FeedAuditTrailActionQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(fataq.driver.Dialect())
 	t1 := builder.Table(feedaudittrailaction.Table)
-	columns := fataq.fields
+	columns := fataq.ctx.Fields
 	if len(columns) == 0 {
 		columns = feedaudittrailaction.Columns
 	}
@@ -426,7 +415,7 @@ func (fataq *FeedAuditTrailActionQuery) sqlQuery(ctx context.Context) *sql.Selec
 		selector = fataq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if fataq.unique != nil && *fataq.unique {
+	if fataq.ctx.Unique != nil && *fataq.ctx.Unique {
 		selector.Distinct()
 	}
 	for _, p := range fataq.predicates {
@@ -435,12 +424,12 @@ func (fataq *FeedAuditTrailActionQuery) sqlQuery(ctx context.Context) *sql.Selec
 	for _, p := range fataq.order {
 		p(selector)
 	}
-	if offset := fataq.offset; offset != nil {
+	if offset := fataq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := fataq.limit; limit != nil {
+	if limit := fataq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -460,7 +449,7 @@ func (fatagb *FeedAuditTrailActionGroupBy) Aggregate(fns ...AggregateFunc) *Feed
 
 // Scan applies the selector query and scans the result into the given value.
 func (fatagb *FeedAuditTrailActionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailAction, "GroupBy")
+	ctx = setContextOp(ctx, fatagb.build.ctx, "GroupBy")
 	if err := fatagb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -508,7 +497,7 @@ func (fatas *FeedAuditTrailActionSelect) Aggregate(fns ...AggregateFunc) *FeedAu
 
 // Scan applies the selector query and scans the result into the given value.
 func (fatas *FeedAuditTrailActionSelect) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailAction, "Select")
+	ctx = setContextOp(ctx, fatas.ctx, "Select")
 	if err := fatas.prepareQuery(ctx); err != nil {
 		return err
 	}

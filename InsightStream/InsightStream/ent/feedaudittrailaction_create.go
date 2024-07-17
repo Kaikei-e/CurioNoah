@@ -40,7 +40,7 @@ func (fatac *FeedAuditTrailActionCreate) Mutation() *FeedAuditTrailActionMutatio
 
 // Save creates the FeedAuditTrailAction in the database.
 func (fatac *FeedAuditTrailActionCreate) Save(ctx context.Context) (*FeedAuditTrailAction, error) {
-	return withHooks[*FeedAuditTrailAction, FeedAuditTrailActionMutation](ctx, fatac.sqlSave, fatac.mutation, fatac.hooks)
+	return withHooks(ctx, fatac.sqlSave, fatac.mutation, fatac.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -101,13 +101,7 @@ func (fatac *FeedAuditTrailActionCreate) sqlSave(ctx context.Context) (*FeedAudi
 func (fatac *FeedAuditTrailActionCreate) createSpec() (*FeedAuditTrailAction, *sqlgraph.CreateSpec) {
 	var (
 		_node = &FeedAuditTrailAction{config: fatac.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: feedaudittrailaction.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittrailaction.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(feedaudittrailaction.Table, sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = fatac.conflict
 	if id, ok := fatac.mutation.ID(); ok {
@@ -280,12 +274,16 @@ func (u *FeedAuditTrailActionUpsertOne) IDX(ctx context.Context) int {
 // FeedAuditTrailActionCreateBulk is the builder for creating many FeedAuditTrailAction entities in bulk.
 type FeedAuditTrailActionCreateBulk struct {
 	config
+	err      error
 	builders []*FeedAuditTrailActionCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the FeedAuditTrailAction entities in the database.
 func (fatacb *FeedAuditTrailActionCreateBulk) Save(ctx context.Context) ([]*FeedAuditTrailAction, error) {
+	if fatacb.err != nil {
+		return nil, fatacb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(fatacb.builders))
 	nodes := make([]*FeedAuditTrailAction, len(fatacb.builders))
 	mutators := make([]Mutator, len(fatacb.builders))
@@ -301,8 +299,8 @@ func (fatacb *FeedAuditTrailActionCreateBulk) Save(ctx context.Context) ([]*Feed
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, fatacb.builders[i+1].mutation)
 				} else {
@@ -469,6 +467,9 @@ func (u *FeedAuditTrailActionUpsertBulk) UpdateAction() *FeedAuditTrailActionUps
 
 // Exec executes the query.
 func (u *FeedAuditTrailActionUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FeedAuditTrailActionCreateBulk instead", i)

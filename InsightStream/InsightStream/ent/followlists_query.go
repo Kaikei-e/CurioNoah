@@ -17,11 +17,8 @@ import (
 // FollowListsQuery is the builder for querying FollowLists entities.
 type FollowListsQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
+	ctx        *QueryContext
+	order      []followlists.OrderOption
 	inters     []Interceptor
 	predicates []predicate.FollowLists
 	// intermediate query (i.e. traversal path).
@@ -37,25 +34,25 @@ func (flq *FollowListsQuery) Where(ps ...predicate.FollowLists) *FollowListsQuer
 
 // Limit the number of records to be returned by this query.
 func (flq *FollowListsQuery) Limit(limit int) *FollowListsQuery {
-	flq.limit = &limit
+	flq.ctx.Limit = &limit
 	return flq
 }
 
 // Offset to start from.
 func (flq *FollowListsQuery) Offset(offset int) *FollowListsQuery {
-	flq.offset = &offset
+	flq.ctx.Offset = &offset
 	return flq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
 func (flq *FollowListsQuery) Unique(unique bool) *FollowListsQuery {
-	flq.unique = &unique
+	flq.ctx.Unique = &unique
 	return flq
 }
 
 // Order specifies how the records should be ordered.
-func (flq *FollowListsQuery) Order(o ...OrderFunc) *FollowListsQuery {
+func (flq *FollowListsQuery) Order(o ...followlists.OrderOption) *FollowListsQuery {
 	flq.order = append(flq.order, o...)
 	return flq
 }
@@ -63,7 +60,7 @@ func (flq *FollowListsQuery) Order(o ...OrderFunc) *FollowListsQuery {
 // First returns the first FollowLists entity from the query.
 // Returns a *NotFoundError when no FollowLists was found.
 func (flq *FollowListsQuery) First(ctx context.Context) (*FollowLists, error) {
-	nodes, err := flq.Limit(1).All(newQueryContext(ctx, TypeFollowLists, "First"))
+	nodes, err := flq.Limit(1).All(setContextOp(ctx, flq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +83,7 @@ func (flq *FollowListsQuery) FirstX(ctx context.Context) *FollowLists {
 // Returns a *NotFoundError when no FollowLists ID was found.
 func (flq *FollowListsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = flq.Limit(1).IDs(newQueryContext(ctx, TypeFollowLists, "FirstID")); err != nil {
+	if ids, err = flq.Limit(1).IDs(setContextOp(ctx, flq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -109,7 +106,7 @@ func (flq *FollowListsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FollowLists entity is found.
 // Returns a *NotFoundError when no FollowLists entities are found.
 func (flq *FollowListsQuery) Only(ctx context.Context) (*FollowLists, error) {
-	nodes, err := flq.Limit(2).All(newQueryContext(ctx, TypeFollowLists, "Only"))
+	nodes, err := flq.Limit(2).All(setContextOp(ctx, flq.ctx, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +134,7 @@ func (flq *FollowListsQuery) OnlyX(ctx context.Context) *FollowLists {
 // Returns a *NotFoundError when no entities are found.
 func (flq *FollowListsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = flq.Limit(2).IDs(newQueryContext(ctx, TypeFollowLists, "OnlyID")); err != nil {
+	if ids, err = flq.Limit(2).IDs(setContextOp(ctx, flq.ctx, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -162,7 +159,7 @@ func (flq *FollowListsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FollowListsSlice.
 func (flq *FollowListsQuery) All(ctx context.Context) ([]*FollowLists, error) {
-	ctx = newQueryContext(ctx, TypeFollowLists, "All")
+	ctx = setContextOp(ctx, flq.ctx, "All")
 	if err := flq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -180,10 +177,12 @@ func (flq *FollowListsQuery) AllX(ctx context.Context) []*FollowLists {
 }
 
 // IDs executes the query and returns a list of FollowLists IDs.
-func (flq *FollowListsQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
-	ctx = newQueryContext(ctx, TypeFollowLists, "IDs")
-	if err := flq.Select(followlists.FieldID).Scan(ctx, &ids); err != nil {
+func (flq *FollowListsQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if flq.ctx.Unique == nil && flq.path != nil {
+		flq.Unique(true)
+	}
+	ctx = setContextOp(ctx, flq.ctx, "IDs")
+	if err = flq.Select(followlists.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -200,7 +199,7 @@ func (flq *FollowListsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (flq *FollowListsQuery) Count(ctx context.Context) (int, error) {
-	ctx = newQueryContext(ctx, TypeFollowLists, "Count")
+	ctx = setContextOp(ctx, flq.ctx, "Count")
 	if err := flq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -218,7 +217,7 @@ func (flq *FollowListsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (flq *FollowListsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = newQueryContext(ctx, TypeFollowLists, "Exist")
+	ctx = setContextOp(ctx, flq.ctx, "Exist")
 	switch _, err := flq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -246,15 +245,13 @@ func (flq *FollowListsQuery) Clone() *FollowListsQuery {
 	}
 	return &FollowListsQuery{
 		config:     flq.config,
-		limit:      flq.limit,
-		offset:     flq.offset,
-		order:      append([]OrderFunc{}, flq.order...),
+		ctx:        flq.ctx.Clone(),
+		order:      append([]followlists.OrderOption{}, flq.order...),
 		inters:     append([]Interceptor{}, flq.inters...),
 		predicates: append([]predicate.FollowLists{}, flq.predicates...),
 		// clone intermediate query.
-		sql:    flq.sql.Clone(),
-		path:   flq.path,
-		unique: flq.unique,
+		sql:  flq.sql.Clone(),
+		path: flq.path,
 	}
 }
 
@@ -273,9 +270,9 @@ func (flq *FollowListsQuery) Clone() *FollowListsQuery {
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (flq *FollowListsQuery) GroupBy(field string, fields ...string) *FollowListsGroupBy {
-	flq.fields = append([]string{field}, fields...)
+	flq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &FollowListsGroupBy{build: flq}
-	grbuild.flds = &flq.fields
+	grbuild.flds = &flq.ctx.Fields
 	grbuild.label = followlists.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -294,10 +291,10 @@ func (flq *FollowListsQuery) GroupBy(field string, fields ...string) *FollowList
 //		Select(followlists.FieldUUID).
 //		Scan(ctx, &v)
 func (flq *FollowListsQuery) Select(fields ...string) *FollowListsSelect {
-	flq.fields = append(flq.fields, fields...)
+	flq.ctx.Fields = append(flq.ctx.Fields, fields...)
 	sbuild := &FollowListsSelect{FollowListsQuery: flq}
 	sbuild.label = followlists.Label
-	sbuild.flds, sbuild.scan = &flq.fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &flq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
@@ -317,7 +314,7 @@ func (flq *FollowListsQuery) prepareQuery(ctx context.Context) error {
 			}
 		}
 	}
-	for _, f := range flq.fields {
+	for _, f := range flq.ctx.Fields {
 		if !followlists.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
@@ -359,30 +356,22 @@ func (flq *FollowListsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 
 func (flq *FollowListsQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := flq.querySpec()
-	_spec.Node.Columns = flq.fields
-	if len(flq.fields) > 0 {
-		_spec.Unique = flq.unique != nil && *flq.unique
+	_spec.Node.Columns = flq.ctx.Fields
+	if len(flq.ctx.Fields) > 0 {
+		_spec.Unique = flq.ctx.Unique != nil && *flq.ctx.Unique
 	}
 	return sqlgraph.CountNodes(ctx, flq.driver, _spec)
 }
 
 func (flq *FollowListsQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   followlists.Table,
-			Columns: followlists.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: followlists.FieldID,
-			},
-		},
-		From:   flq.sql,
-		Unique: true,
-	}
-	if unique := flq.unique; unique != nil {
+	_spec := sqlgraph.NewQuerySpec(followlists.Table, followlists.Columns, sqlgraph.NewFieldSpec(followlists.FieldID, field.TypeInt))
+	_spec.From = flq.sql
+	if unique := flq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if flq.path != nil {
+		_spec.Unique = true
 	}
-	if fields := flq.fields; len(fields) > 0 {
+	if fields := flq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, followlists.FieldID)
 		for i := range fields {
@@ -398,10 +387,10 @@ func (flq *FollowListsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if limit := flq.limit; limit != nil {
+	if limit := flq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := flq.offset; offset != nil {
+	if offset := flq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
 	if ps := flq.order; len(ps) > 0 {
@@ -417,7 +406,7 @@ func (flq *FollowListsQuery) querySpec() *sqlgraph.QuerySpec {
 func (flq *FollowListsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(flq.driver.Dialect())
 	t1 := builder.Table(followlists.Table)
-	columns := flq.fields
+	columns := flq.ctx.Fields
 	if len(columns) == 0 {
 		columns = followlists.Columns
 	}
@@ -426,7 +415,7 @@ func (flq *FollowListsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector = flq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if flq.unique != nil && *flq.unique {
+	if flq.ctx.Unique != nil && *flq.ctx.Unique {
 		selector.Distinct()
 	}
 	for _, p := range flq.predicates {
@@ -435,12 +424,12 @@ func (flq *FollowListsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	for _, p := range flq.order {
 		p(selector)
 	}
-	if offset := flq.offset; offset != nil {
+	if offset := flq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := flq.limit; limit != nil {
+	if limit := flq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -460,7 +449,7 @@ func (flgb *FollowListsGroupBy) Aggregate(fns ...AggregateFunc) *FollowListsGrou
 
 // Scan applies the selector query and scans the result into the given value.
 func (flgb *FollowListsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFollowLists, "GroupBy")
+	ctx = setContextOp(ctx, flgb.build.ctx, "GroupBy")
 	if err := flgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -508,7 +497,7 @@ func (fls *FollowListsSelect) Aggregate(fns ...AggregateFunc) *FollowListsSelect
 
 // Scan applies the selector query and scans the result into the given value.
 func (fls *FollowListsSelect) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFollowLists, "Select")
+	ctx = setContextOp(ctx, fls.ctx, "Select")
 	if err := fls.prepareQuery(ctx); err != nil {
 		return err
 	}

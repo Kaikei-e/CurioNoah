@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
@@ -32,7 +33,8 @@ type Feeds struct {
 	// DtUpdated holds the value of the "dt_updated" field.
 	DtUpdated time.Time `json:"dt_updated,omitempty"`
 	// Favorites holds the value of the "favorites" field.
-	Favorites int64 `json:"favorites,omitempty"`
+	Favorites    int64 `json:"favorites,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -49,7 +51,7 @@ func (*Feeds) scanValues(columns []string) ([]any, error) {
 		case feeds.FieldID:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Feeds", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -117,16 +119,24 @@ func (f *Feeds) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				f.Favorites = value.Int64
 			}
+		default:
+			f.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the Feeds.
+// This includes values selected through modifiers, order, etc.
+func (f *Feeds) Value(name string) (ent.Value, error) {
+	return f.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this Feeds.
 // Note that you need to call Feeds.Unwrap() before calling this method if this Feeds
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (f *Feeds) Update() *FeedsUpdateOne {
-	return (&FeedsClient{config: f.config}).UpdateOne(f)
+	return NewFeedsClient(f.config).UpdateOne(f)
 }
 
 // Unwrap unwraps the Feeds entity that was returned from a transaction after it was closed,
@@ -174,9 +184,3 @@ func (f *Feeds) String() string {
 
 // FeedsSlice is a parsable slice of Feeds.
 type FeedsSlice []*Feeds
-
-func (f FeedsSlice) config(cfg config) {
-	for _i := range f {
-		f[_i].config = cfg
-	}
-}

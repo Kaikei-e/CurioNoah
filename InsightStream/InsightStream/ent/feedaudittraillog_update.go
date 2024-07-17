@@ -66,7 +66,7 @@ func (fatlu *FeedAuditTrailLogUpdate) ClearAction() *FeedAuditTrailLogUpdate {
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (fatlu *FeedAuditTrailLogUpdate) Save(ctx context.Context) (int, error) {
 	fatlu.defaults()
-	return withHooks[int, FeedAuditTrailLogMutation](ctx, fatlu.sqlSave, fatlu.mutation, fatlu.hooks)
+	return withHooks(ctx, fatlu.sqlSave, fatlu.mutation, fatlu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -111,16 +111,7 @@ func (fatlu *FeedAuditTrailLogUpdate) sqlSave(ctx context.Context) (n int, err e
 	if err := fatlu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedaudittraillog.Table,
-			Columns: feedaudittraillog.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittraillog.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feedaudittraillog.Table, feedaudittraillog.Columns, sqlgraph.NewFieldSpec(feedaudittraillog.FieldID, field.TypeInt))
 	if ps := fatlu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -142,10 +133,7 @@ func (fatlu *FeedAuditTrailLogUpdate) sqlSave(ctx context.Context) (n int, err e
 			Columns: []string{feedaudittraillog.ActionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feedaudittrailaction.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -158,10 +146,7 @@ func (fatlu *FeedAuditTrailLogUpdate) sqlSave(ctx context.Context) (n int, err e
 			Columns: []string{feedaudittraillog.ActionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feedaudittrailaction.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -223,6 +208,12 @@ func (fatluo *FeedAuditTrailLogUpdateOne) ClearAction() *FeedAuditTrailLogUpdate
 	return fatluo
 }
 
+// Where appends a list predicates to the FeedAuditTrailLogUpdate builder.
+func (fatluo *FeedAuditTrailLogUpdateOne) Where(ps ...predicate.FeedAuditTrailLog) *FeedAuditTrailLogUpdateOne {
+	fatluo.mutation.Where(ps...)
+	return fatluo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (fatluo *FeedAuditTrailLogUpdateOne) Select(field string, fields ...string) *FeedAuditTrailLogUpdateOne {
@@ -233,7 +224,7 @@ func (fatluo *FeedAuditTrailLogUpdateOne) Select(field string, fields ...string)
 // Save executes the query and returns the updated FeedAuditTrailLog entity.
 func (fatluo *FeedAuditTrailLogUpdateOne) Save(ctx context.Context) (*FeedAuditTrailLog, error) {
 	fatluo.defaults()
-	return withHooks[*FeedAuditTrailLog, FeedAuditTrailLogMutation](ctx, fatluo.sqlSave, fatluo.mutation, fatluo.hooks)
+	return withHooks(ctx, fatluo.sqlSave, fatluo.mutation, fatluo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -278,16 +269,7 @@ func (fatluo *FeedAuditTrailLogUpdateOne) sqlSave(ctx context.Context) (_node *F
 	if err := fatluo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedaudittraillog.Table,
-			Columns: feedaudittraillog.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittraillog.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feedaudittraillog.Table, feedaudittraillog.Columns, sqlgraph.NewFieldSpec(feedaudittraillog.FieldID, field.TypeInt))
 	id, ok := fatluo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedAuditTrailLog.id" for update`)}
@@ -326,10 +308,7 @@ func (fatluo *FeedAuditTrailLogUpdateOne) sqlSave(ctx context.Context) (_node *F
 			Columns: []string{feedaudittraillog.ActionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feedaudittrailaction.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -342,10 +321,7 @@ func (fatluo *FeedAuditTrailLogUpdateOne) sqlSave(ctx context.Context) (_node *F
 			Columns: []string{feedaudittraillog.ActionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feedaudittrailaction.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

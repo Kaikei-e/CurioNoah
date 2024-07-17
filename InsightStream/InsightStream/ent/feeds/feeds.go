@@ -5,6 +5,7 @@ package feeds
 import (
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
 
@@ -86,3 +87,51 @@ var (
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
+
+// OrderOption defines the ordering options for the Feeds queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// BySiteURL orders the results by the site_url field.
+func BySiteURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSiteURL, opts...).ToFunc()
+}
+
+// ByTitle orders the results by the title field.
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTitle, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByFeedURL orders the results by the feed_url field.
+func ByFeedURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFeedURL, opts...).ToFunc()
+}
+
+// ByLanguage orders the results by the language field.
+func ByLanguage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLanguage, opts...).ToFunc()
+}
+
+// ByDtCreated orders the results by the dt_created field.
+func ByDtCreated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDtCreated, opts...).ToFunc()
+}
+
+// ByDtUpdated orders the results by the dt_updated field.
+func ByDtUpdated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDtUpdated, opts...).ToFunc()
+}
+
+// ByFavorites orders the results by the favorites field.
+func ByFavorites(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFavorites, opts...).ToFunc()
+}

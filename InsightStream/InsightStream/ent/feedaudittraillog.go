@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -21,8 +22,9 @@ type FeedAuditTrailLog struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedAuditTrailLogQuery when eager-loading is set.
-	Edges     FeedAuditTrailLogEdges `json:"edges"`
-	action_id *int
+	Edges        FeedAuditTrailLogEdges `json:"edges"`
+	action_id    *int
+	selectValues sql.SelectValues
 }
 
 // FeedAuditTrailLogEdges holds the relations/edges for other nodes in the graph.
@@ -37,12 +39,10 @@ type FeedAuditTrailLogEdges struct {
 // ActionOrErr returns the Action value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e FeedAuditTrailLogEdges) ActionOrErr() (*FeedAuditTrailAction, error) {
-	if e.loadedTypes[0] {
-		if e.Action == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: feedaudittrailaction.Label}
-		}
+	if e.Action != nil {
 		return e.Action, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: feedaudittrailaction.Label}
 	}
 	return nil, &NotLoadedError{edge: "action"}
 }
@@ -59,7 +59,7 @@ func (*FeedAuditTrailLog) scanValues(columns []string) ([]any, error) {
 		case feedaudittraillog.ForeignKeys[0]: // action_id
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type FeedAuditTrailLog", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -92,21 +92,29 @@ func (fatl *FeedAuditTrailLog) assignValues(columns []string, values []any) erro
 				fatl.action_id = new(int)
 				*fatl.action_id = int(value.Int64)
 			}
+		default:
+			fatl.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
 }
 
+// Value returns the ent.Value that was dynamically selected and assigned to the FeedAuditTrailLog.
+// This includes values selected through modifiers, order, etc.
+func (fatl *FeedAuditTrailLog) Value(name string) (ent.Value, error) {
+	return fatl.selectValues.Get(name)
+}
+
 // QueryAction queries the "action" edge of the FeedAuditTrailLog entity.
 func (fatl *FeedAuditTrailLog) QueryAction() *FeedAuditTrailActionQuery {
-	return (&FeedAuditTrailLogClient{config: fatl.config}).QueryAction(fatl)
+	return NewFeedAuditTrailLogClient(fatl.config).QueryAction(fatl)
 }
 
 // Update returns a builder for updating this FeedAuditTrailLog.
 // Note that you need to call FeedAuditTrailLog.Unwrap() before calling this method if this FeedAuditTrailLog
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (fatl *FeedAuditTrailLog) Update() *FeedAuditTrailLogUpdateOne {
-	return (&FeedAuditTrailLogClient{config: fatl.config}).UpdateOne(fatl)
+	return NewFeedAuditTrailLogClient(fatl.config).UpdateOne(fatl)
 }
 
 // Unwrap unwraps the FeedAuditTrailLog entity that was returned from a transaction after it was closed,
@@ -133,9 +141,3 @@ func (fatl *FeedAuditTrailLog) String() string {
 
 // FeedAuditTrailLogs is a parsable slice of FeedAuditTrailLog.
 type FeedAuditTrailLogs []*FeedAuditTrailLog
-
-func (fatl FeedAuditTrailLogs) config(cfg config) {
-	for _i := range fatl {
-		fatl[_i].config = cfg
-	}
-}

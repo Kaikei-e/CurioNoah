@@ -276,7 +276,7 @@ func (flc *FollowListsCreate) Mutation() *FollowListsMutation {
 // Save creates the FollowLists in the database.
 func (flc *FollowListsCreate) Save(ctx context.Context) (*FollowLists, error) {
 	flc.defaults()
-	return withHooks[*FollowLists, FollowListsMutation](ctx, flc.sqlSave, flc.mutation, flc.hooks)
+	return withHooks(ctx, flc.sqlSave, flc.mutation, flc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -454,13 +454,7 @@ func (flc *FollowListsCreate) sqlSave(ctx context.Context) (*FollowLists, error)
 func (flc *FollowListsCreate) createSpec() (*FollowLists, *sqlgraph.CreateSpec) {
 	var (
 		_node = &FollowLists{config: flc.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: followlists.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: followlists.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(followlists.Table, sqlgraph.NewFieldSpec(followlists.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = flc.conflict
 	if value, ok := flc.mutation.UUID(); ok {
@@ -1209,12 +1203,16 @@ func (u *FollowListsUpsertOne) IDX(ctx context.Context) int {
 // FollowListsCreateBulk is the builder for creating many FollowLists entities in bulk.
 type FollowListsCreateBulk struct {
 	config
+	err      error
 	builders []*FollowListsCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the FollowLists entities in the database.
 func (flcb *FollowListsCreateBulk) Save(ctx context.Context) ([]*FollowLists, error) {
+	if flcb.err != nil {
+		return nil, flcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(flcb.builders))
 	nodes := make([]*FollowLists, len(flcb.builders))
 	mutators := make([]Mutator, len(flcb.builders))
@@ -1231,8 +1229,8 @@ func (flcb *FollowListsCreateBulk) Save(ctx context.Context) ([]*FollowLists, er
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, flcb.builders[i+1].mutation)
 				} else {
@@ -1669,6 +1667,9 @@ func (u *FollowListsUpsertBulk) UpdateIsUpdated() *FollowListsUpsertBulk {
 
 // Exec executes the query.
 func (u *FollowListsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FollowListsCreateBulk instead", i)

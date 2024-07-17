@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
@@ -54,7 +55,8 @@ type FollowLists struct {
 	// IsRead holds the value of the "is_read" field.
 	IsRead bool `json:"is_read,omitempty"`
 	// IsUpdated holds the value of the "is_updated" field.
-	IsUpdated bool `json:"is_updated,omitempty"`
+	IsUpdated    bool `json:"is_updated,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -75,7 +77,7 @@ func (*FollowLists) scanValues(columns []string) ([]any, error) {
 		case followlists.FieldUUID:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type FollowLists", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -207,16 +209,24 @@ func (fl *FollowLists) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fl.IsUpdated = value.Bool
 			}
+		default:
+			fl.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the FollowLists.
+// This includes values selected through modifiers, order, etc.
+func (fl *FollowLists) Value(name string) (ent.Value, error) {
+	return fl.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this FollowLists.
 // Note that you need to call FollowLists.Unwrap() before calling this method if this FollowLists
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (fl *FollowLists) Update() *FollowListsUpdateOne {
-	return (&FollowListsClient{config: fl.config}).UpdateOne(fl)
+	return NewFollowListsClient(fl.config).UpdateOne(fl)
 }
 
 // Unwrap unwraps the FollowLists entity that was returned from a transaction after it was closed,
@@ -294,9 +304,3 @@ func (fl *FollowLists) String() string {
 
 // FollowListsSlice is a parsable slice of FollowLists.
 type FollowListsSlice []*FollowLists
-
-func (fl FollowListsSlice) config(cfg config) {
-	for _i := range fl {
-		fl[_i].config = cfg
-	}
-}

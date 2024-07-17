@@ -18,11 +18,8 @@ import (
 // FeedAuditTrailLogQuery is the builder for querying FeedAuditTrailLog entities.
 type FeedAuditTrailLogQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
+	ctx        *QueryContext
+	order      []feedaudittraillog.OrderOption
 	inters     []Interceptor
 	predicates []predicate.FeedAuditTrailLog
 	withAction *FeedAuditTrailActionQuery
@@ -40,25 +37,25 @@ func (fatlq *FeedAuditTrailLogQuery) Where(ps ...predicate.FeedAuditTrailLog) *F
 
 // Limit the number of records to be returned by this query.
 func (fatlq *FeedAuditTrailLogQuery) Limit(limit int) *FeedAuditTrailLogQuery {
-	fatlq.limit = &limit
+	fatlq.ctx.Limit = &limit
 	return fatlq
 }
 
 // Offset to start from.
 func (fatlq *FeedAuditTrailLogQuery) Offset(offset int) *FeedAuditTrailLogQuery {
-	fatlq.offset = &offset
+	fatlq.ctx.Offset = &offset
 	return fatlq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
 func (fatlq *FeedAuditTrailLogQuery) Unique(unique bool) *FeedAuditTrailLogQuery {
-	fatlq.unique = &unique
+	fatlq.ctx.Unique = &unique
 	return fatlq
 }
 
 // Order specifies how the records should be ordered.
-func (fatlq *FeedAuditTrailLogQuery) Order(o ...OrderFunc) *FeedAuditTrailLogQuery {
+func (fatlq *FeedAuditTrailLogQuery) Order(o ...feedaudittraillog.OrderOption) *FeedAuditTrailLogQuery {
 	fatlq.order = append(fatlq.order, o...)
 	return fatlq
 }
@@ -88,7 +85,7 @@ func (fatlq *FeedAuditTrailLogQuery) QueryAction() *FeedAuditTrailActionQuery {
 // First returns the first FeedAuditTrailLog entity from the query.
 // Returns a *NotFoundError when no FeedAuditTrailLog was found.
 func (fatlq *FeedAuditTrailLogQuery) First(ctx context.Context) (*FeedAuditTrailLog, error) {
-	nodes, err := fatlq.Limit(1).All(newQueryContext(ctx, TypeFeedAuditTrailLog, "First"))
+	nodes, err := fatlq.Limit(1).All(setContextOp(ctx, fatlq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +108,7 @@ func (fatlq *FeedAuditTrailLogQuery) FirstX(ctx context.Context) *FeedAuditTrail
 // Returns a *NotFoundError when no FeedAuditTrailLog ID was found.
 func (fatlq *FeedAuditTrailLogQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fatlq.Limit(1).IDs(newQueryContext(ctx, TypeFeedAuditTrailLog, "FirstID")); err != nil {
+	if ids, err = fatlq.Limit(1).IDs(setContextOp(ctx, fatlq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -134,7 +131,7 @@ func (fatlq *FeedAuditTrailLogQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FeedAuditTrailLog entity is found.
 // Returns a *NotFoundError when no FeedAuditTrailLog entities are found.
 func (fatlq *FeedAuditTrailLogQuery) Only(ctx context.Context) (*FeedAuditTrailLog, error) {
-	nodes, err := fatlq.Limit(2).All(newQueryContext(ctx, TypeFeedAuditTrailLog, "Only"))
+	nodes, err := fatlq.Limit(2).All(setContextOp(ctx, fatlq.ctx, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +159,7 @@ func (fatlq *FeedAuditTrailLogQuery) OnlyX(ctx context.Context) *FeedAuditTrailL
 // Returns a *NotFoundError when no entities are found.
 func (fatlq *FeedAuditTrailLogQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fatlq.Limit(2).IDs(newQueryContext(ctx, TypeFeedAuditTrailLog, "OnlyID")); err != nil {
+	if ids, err = fatlq.Limit(2).IDs(setContextOp(ctx, fatlq.ctx, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -187,7 +184,7 @@ func (fatlq *FeedAuditTrailLogQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FeedAuditTrailLogs.
 func (fatlq *FeedAuditTrailLogQuery) All(ctx context.Context) ([]*FeedAuditTrailLog, error) {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailLog, "All")
+	ctx = setContextOp(ctx, fatlq.ctx, "All")
 	if err := fatlq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -205,10 +202,12 @@ func (fatlq *FeedAuditTrailLogQuery) AllX(ctx context.Context) []*FeedAuditTrail
 }
 
 // IDs executes the query and returns a list of FeedAuditTrailLog IDs.
-func (fatlq *FeedAuditTrailLogQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailLog, "IDs")
-	if err := fatlq.Select(feedaudittraillog.FieldID).Scan(ctx, &ids); err != nil {
+func (fatlq *FeedAuditTrailLogQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if fatlq.ctx.Unique == nil && fatlq.path != nil {
+		fatlq.Unique(true)
+	}
+	ctx = setContextOp(ctx, fatlq.ctx, "IDs")
+	if err = fatlq.Select(feedaudittraillog.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -225,7 +224,7 @@ func (fatlq *FeedAuditTrailLogQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fatlq *FeedAuditTrailLogQuery) Count(ctx context.Context) (int, error) {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailLog, "Count")
+	ctx = setContextOp(ctx, fatlq.ctx, "Count")
 	if err := fatlq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +242,7 @@ func (fatlq *FeedAuditTrailLogQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fatlq *FeedAuditTrailLogQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailLog, "Exist")
+	ctx = setContextOp(ctx, fatlq.ctx, "Exist")
 	switch _, err := fatlq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -271,16 +270,14 @@ func (fatlq *FeedAuditTrailLogQuery) Clone() *FeedAuditTrailLogQuery {
 	}
 	return &FeedAuditTrailLogQuery{
 		config:     fatlq.config,
-		limit:      fatlq.limit,
-		offset:     fatlq.offset,
-		order:      append([]OrderFunc{}, fatlq.order...),
+		ctx:        fatlq.ctx.Clone(),
+		order:      append([]feedaudittraillog.OrderOption{}, fatlq.order...),
 		inters:     append([]Interceptor{}, fatlq.inters...),
 		predicates: append([]predicate.FeedAuditTrailLog{}, fatlq.predicates...),
 		withAction: fatlq.withAction.Clone(),
 		// clone intermediate query.
-		sql:    fatlq.sql.Clone(),
-		path:   fatlq.path,
-		unique: fatlq.unique,
+		sql:  fatlq.sql.Clone(),
+		path: fatlq.path,
 	}
 }
 
@@ -310,9 +307,9 @@ func (fatlq *FeedAuditTrailLogQuery) WithAction(opts ...func(*FeedAuditTrailActi
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fatlq *FeedAuditTrailLogQuery) GroupBy(field string, fields ...string) *FeedAuditTrailLogGroupBy {
-	fatlq.fields = append([]string{field}, fields...)
+	fatlq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &FeedAuditTrailLogGroupBy{build: fatlq}
-	grbuild.flds = &fatlq.fields
+	grbuild.flds = &fatlq.ctx.Fields
 	grbuild.label = feedaudittraillog.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -331,10 +328,10 @@ func (fatlq *FeedAuditTrailLogQuery) GroupBy(field string, fields ...string) *Fe
 //		Select(feedaudittraillog.FieldUpdatedAt).
 //		Scan(ctx, &v)
 func (fatlq *FeedAuditTrailLogQuery) Select(fields ...string) *FeedAuditTrailLogSelect {
-	fatlq.fields = append(fatlq.fields, fields...)
+	fatlq.ctx.Fields = append(fatlq.ctx.Fields, fields...)
 	sbuild := &FeedAuditTrailLogSelect{FeedAuditTrailLogQuery: fatlq}
 	sbuild.label = feedaudittraillog.Label
-	sbuild.flds, sbuild.scan = &fatlq.fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &fatlq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
@@ -354,7 +351,7 @@ func (fatlq *FeedAuditTrailLogQuery) prepareQuery(ctx context.Context) error {
 			}
 		}
 	}
-	for _, f := range fatlq.fields {
+	for _, f := range fatlq.ctx.Fields {
 		if !feedaudittraillog.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
@@ -424,6 +421,9 @@ func (fatlq *FeedAuditTrailLogQuery) loadAction(ctx context.Context, query *Feed
 		}
 		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
+	if len(ids) == 0 {
+		return nil
+	}
 	query.Where(feedaudittrailaction.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -443,30 +443,22 @@ func (fatlq *FeedAuditTrailLogQuery) loadAction(ctx context.Context, query *Feed
 
 func (fatlq *FeedAuditTrailLogQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := fatlq.querySpec()
-	_spec.Node.Columns = fatlq.fields
-	if len(fatlq.fields) > 0 {
-		_spec.Unique = fatlq.unique != nil && *fatlq.unique
+	_spec.Node.Columns = fatlq.ctx.Fields
+	if len(fatlq.ctx.Fields) > 0 {
+		_spec.Unique = fatlq.ctx.Unique != nil && *fatlq.ctx.Unique
 	}
 	return sqlgraph.CountNodes(ctx, fatlq.driver, _spec)
 }
 
 func (fatlq *FeedAuditTrailLogQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedaudittraillog.Table,
-			Columns: feedaudittraillog.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittraillog.FieldID,
-			},
-		},
-		From:   fatlq.sql,
-		Unique: true,
-	}
-	if unique := fatlq.unique; unique != nil {
+	_spec := sqlgraph.NewQuerySpec(feedaudittraillog.Table, feedaudittraillog.Columns, sqlgraph.NewFieldSpec(feedaudittraillog.FieldID, field.TypeInt))
+	_spec.From = fatlq.sql
+	if unique := fatlq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if fatlq.path != nil {
+		_spec.Unique = true
 	}
-	if fields := fatlq.fields; len(fields) > 0 {
+	if fields := fatlq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feedaudittraillog.FieldID)
 		for i := range fields {
@@ -482,10 +474,10 @@ func (fatlq *FeedAuditTrailLogQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if limit := fatlq.limit; limit != nil {
+	if limit := fatlq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := fatlq.offset; offset != nil {
+	if offset := fatlq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
 	if ps := fatlq.order; len(ps) > 0 {
@@ -501,7 +493,7 @@ func (fatlq *FeedAuditTrailLogQuery) querySpec() *sqlgraph.QuerySpec {
 func (fatlq *FeedAuditTrailLogQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(fatlq.driver.Dialect())
 	t1 := builder.Table(feedaudittraillog.Table)
-	columns := fatlq.fields
+	columns := fatlq.ctx.Fields
 	if len(columns) == 0 {
 		columns = feedaudittraillog.Columns
 	}
@@ -510,7 +502,7 @@ func (fatlq *FeedAuditTrailLogQuery) sqlQuery(ctx context.Context) *sql.Selector
 		selector = fatlq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if fatlq.unique != nil && *fatlq.unique {
+	if fatlq.ctx.Unique != nil && *fatlq.ctx.Unique {
 		selector.Distinct()
 	}
 	for _, p := range fatlq.predicates {
@@ -519,12 +511,12 @@ func (fatlq *FeedAuditTrailLogQuery) sqlQuery(ctx context.Context) *sql.Selector
 	for _, p := range fatlq.order {
 		p(selector)
 	}
-	if offset := fatlq.offset; offset != nil {
+	if offset := fatlq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := fatlq.limit; limit != nil {
+	if limit := fatlq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -544,7 +536,7 @@ func (fatlgb *FeedAuditTrailLogGroupBy) Aggregate(fns ...AggregateFunc) *FeedAud
 
 // Scan applies the selector query and scans the result into the given value.
 func (fatlgb *FeedAuditTrailLogGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailLog, "GroupBy")
+	ctx = setContextOp(ctx, fatlgb.build.ctx, "GroupBy")
 	if err := fatlgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -592,7 +584,7 @@ func (fatls *FeedAuditTrailLogSelect) Aggregate(fns ...AggregateFunc) *FeedAudit
 
 // Scan applies the selector query and scans the result into the given value.
 func (fatls *FeedAuditTrailLogSelect) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeFeedAuditTrailLog, "Select")
+	ctx = setContextOp(ctx, fatls.ctx, "Select")
 	if err := fatls.prepareQuery(ctx); err != nil {
 		return err
 	}

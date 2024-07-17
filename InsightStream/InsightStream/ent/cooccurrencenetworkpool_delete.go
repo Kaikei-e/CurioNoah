@@ -27,7 +27,7 @@ func (cnpd *CooccurrenceNetworkPoolDelete) Where(ps ...predicate.CooccurrenceNet
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (cnpd *CooccurrenceNetworkPoolDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, CooccurrenceNetworkPoolMutation](ctx, cnpd.sqlExec, cnpd.mutation, cnpd.hooks)
+	return withHooks(ctx, cnpd.sqlExec, cnpd.mutation, cnpd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -40,15 +40,7 @@ func (cnpd *CooccurrenceNetworkPoolDelete) ExecX(ctx context.Context) int {
 }
 
 func (cnpd *CooccurrenceNetworkPoolDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: cooccurrencenetworkpool.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: cooccurrencenetworkpool.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(cooccurrencenetworkpool.Table, sqlgraph.NewFieldSpec(cooccurrencenetworkpool.FieldID, field.TypeUUID))
 	if ps := cnpd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -69,6 +61,12 @@ type CooccurrenceNetworkPoolDeleteOne struct {
 	cnpd *CooccurrenceNetworkPoolDelete
 }
 
+// Where appends a list predicates to the CooccurrenceNetworkPoolDelete builder.
+func (cnpdo *CooccurrenceNetworkPoolDeleteOne) Where(ps ...predicate.CooccurrenceNetworkPool) *CooccurrenceNetworkPoolDeleteOne {
+	cnpdo.cnpd.mutation.Where(ps...)
+	return cnpdo
+}
+
 // Exec executes the deletion query.
 func (cnpdo *CooccurrenceNetworkPoolDeleteOne) Exec(ctx context.Context) error {
 	n, err := cnpdo.cnpd.Exec(ctx)
@@ -84,5 +82,7 @@ func (cnpdo *CooccurrenceNetworkPoolDeleteOne) Exec(ctx context.Context) error {
 
 // ExecX is like Exec, but panics if an error occurs.
 func (cnpdo *CooccurrenceNetworkPoolDeleteOne) ExecX(ctx context.Context) {
-	cnpdo.cnpd.ExecX(ctx)
+	if err := cnpdo.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

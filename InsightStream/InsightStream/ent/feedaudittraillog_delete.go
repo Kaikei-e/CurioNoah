@@ -27,7 +27,7 @@ func (fatld *FeedAuditTrailLogDelete) Where(ps ...predicate.FeedAuditTrailLog) *
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (fatld *FeedAuditTrailLogDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, FeedAuditTrailLogMutation](ctx, fatld.sqlExec, fatld.mutation, fatld.hooks)
+	return withHooks(ctx, fatld.sqlExec, fatld.mutation, fatld.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -40,15 +40,7 @@ func (fatld *FeedAuditTrailLogDelete) ExecX(ctx context.Context) int {
 }
 
 func (fatld *FeedAuditTrailLogDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: feedaudittraillog.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittraillog.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(feedaudittraillog.Table, sqlgraph.NewFieldSpec(feedaudittraillog.FieldID, field.TypeInt))
 	if ps := fatld.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -69,6 +61,12 @@ type FeedAuditTrailLogDeleteOne struct {
 	fatld *FeedAuditTrailLogDelete
 }
 
+// Where appends a list predicates to the FeedAuditTrailLogDelete builder.
+func (fatldo *FeedAuditTrailLogDeleteOne) Where(ps ...predicate.FeedAuditTrailLog) *FeedAuditTrailLogDeleteOne {
+	fatldo.fatld.mutation.Where(ps...)
+	return fatldo
+}
+
 // Exec executes the deletion query.
 func (fatldo *FeedAuditTrailLogDeleteOne) Exec(ctx context.Context) error {
 	n, err := fatldo.fatld.Exec(ctx)
@@ -84,5 +82,7 @@ func (fatldo *FeedAuditTrailLogDeleteOne) Exec(ctx context.Context) error {
 
 // ExecX is like Exec, but panics if an error occurs.
 func (fatldo *FeedAuditTrailLogDeleteOne) ExecX(ctx context.Context) {
-	fatldo.fatld.ExecX(ctx)
+	if err := fatldo.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

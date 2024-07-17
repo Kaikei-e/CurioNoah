@@ -27,7 +27,7 @@ func (fd *FeedsDelete) Where(ps ...predicate.Feeds) *FeedsDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (fd *FeedsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, FeedsMutation](ctx, fd.sqlExec, fd.mutation, fd.hooks)
+	return withHooks(ctx, fd.sqlExec, fd.mutation, fd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -40,15 +40,7 @@ func (fd *FeedsDelete) ExecX(ctx context.Context) int {
 }
 
 func (fd *FeedsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: feeds.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: feeds.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(feeds.Table, sqlgraph.NewFieldSpec(feeds.FieldID, field.TypeUUID))
 	if ps := fd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -69,6 +61,12 @@ type FeedsDeleteOne struct {
 	fd *FeedsDelete
 }
 
+// Where appends a list predicates to the FeedsDelete builder.
+func (fdo *FeedsDeleteOne) Where(ps ...predicate.Feeds) *FeedsDeleteOne {
+	fdo.fd.mutation.Where(ps...)
+	return fdo
+}
+
 // Exec executes the deletion query.
 func (fdo *FeedsDeleteOne) Exec(ctx context.Context) error {
 	n, err := fdo.fd.Exec(ctx)
@@ -84,5 +82,7 @@ func (fdo *FeedsDeleteOne) Exec(ctx context.Context) error {
 
 // ExecX is like Exec, but panics if an error occurs.
 func (fdo *FeedsDeleteOne) ExecX(ctx context.Context) {
-	fdo.fd.ExecX(ctx)
+	if err := fdo.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

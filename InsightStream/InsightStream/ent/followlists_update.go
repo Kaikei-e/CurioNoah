@@ -327,7 +327,7 @@ func (flu *FollowListsUpdate) Mutation() *FollowListsMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (flu *FollowListsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, FollowListsMutation](ctx, flu.sqlSave, flu.mutation, flu.hooks)
+	return withHooks(ctx, flu.sqlSave, flu.mutation, flu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -371,16 +371,7 @@ func (flu *FollowListsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := flu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   followlists.Table,
-			Columns: followlists.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: followlists.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(followlists.Table, followlists.Columns, sqlgraph.NewFieldSpec(followlists.FieldID, field.TypeInt))
 	if ps := flu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -779,6 +770,12 @@ func (fluo *FollowListsUpdateOne) Mutation() *FollowListsMutation {
 	return fluo.mutation
 }
 
+// Where appends a list predicates to the FollowListsUpdate builder.
+func (fluo *FollowListsUpdateOne) Where(ps ...predicate.FollowLists) *FollowListsUpdateOne {
+	fluo.mutation.Where(ps...)
+	return fluo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (fluo *FollowListsUpdateOne) Select(field string, fields ...string) *FollowListsUpdateOne {
@@ -788,7 +785,7 @@ func (fluo *FollowListsUpdateOne) Select(field string, fields ...string) *Follow
 
 // Save executes the query and returns the updated FollowLists entity.
 func (fluo *FollowListsUpdateOne) Save(ctx context.Context) (*FollowLists, error) {
-	return withHooks[*FollowLists, FollowListsMutation](ctx, fluo.sqlSave, fluo.mutation, fluo.hooks)
+	return withHooks(ctx, fluo.sqlSave, fluo.mutation, fluo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -832,16 +829,7 @@ func (fluo *FollowListsUpdateOne) sqlSave(ctx context.Context) (_node *FollowLis
 	if err := fluo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   followlists.Table,
-			Columns: followlists.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: followlists.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(followlists.Table, followlists.Columns, sqlgraph.NewFieldSpec(followlists.FieldID, field.TypeInt))
 	id, ok := fluo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FollowLists.id" for update`)}

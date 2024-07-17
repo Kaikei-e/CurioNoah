@@ -3,6 +3,7 @@
 package cooccurrencenetworkpool
 
 import (
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
 
@@ -49,3 +50,16 @@ var (
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
+
+// OrderOption defines the ordering options for the CooccurrenceNetworkPool queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// BySiteURL orders the results by the site_url field.
+func BySiteURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSiteURL, opts...).ToFunc()
+}

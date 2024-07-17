@@ -2,6 +2,10 @@
 
 package feedaudittrailaction
 
+import (
+	"entgo.io/ent/dialect/sql"
+)
+
 const (
 	// Label holds the string label denoting the feedaudittrailaction type in the database.
 	Label = "feed_audit_trail_action"
@@ -33,3 +37,16 @@ var (
 	// ActionValidator is a validator for the "action" field. It is called by the builders before save.
 	ActionValidator func(string) error
 )
+
+// OrderOption defines the ordering options for the FeedAuditTrailAction queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByAction orders the results by the action field.
+func ByAction(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAction, opts...).ToFunc()
+}

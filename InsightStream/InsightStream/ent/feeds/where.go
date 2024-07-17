@@ -562,32 +562,15 @@ func FavoritesLTE(v int64) predicate.Feeds {
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Feeds) predicate.Feeds {
-	return predicate.Feeds(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Feeds(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.Feeds) predicate.Feeds {
-	return predicate.Feeds(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Feeds(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.Feeds) predicate.Feeds {
-	return predicate.Feeds(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.Feeds(sql.NotPredicates(p))
 }

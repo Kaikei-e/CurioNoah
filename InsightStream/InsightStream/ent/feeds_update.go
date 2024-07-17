@@ -139,7 +139,7 @@ func (fu *FeedsUpdate) Mutation() *FeedsMutation {
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (fu *FeedsUpdate) Save(ctx context.Context) (int, error) {
 	fu.defaults()
-	return withHooks[int, FeedsMutation](ctx, fu.sqlSave, fu.mutation, fu.hooks)
+	return withHooks(ctx, fu.sqlSave, fu.mutation, fu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -206,16 +206,7 @@ func (fu *FeedsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := fu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feeds.Table,
-			Columns: feeds.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: feeds.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feeds.Table, feeds.Columns, sqlgraph.NewFieldSpec(feeds.FieldID, field.TypeUUID))
 	if ps := fu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -381,6 +372,12 @@ func (fuo *FeedsUpdateOne) Mutation() *FeedsMutation {
 	return fuo.mutation
 }
 
+// Where appends a list predicates to the FeedsUpdate builder.
+func (fuo *FeedsUpdateOne) Where(ps ...predicate.Feeds) *FeedsUpdateOne {
+	fuo.mutation.Where(ps...)
+	return fuo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (fuo *FeedsUpdateOne) Select(field string, fields ...string) *FeedsUpdateOne {
@@ -391,7 +388,7 @@ func (fuo *FeedsUpdateOne) Select(field string, fields ...string) *FeedsUpdateOn
 // Save executes the query and returns the updated Feeds entity.
 func (fuo *FeedsUpdateOne) Save(ctx context.Context) (*Feeds, error) {
 	fuo.defaults()
-	return withHooks[*Feeds, FeedsMutation](ctx, fuo.sqlSave, fuo.mutation, fuo.hooks)
+	return withHooks(ctx, fuo.sqlSave, fuo.mutation, fuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -458,16 +455,7 @@ func (fuo *FeedsUpdateOne) sqlSave(ctx context.Context) (_node *Feeds, err error
 	if err := fuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feeds.Table,
-			Columns: feeds.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: feeds.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feeds.Table, feeds.Columns, sqlgraph.NewFieldSpec(feeds.FieldID, field.TypeUUID))
 	id, ok := fuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Feeds.id" for update`)}

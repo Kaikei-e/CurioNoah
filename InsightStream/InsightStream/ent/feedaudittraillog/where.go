@@ -124,11 +124,7 @@ func HasAction() predicate.FeedAuditTrailLog {
 // HasActionWith applies the HasEdge predicate on the "action" edge with a given conditions (other predicates).
 func HasActionWith(preds ...predicate.FeedAuditTrailAction) predicate.FeedAuditTrailLog {
 	return predicate.FeedAuditTrailLog(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ActionInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, ActionTable, ActionColumn),
-		)
+		step := newActionStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -139,32 +135,15 @@ func HasActionWith(preds ...predicate.FeedAuditTrailAction) predicate.FeedAuditT
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.FeedAuditTrailLog) predicate.FeedAuditTrailLog {
-	return predicate.FeedAuditTrailLog(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.FeedAuditTrailLog(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.FeedAuditTrailLog) predicate.FeedAuditTrailLog {
-	return predicate.FeedAuditTrailLog(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.FeedAuditTrailLog(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.FeedAuditTrailLog) predicate.FeedAuditTrailLog {
-	return predicate.FeedAuditTrailLog(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.FeedAuditTrailLog(sql.NotPredicates(p))
 }

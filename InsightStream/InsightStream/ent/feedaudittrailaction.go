@@ -7,6 +7,7 @@ import (
 	"insightstream/ent/feedaudittrailaction"
 	"strings"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -16,7 +17,8 @@ type FeedAuditTrailAction struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// Action holds the value of the "action" field.
-	Action string `json:"action,omitempty"`
+	Action       string `json:"action,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -29,7 +31,7 @@ func (*FeedAuditTrailAction) scanValues(columns []string) ([]any, error) {
 		case feedaudittrailaction.FieldAction:
 			values[i] = new(sql.NullString)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type FeedAuditTrailAction", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -55,16 +57,24 @@ func (fata *FeedAuditTrailAction) assignValues(columns []string, values []any) e
 			} else if value.Valid {
 				fata.Action = value.String
 			}
+		default:
+			fata.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the FeedAuditTrailAction.
+// This includes values selected through modifiers, order, etc.
+func (fata *FeedAuditTrailAction) Value(name string) (ent.Value, error) {
+	return fata.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this FeedAuditTrailAction.
 // Note that you need to call FeedAuditTrailAction.Unwrap() before calling this method if this FeedAuditTrailAction
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (fata *FeedAuditTrailAction) Update() *FeedAuditTrailActionUpdateOne {
-	return (&FeedAuditTrailActionClient{config: fata.config}).UpdateOne(fata)
+	return NewFeedAuditTrailActionClient(fata.config).UpdateOne(fata)
 }
 
 // Unwrap unwraps the FeedAuditTrailAction entity that was returned from a transaction after it was closed,
@@ -91,9 +101,3 @@ func (fata *FeedAuditTrailAction) String() string {
 
 // FeedAuditTrailActions is a parsable slice of FeedAuditTrailAction.
 type FeedAuditTrailActions []*FeedAuditTrailAction
-
-func (fata FeedAuditTrailActions) config(cfg config) {
-	for _i := range fata {
-		fata[_i].config = cfg
-	}
-}

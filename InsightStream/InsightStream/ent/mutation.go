@@ -17,10 +17,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 const (

@@ -27,7 +27,7 @@ func (fatad *FeedAuditTrailActionDelete) Where(ps ...predicate.FeedAuditTrailAct
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (fatad *FeedAuditTrailActionDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, FeedAuditTrailActionMutation](ctx, fatad.sqlExec, fatad.mutation, fatad.hooks)
+	return withHooks(ctx, fatad.sqlExec, fatad.mutation, fatad.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -40,15 +40,7 @@ func (fatad *FeedAuditTrailActionDelete) ExecX(ctx context.Context) int {
 }
 
 func (fatad *FeedAuditTrailActionDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: feedaudittrailaction.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittrailaction.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(feedaudittrailaction.Table, sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt))
 	if ps := fatad.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -69,6 +61,12 @@ type FeedAuditTrailActionDeleteOne struct {
 	fatad *FeedAuditTrailActionDelete
 }
 
+// Where appends a list predicates to the FeedAuditTrailActionDelete builder.
+func (fatado *FeedAuditTrailActionDeleteOne) Where(ps ...predicate.FeedAuditTrailAction) *FeedAuditTrailActionDeleteOne {
+	fatado.fatad.mutation.Where(ps...)
+	return fatado
+}
+
 // Exec executes the deletion query.
 func (fatado *FeedAuditTrailActionDeleteOne) Exec(ctx context.Context) error {
 	n, err := fatado.fatad.Exec(ctx)
@@ -84,5 +82,7 @@ func (fatado *FeedAuditTrailActionDeleteOne) Exec(ctx context.Context) error {
 
 // ExecX is like Exec, but panics if an error occurs.
 func (fatado *FeedAuditTrailActionDeleteOne) ExecX(ctx context.Context) {
-	fatado.fatad.ExecX(ctx)
+	if err := fatado.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

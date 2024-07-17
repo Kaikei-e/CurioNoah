@@ -63,7 +63,7 @@ func (cnpc *CooccurrenceNetworkPoolCreate) Mutation() *CooccurrenceNetworkPoolMu
 // Save creates the CooccurrenceNetworkPool in the database.
 func (cnpc *CooccurrenceNetworkPoolCreate) Save(ctx context.Context) (*CooccurrenceNetworkPool, error) {
 	cnpc.defaults()
-	return withHooks[*CooccurrenceNetworkPool, CooccurrenceNetworkPoolMutation](ctx, cnpc.sqlSave, cnpc.mutation, cnpc.hooks)
+	return withHooks(ctx, cnpc.sqlSave, cnpc.mutation, cnpc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -149,13 +149,7 @@ func (cnpc *CooccurrenceNetworkPoolCreate) sqlSave(ctx context.Context) (*Cooccu
 func (cnpc *CooccurrenceNetworkPoolCreate) createSpec() (*CooccurrenceNetworkPool, *sqlgraph.CreateSpec) {
 	var (
 		_node = &CooccurrenceNetworkPool{config: cnpc.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: cooccurrencenetworkpool.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: cooccurrencenetworkpool.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(cooccurrencenetworkpool.Table, sqlgraph.NewFieldSpec(cooccurrencenetworkpool.FieldID, field.TypeUUID))
 	)
 	_spec.OnConflict = cnpc.conflict
 	if id, ok := cnpc.mutation.ID(); ok {
@@ -393,12 +387,16 @@ func (u *CooccurrenceNetworkPoolUpsertOne) IDX(ctx context.Context) uuid.UUID {
 // CooccurrenceNetworkPoolCreateBulk is the builder for creating many CooccurrenceNetworkPool entities in bulk.
 type CooccurrenceNetworkPoolCreateBulk struct {
 	config
+	err      error
 	builders []*CooccurrenceNetworkPoolCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the CooccurrenceNetworkPool entities in the database.
 func (cnpcb *CooccurrenceNetworkPoolCreateBulk) Save(ctx context.Context) ([]*CooccurrenceNetworkPool, error) {
+	if cnpcb.err != nil {
+		return nil, cnpcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(cnpcb.builders))
 	nodes := make([]*CooccurrenceNetworkPool, len(cnpcb.builders))
 	mutators := make([]Mutator, len(cnpcb.builders))
@@ -415,8 +413,8 @@ func (cnpcb *CooccurrenceNetworkPoolCreateBulk) Save(ctx context.Context) ([]*Co
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, cnpcb.builders[i+1].mutation)
 				} else {
@@ -607,6 +605,9 @@ func (u *CooccurrenceNetworkPoolUpsertBulk) UpdateDescriptions() *CooccurrenceNe
 
 // Exec executes the query.
 func (u *CooccurrenceNetworkPoolUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the CooccurrenceNetworkPoolCreateBulk instead", i)

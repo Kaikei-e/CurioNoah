@@ -18,11 +18,8 @@ import (
 // CooccurrenceNetworkPoolQuery is the builder for querying CooccurrenceNetworkPool entities.
 type CooccurrenceNetworkPoolQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
+	ctx        *QueryContext
+	order      []cooccurrencenetworkpool.OrderOption
 	inters     []Interceptor
 	predicates []predicate.CooccurrenceNetworkPool
 	// intermediate query (i.e. traversal path).
@@ -38,25 +35,25 @@ func (cnpq *CooccurrenceNetworkPoolQuery) Where(ps ...predicate.CooccurrenceNetw
 
 // Limit the number of records to be returned by this query.
 func (cnpq *CooccurrenceNetworkPoolQuery) Limit(limit int) *CooccurrenceNetworkPoolQuery {
-	cnpq.limit = &limit
+	cnpq.ctx.Limit = &limit
 	return cnpq
 }
 
 // Offset to start from.
 func (cnpq *CooccurrenceNetworkPoolQuery) Offset(offset int) *CooccurrenceNetworkPoolQuery {
-	cnpq.offset = &offset
+	cnpq.ctx.Offset = &offset
 	return cnpq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
 func (cnpq *CooccurrenceNetworkPoolQuery) Unique(unique bool) *CooccurrenceNetworkPoolQuery {
-	cnpq.unique = &unique
+	cnpq.ctx.Unique = &unique
 	return cnpq
 }
 
 // Order specifies how the records should be ordered.
-func (cnpq *CooccurrenceNetworkPoolQuery) Order(o ...OrderFunc) *CooccurrenceNetworkPoolQuery {
+func (cnpq *CooccurrenceNetworkPoolQuery) Order(o ...cooccurrencenetworkpool.OrderOption) *CooccurrenceNetworkPoolQuery {
 	cnpq.order = append(cnpq.order, o...)
 	return cnpq
 }
@@ -64,7 +61,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) Order(o ...OrderFunc) *CooccurrenceNet
 // First returns the first CooccurrenceNetworkPool entity from the query.
 // Returns a *NotFoundError when no CooccurrenceNetworkPool was found.
 func (cnpq *CooccurrenceNetworkPoolQuery) First(ctx context.Context) (*CooccurrenceNetworkPool, error) {
-	nodes, err := cnpq.Limit(1).All(newQueryContext(ctx, TypeCooccurrenceNetworkPool, "First"))
+	nodes, err := cnpq.Limit(1).All(setContextOp(ctx, cnpq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +84,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) FirstX(ctx context.Context) *Cooccurre
 // Returns a *NotFoundError when no CooccurrenceNetworkPool ID was found.
 func (cnpq *CooccurrenceNetworkPoolQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = cnpq.Limit(1).IDs(newQueryContext(ctx, TypeCooccurrenceNetworkPool, "FirstID")); err != nil {
+	if ids, err = cnpq.Limit(1).IDs(setContextOp(ctx, cnpq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -110,7 +107,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) FirstIDX(ctx context.Context) uuid.UUI
 // Returns a *NotSingularError when more than one CooccurrenceNetworkPool entity is found.
 // Returns a *NotFoundError when no CooccurrenceNetworkPool entities are found.
 func (cnpq *CooccurrenceNetworkPoolQuery) Only(ctx context.Context) (*CooccurrenceNetworkPool, error) {
-	nodes, err := cnpq.Limit(2).All(newQueryContext(ctx, TypeCooccurrenceNetworkPool, "Only"))
+	nodes, err := cnpq.Limit(2).All(setContextOp(ctx, cnpq.ctx, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +135,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) OnlyX(ctx context.Context) *Cooccurren
 // Returns a *NotFoundError when no entities are found.
 func (cnpq *CooccurrenceNetworkPoolQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = cnpq.Limit(2).IDs(newQueryContext(ctx, TypeCooccurrenceNetworkPool, "OnlyID")); err != nil {
+	if ids, err = cnpq.Limit(2).IDs(setContextOp(ctx, cnpq.ctx, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -163,7 +160,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) OnlyIDX(ctx context.Context) uuid.UUID
 
 // All executes the query and returns a list of CooccurrenceNetworkPools.
 func (cnpq *CooccurrenceNetworkPoolQuery) All(ctx context.Context) ([]*CooccurrenceNetworkPool, error) {
-	ctx = newQueryContext(ctx, TypeCooccurrenceNetworkPool, "All")
+	ctx = setContextOp(ctx, cnpq.ctx, "All")
 	if err := cnpq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -181,10 +178,12 @@ func (cnpq *CooccurrenceNetworkPoolQuery) AllX(ctx context.Context) []*Cooccurre
 }
 
 // IDs executes the query and returns a list of CooccurrenceNetworkPool IDs.
-func (cnpq *CooccurrenceNetworkPoolQuery) IDs(ctx context.Context) ([]uuid.UUID, error) {
-	var ids []uuid.UUID
-	ctx = newQueryContext(ctx, TypeCooccurrenceNetworkPool, "IDs")
-	if err := cnpq.Select(cooccurrencenetworkpool.FieldID).Scan(ctx, &ids); err != nil {
+func (cnpq *CooccurrenceNetworkPoolQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
+	if cnpq.ctx.Unique == nil && cnpq.path != nil {
+		cnpq.Unique(true)
+	}
+	ctx = setContextOp(ctx, cnpq.ctx, "IDs")
+	if err = cnpq.Select(cooccurrencenetworkpool.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -201,7 +200,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) IDsX(ctx context.Context) []uuid.UUID 
 
 // Count returns the count of the given query.
 func (cnpq *CooccurrenceNetworkPoolQuery) Count(ctx context.Context) (int, error) {
-	ctx = newQueryContext(ctx, TypeCooccurrenceNetworkPool, "Count")
+	ctx = setContextOp(ctx, cnpq.ctx, "Count")
 	if err := cnpq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -219,7 +218,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (cnpq *CooccurrenceNetworkPoolQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = newQueryContext(ctx, TypeCooccurrenceNetworkPool, "Exist")
+	ctx = setContextOp(ctx, cnpq.ctx, "Exist")
 	switch _, err := cnpq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -247,15 +246,13 @@ func (cnpq *CooccurrenceNetworkPoolQuery) Clone() *CooccurrenceNetworkPoolQuery 
 	}
 	return &CooccurrenceNetworkPoolQuery{
 		config:     cnpq.config,
-		limit:      cnpq.limit,
-		offset:     cnpq.offset,
-		order:      append([]OrderFunc{}, cnpq.order...),
+		ctx:        cnpq.ctx.Clone(),
+		order:      append([]cooccurrencenetworkpool.OrderOption{}, cnpq.order...),
 		inters:     append([]Interceptor{}, cnpq.inters...),
 		predicates: append([]predicate.CooccurrenceNetworkPool{}, cnpq.predicates...),
 		// clone intermediate query.
-		sql:    cnpq.sql.Clone(),
-		path:   cnpq.path,
-		unique: cnpq.unique,
+		sql:  cnpq.sql.Clone(),
+		path: cnpq.path,
 	}
 }
 
@@ -274,9 +271,9 @@ func (cnpq *CooccurrenceNetworkPoolQuery) Clone() *CooccurrenceNetworkPoolQuery 
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cnpq *CooccurrenceNetworkPoolQuery) GroupBy(field string, fields ...string) *CooccurrenceNetworkPoolGroupBy {
-	cnpq.fields = append([]string{field}, fields...)
+	cnpq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &CooccurrenceNetworkPoolGroupBy{build: cnpq}
-	grbuild.flds = &cnpq.fields
+	grbuild.flds = &cnpq.ctx.Fields
 	grbuild.label = cooccurrencenetworkpool.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -295,10 +292,10 @@ func (cnpq *CooccurrenceNetworkPoolQuery) GroupBy(field string, fields ...string
 //		Select(cooccurrencenetworkpool.FieldSiteURL).
 //		Scan(ctx, &v)
 func (cnpq *CooccurrenceNetworkPoolQuery) Select(fields ...string) *CooccurrenceNetworkPoolSelect {
-	cnpq.fields = append(cnpq.fields, fields...)
+	cnpq.ctx.Fields = append(cnpq.ctx.Fields, fields...)
 	sbuild := &CooccurrenceNetworkPoolSelect{CooccurrenceNetworkPoolQuery: cnpq}
 	sbuild.label = cooccurrencenetworkpool.Label
-	sbuild.flds, sbuild.scan = &cnpq.fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &cnpq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
@@ -318,7 +315,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) prepareQuery(ctx context.Context) erro
 			}
 		}
 	}
-	for _, f := range cnpq.fields {
+	for _, f := range cnpq.ctx.Fields {
 		if !cooccurrencenetworkpool.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
@@ -360,30 +357,22 @@ func (cnpq *CooccurrenceNetworkPoolQuery) sqlAll(ctx context.Context, hooks ...q
 
 func (cnpq *CooccurrenceNetworkPoolQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := cnpq.querySpec()
-	_spec.Node.Columns = cnpq.fields
-	if len(cnpq.fields) > 0 {
-		_spec.Unique = cnpq.unique != nil && *cnpq.unique
+	_spec.Node.Columns = cnpq.ctx.Fields
+	if len(cnpq.ctx.Fields) > 0 {
+		_spec.Unique = cnpq.ctx.Unique != nil && *cnpq.ctx.Unique
 	}
 	return sqlgraph.CountNodes(ctx, cnpq.driver, _spec)
 }
 
 func (cnpq *CooccurrenceNetworkPoolQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   cooccurrencenetworkpool.Table,
-			Columns: cooccurrencenetworkpool.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: cooccurrencenetworkpool.FieldID,
-			},
-		},
-		From:   cnpq.sql,
-		Unique: true,
-	}
-	if unique := cnpq.unique; unique != nil {
+	_spec := sqlgraph.NewQuerySpec(cooccurrencenetworkpool.Table, cooccurrencenetworkpool.Columns, sqlgraph.NewFieldSpec(cooccurrencenetworkpool.FieldID, field.TypeUUID))
+	_spec.From = cnpq.sql
+	if unique := cnpq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if cnpq.path != nil {
+		_spec.Unique = true
 	}
-	if fields := cnpq.fields; len(fields) > 0 {
+	if fields := cnpq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, cooccurrencenetworkpool.FieldID)
 		for i := range fields {
@@ -399,10 +388,10 @@ func (cnpq *CooccurrenceNetworkPoolQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if limit := cnpq.limit; limit != nil {
+	if limit := cnpq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := cnpq.offset; offset != nil {
+	if offset := cnpq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
 	if ps := cnpq.order; len(ps) > 0 {
@@ -418,7 +407,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) querySpec() *sqlgraph.QuerySpec {
 func (cnpq *CooccurrenceNetworkPoolQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(cnpq.driver.Dialect())
 	t1 := builder.Table(cooccurrencenetworkpool.Table)
-	columns := cnpq.fields
+	columns := cnpq.ctx.Fields
 	if len(columns) == 0 {
 		columns = cooccurrencenetworkpool.Columns
 	}
@@ -427,7 +416,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) sqlQuery(ctx context.Context) *sql.Sel
 		selector = cnpq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if cnpq.unique != nil && *cnpq.unique {
+	if cnpq.ctx.Unique != nil && *cnpq.ctx.Unique {
 		selector.Distinct()
 	}
 	for _, p := range cnpq.predicates {
@@ -436,12 +425,12 @@ func (cnpq *CooccurrenceNetworkPoolQuery) sqlQuery(ctx context.Context) *sql.Sel
 	for _, p := range cnpq.order {
 		p(selector)
 	}
-	if offset := cnpq.offset; offset != nil {
+	if offset := cnpq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := cnpq.limit; limit != nil {
+	if limit := cnpq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -461,7 +450,7 @@ func (cnpgb *CooccurrenceNetworkPoolGroupBy) Aggregate(fns ...AggregateFunc) *Co
 
 // Scan applies the selector query and scans the result into the given value.
 func (cnpgb *CooccurrenceNetworkPoolGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeCooccurrenceNetworkPool, "GroupBy")
+	ctx = setContextOp(ctx, cnpgb.build.ctx, "GroupBy")
 	if err := cnpgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -509,7 +498,7 @@ func (cnps *CooccurrenceNetworkPoolSelect) Aggregate(fns ...AggregateFunc) *Cooc
 
 // Scan applies the selector query and scans the result into the given value.
 func (cnps *CooccurrenceNetworkPoolSelect) Scan(ctx context.Context, v any) error {
-	ctx = newQueryContext(ctx, TypeCooccurrenceNetworkPool, "Select")
+	ctx = setContextOp(ctx, cnps.ctx, "Select")
 	if err := cnps.prepareQuery(ctx); err != nil {
 		return err
 	}

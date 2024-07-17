@@ -62,7 +62,7 @@ func (fatlc *FeedAuditTrailLogCreate) Mutation() *FeedAuditTrailLogMutation {
 // Save creates the FeedAuditTrailLog in the database.
 func (fatlc *FeedAuditTrailLogCreate) Save(ctx context.Context) (*FeedAuditTrailLog, error) {
 	fatlc.defaults()
-	return withHooks[*FeedAuditTrailLog, FeedAuditTrailLogMutation](ctx, fatlc.sqlSave, fatlc.mutation, fatlc.hooks)
+	return withHooks(ctx, fatlc.sqlSave, fatlc.mutation, fatlc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -126,13 +126,7 @@ func (fatlc *FeedAuditTrailLogCreate) sqlSave(ctx context.Context) (*FeedAuditTr
 func (fatlc *FeedAuditTrailLogCreate) createSpec() (*FeedAuditTrailLog, *sqlgraph.CreateSpec) {
 	var (
 		_node = &FeedAuditTrailLog{config: fatlc.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: feedaudittraillog.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittraillog.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(feedaudittraillog.Table, sqlgraph.NewFieldSpec(feedaudittraillog.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = fatlc.conflict
 	if id, ok := fatlc.mutation.ID(); ok {
@@ -151,10 +145,7 @@ func (fatlc *FeedAuditTrailLogCreate) createSpec() (*FeedAuditTrailLog, *sqlgrap
 			Columns: []string{feedaudittraillog.ActionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feedaudittrailaction.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -338,12 +329,16 @@ func (u *FeedAuditTrailLogUpsertOne) IDX(ctx context.Context) int {
 // FeedAuditTrailLogCreateBulk is the builder for creating many FeedAuditTrailLog entities in bulk.
 type FeedAuditTrailLogCreateBulk struct {
 	config
+	err      error
 	builders []*FeedAuditTrailLogCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the FeedAuditTrailLog entities in the database.
 func (fatlcb *FeedAuditTrailLogCreateBulk) Save(ctx context.Context) ([]*FeedAuditTrailLog, error) {
+	if fatlcb.err != nil {
+		return nil, fatlcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(fatlcb.builders))
 	nodes := make([]*FeedAuditTrailLog, len(fatlcb.builders))
 	mutators := make([]Mutator, len(fatlcb.builders))
@@ -360,8 +355,8 @@ func (fatlcb *FeedAuditTrailLogCreateBulk) Save(ctx context.Context) ([]*FeedAud
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, fatlcb.builders[i+1].mutation)
 				} else {
@@ -535,6 +530,9 @@ func (u *FeedAuditTrailLogUpsertBulk) ClearUpdatedAt() *FeedAuditTrailLogUpsertB
 
 // Exec executes the query.
 func (u *FeedAuditTrailLogUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FeedAuditTrailLogCreateBulk instead", i)

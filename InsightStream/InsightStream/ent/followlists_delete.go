@@ -27,7 +27,7 @@ func (fld *FollowListsDelete) Where(ps ...predicate.FollowLists) *FollowListsDel
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (fld *FollowListsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, FollowListsMutation](ctx, fld.sqlExec, fld.mutation, fld.hooks)
+	return withHooks(ctx, fld.sqlExec, fld.mutation, fld.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -40,15 +40,7 @@ func (fld *FollowListsDelete) ExecX(ctx context.Context) int {
 }
 
 func (fld *FollowListsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: followlists.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: followlists.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(followlists.Table, sqlgraph.NewFieldSpec(followlists.FieldID, field.TypeInt))
 	if ps := fld.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -69,6 +61,12 @@ type FollowListsDeleteOne struct {
 	fld *FollowListsDelete
 }
 
+// Where appends a list predicates to the FollowListsDelete builder.
+func (fldo *FollowListsDeleteOne) Where(ps ...predicate.FollowLists) *FollowListsDeleteOne {
+	fldo.fld.mutation.Where(ps...)
+	return fldo
+}
+
 // Exec executes the deletion query.
 func (fldo *FollowListsDeleteOne) Exec(ctx context.Context) error {
 	n, err := fldo.fld.Exec(ctx)
@@ -84,5 +82,7 @@ func (fldo *FollowListsDeleteOne) Exec(ctx context.Context) error {
 
 // ExecX is like Exec, but panics if an error occurs.
 func (fldo *FollowListsDeleteOne) ExecX(ctx context.Context) {
-	fldo.fld.ExecX(ctx)
+	if err := fldo.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

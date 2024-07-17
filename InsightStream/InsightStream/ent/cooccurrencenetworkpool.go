@@ -8,6 +8,7 @@ import (
 	"insightstream/ent/cooccurrencenetworkpool"
 	"strings"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
@@ -23,6 +24,7 @@ type CooccurrenceNetworkPool struct {
 	Titles []string `json:"titles,omitempty"`
 	// Descriptions holds the value of the "descriptions" field.
 	Descriptions []string `json:"descriptions,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -37,7 +39,7 @@ func (*CooccurrenceNetworkPool) scanValues(columns []string) ([]any, error) {
 		case cooccurrencenetworkpool.FieldID:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type CooccurrenceNetworkPool", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -79,16 +81,24 @@ func (cnp *CooccurrenceNetworkPool) assignValues(columns []string, values []any)
 					return fmt.Errorf("unmarshal field descriptions: %w", err)
 				}
 			}
+		default:
+			cnp.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the CooccurrenceNetworkPool.
+// This includes values selected through modifiers, order, etc.
+func (cnp *CooccurrenceNetworkPool) Value(name string) (ent.Value, error) {
+	return cnp.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this CooccurrenceNetworkPool.
 // Note that you need to call CooccurrenceNetworkPool.Unwrap() before calling this method if this CooccurrenceNetworkPool
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (cnp *CooccurrenceNetworkPool) Update() *CooccurrenceNetworkPoolUpdateOne {
-	return (&CooccurrenceNetworkPoolClient{config: cnp.config}).UpdateOne(cnp)
+	return NewCooccurrenceNetworkPoolClient(cnp.config).UpdateOne(cnp)
 }
 
 // Unwrap unwraps the CooccurrenceNetworkPool entity that was returned from a transaction after it was closed,
@@ -121,9 +131,3 @@ func (cnp *CooccurrenceNetworkPool) String() string {
 
 // CooccurrenceNetworkPools is a parsable slice of CooccurrenceNetworkPool.
 type CooccurrenceNetworkPools []*CooccurrenceNetworkPool
-
-func (cnp CooccurrenceNetworkPools) config(cfg config) {
-	for _i := range cnp {
-		cnp[_i].config = cfg
-	}
-}

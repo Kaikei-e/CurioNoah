@@ -6,6 +6,7 @@ import (
 	"insightstream/domain/baseFeeds"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
 
@@ -127,3 +128,91 @@ var (
 	// DefaultIsUpdated holds the default value on creation for the "is_updated" field.
 	DefaultIsUpdated bool
 )
+
+// OrderOption defines the ordering options for the FollowLists queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByUUID orders the results by the uuid field.
+func ByUUID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUUID, opts...).ToFunc()
+}
+
+// ByXMLVersion orders the results by the xml_version field.
+func ByXMLVersion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldXMLVersion, opts...).ToFunc()
+}
+
+// ByRssVersion orders the results by the rss_version field.
+func ByRssVersion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRssVersion, opts...).ToFunc()
+}
+
+// ByURL orders the results by the url field.
+func ByURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldURL, opts...).ToFunc()
+}
+
+// ByTitle orders the results by the title field.
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTitle, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByLink orders the results by the link field.
+func ByLink(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLink, opts...).ToFunc()
+}
+
+// ByLanguage orders the results by the language field.
+func ByLanguage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLanguage, opts...).ToFunc()
+}
+
+// ByDtCreated orders the results by the dt_created field.
+func ByDtCreated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDtCreated, opts...).ToFunc()
+}
+
+// ByDtUpdated orders the results by the dt_updated field.
+func ByDtUpdated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDtUpdated, opts...).ToFunc()
+}
+
+// ByDtLastInserted orders the results by the dt_last_inserted field.
+func ByDtLastInserted(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDtLastInserted, opts...).ToFunc()
+}
+
+// ByFeedCategory orders the results by the feed_category field.
+func ByFeedCategory(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFeedCategory, opts...).ToFunc()
+}
+
+// ByIsActive orders the results by the is_active field.
+func ByIsActive(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsActive, opts...).ToFunc()
+}
+
+// ByIsFavorite orders the results by the is_favorite field.
+func ByIsFavorite(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsFavorite, opts...).ToFunc()
+}
+
+// ByIsRead orders the results by the is_read field.
+func ByIsRead(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsRead, opts...).ToFunc()
+}
+
+// ByIsUpdated orders the results by the is_updated field.
+func ByIsUpdated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsUpdated, opts...).ToFunc()
+}

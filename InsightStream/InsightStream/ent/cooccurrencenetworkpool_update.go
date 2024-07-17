@@ -34,6 +34,14 @@ func (cnpu *CooccurrenceNetworkPoolUpdate) SetSiteURL(s string) *CooccurrenceNet
 	return cnpu
 }
 
+// SetNillableSiteURL sets the "site_url" field if the given value is not nil.
+func (cnpu *CooccurrenceNetworkPoolUpdate) SetNillableSiteURL(s *string) *CooccurrenceNetworkPoolUpdate {
+	if s != nil {
+		cnpu.SetSiteURL(*s)
+	}
+	return cnpu
+}
+
 // SetTitles sets the "titles" field.
 func (cnpu *CooccurrenceNetworkPoolUpdate) SetTitles(s []string) *CooccurrenceNetworkPoolUpdate {
 	cnpu.mutation.SetTitles(s)
@@ -65,7 +73,7 @@ func (cnpu *CooccurrenceNetworkPoolUpdate) Mutation() *CooccurrenceNetworkPoolMu
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (cnpu *CooccurrenceNetworkPoolUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, CooccurrenceNetworkPoolMutation](ctx, cnpu.sqlSave, cnpu.mutation, cnpu.hooks)
+	return withHooks(ctx, cnpu.sqlSave, cnpu.mutation, cnpu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -104,16 +112,7 @@ func (cnpu *CooccurrenceNetworkPoolUpdate) sqlSave(ctx context.Context) (n int, 
 	if err := cnpu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   cooccurrencenetworkpool.Table,
-			Columns: cooccurrencenetworkpool.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: cooccurrencenetworkpool.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(cooccurrencenetworkpool.Table, cooccurrencenetworkpool.Columns, sqlgraph.NewFieldSpec(cooccurrencenetworkpool.FieldID, field.TypeUUID))
 	if ps := cnpu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -166,6 +165,14 @@ func (cnpuo *CooccurrenceNetworkPoolUpdateOne) SetSiteURL(s string) *Cooccurrenc
 	return cnpuo
 }
 
+// SetNillableSiteURL sets the "site_url" field if the given value is not nil.
+func (cnpuo *CooccurrenceNetworkPoolUpdateOne) SetNillableSiteURL(s *string) *CooccurrenceNetworkPoolUpdateOne {
+	if s != nil {
+		cnpuo.SetSiteURL(*s)
+	}
+	return cnpuo
+}
+
 // SetTitles sets the "titles" field.
 func (cnpuo *CooccurrenceNetworkPoolUpdateOne) SetTitles(s []string) *CooccurrenceNetworkPoolUpdateOne {
 	cnpuo.mutation.SetTitles(s)
@@ -195,6 +202,12 @@ func (cnpuo *CooccurrenceNetworkPoolUpdateOne) Mutation() *CooccurrenceNetworkPo
 	return cnpuo.mutation
 }
 
+// Where appends a list predicates to the CooccurrenceNetworkPoolUpdate builder.
+func (cnpuo *CooccurrenceNetworkPoolUpdateOne) Where(ps ...predicate.CooccurrenceNetworkPool) *CooccurrenceNetworkPoolUpdateOne {
+	cnpuo.mutation.Where(ps...)
+	return cnpuo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (cnpuo *CooccurrenceNetworkPoolUpdateOne) Select(field string, fields ...string) *CooccurrenceNetworkPoolUpdateOne {
@@ -204,7 +217,7 @@ func (cnpuo *CooccurrenceNetworkPoolUpdateOne) Select(field string, fields ...st
 
 // Save executes the query and returns the updated CooccurrenceNetworkPool entity.
 func (cnpuo *CooccurrenceNetworkPoolUpdateOne) Save(ctx context.Context) (*CooccurrenceNetworkPool, error) {
-	return withHooks[*CooccurrenceNetworkPool, CooccurrenceNetworkPoolMutation](ctx, cnpuo.sqlSave, cnpuo.mutation, cnpuo.hooks)
+	return withHooks(ctx, cnpuo.sqlSave, cnpuo.mutation, cnpuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -243,16 +256,7 @@ func (cnpuo *CooccurrenceNetworkPoolUpdateOne) sqlSave(ctx context.Context) (_no
 	if err := cnpuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   cooccurrencenetworkpool.Table,
-			Columns: cooccurrencenetworkpool.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: cooccurrencenetworkpool.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(cooccurrencenetworkpool.Table, cooccurrencenetworkpool.Columns, sqlgraph.NewFieldSpec(cooccurrencenetworkpool.FieldID, field.TypeUUID))
 	id, ok := cnpuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "CooccurrenceNetworkPool.id" for update`)}

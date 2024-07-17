@@ -34,6 +34,14 @@ func (uu *UsersUpdate) SetUsername(s string) *UsersUpdate {
 	return uu
 }
 
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (uu *UsersUpdate) SetNillableUsername(s *string) *UsersUpdate {
+	if s != nil {
+		uu.SetUsername(*s)
+	}
+	return uu
+}
+
 // SetHashedPassword sets the "hashed_password" field.
 func (uu *UsersUpdate) SetHashedPassword(b []byte) *UsersUpdate {
 	uu.mutation.SetHashedPassword(b)
@@ -61,7 +69,7 @@ func (uu *UsersUpdate) Mutation() *UsersMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (uu *UsersUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, UsersMutation](ctx, uu.sqlSave, uu.mutation, uu.hooks)
+	return withHooks(ctx, uu.sqlSave, uu.mutation, uu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -105,16 +113,7 @@ func (uu *UsersUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := uu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   users.Table,
-			Columns: users.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: users.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(users.Table, users.Columns, sqlgraph.NewFieldSpec(users.FieldID, field.TypeUUID))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -157,6 +156,14 @@ func (uuo *UsersUpdateOne) SetUsername(s string) *UsersUpdateOne {
 	return uuo
 }
 
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (uuo *UsersUpdateOne) SetNillableUsername(s *string) *UsersUpdateOne {
+	if s != nil {
+		uuo.SetUsername(*s)
+	}
+	return uuo
+}
+
 // SetHashedPassword sets the "hashed_password" field.
 func (uuo *UsersUpdateOne) SetHashedPassword(b []byte) *UsersUpdateOne {
 	uuo.mutation.SetHashedPassword(b)
@@ -182,6 +189,12 @@ func (uuo *UsersUpdateOne) Mutation() *UsersMutation {
 	return uuo.mutation
 }
 
+// Where appends a list predicates to the UsersUpdate builder.
+func (uuo *UsersUpdateOne) Where(ps ...predicate.Users) *UsersUpdateOne {
+	uuo.mutation.Where(ps...)
+	return uuo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (uuo *UsersUpdateOne) Select(field string, fields ...string) *UsersUpdateOne {
@@ -191,7 +204,7 @@ func (uuo *UsersUpdateOne) Select(field string, fields ...string) *UsersUpdateOn
 
 // Save executes the query and returns the updated Users entity.
 func (uuo *UsersUpdateOne) Save(ctx context.Context) (*Users, error) {
-	return withHooks[*Users, UsersMutation](ctx, uuo.sqlSave, uuo.mutation, uuo.hooks)
+	return withHooks(ctx, uuo.sqlSave, uuo.mutation, uuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -235,16 +248,7 @@ func (uuo *UsersUpdateOne) sqlSave(ctx context.Context) (_node *Users, err error
 	if err := uuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   users.Table,
-			Columns: users.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: users.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(users.Table, users.Columns, sqlgraph.NewFieldSpec(users.FieldID, field.TypeUUID))
 	id, ok := uuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Users.id" for update`)}

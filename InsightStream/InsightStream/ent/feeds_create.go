@@ -158,7 +158,7 @@ func (fc *FeedsCreate) Mutation() *FeedsMutation {
 // Save creates the Feeds in the database.
 func (fc *FeedsCreate) Save(ctx context.Context) (*Feeds, error) {
 	fc.defaults()
-	return withHooks[*Feeds, FeedsMutation](ctx, fc.sqlSave, fc.mutation, fc.hooks)
+	return withHooks(ctx, fc.sqlSave, fc.mutation, fc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -293,13 +293,7 @@ func (fc *FeedsCreate) sqlSave(ctx context.Context) (*Feeds, error) {
 func (fc *FeedsCreate) createSpec() (*Feeds, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Feeds{config: fc.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: feeds.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: feeds.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(feeds.Table, sqlgraph.NewFieldSpec(feeds.FieldID, field.TypeUUID))
 	)
 	_spec.OnConflict = fc.conflict
 	if id, ok := fc.mutation.ID(); ok {
@@ -690,12 +684,16 @@ func (u *FeedsUpsertOne) IDX(ctx context.Context) uuid.UUID {
 // FeedsCreateBulk is the builder for creating many Feeds entities in bulk.
 type FeedsCreateBulk struct {
 	config
+	err      error
 	builders []*FeedsCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Feeds entities in the database.
 func (fcb *FeedsCreateBulk) Save(ctx context.Context) ([]*Feeds, error) {
+	if fcb.err != nil {
+		return nil, fcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(fcb.builders))
 	nodes := make([]*Feeds, len(fcb.builders))
 	mutators := make([]Mutator, len(fcb.builders))
@@ -712,8 +710,8 @@ func (fcb *FeedsCreateBulk) Save(ctx context.Context) ([]*Feeds, error) {
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, fcb.builders[i+1].mutation)
 				} else {
@@ -977,6 +975,9 @@ func (u *FeedsUpsertBulk) UpdateFavorites() *FeedsUpsertBulk {
 
 // Exec executes the query.
 func (u *FeedsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FeedsCreateBulk instead", i)

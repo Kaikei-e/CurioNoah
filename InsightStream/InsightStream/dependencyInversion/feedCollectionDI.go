@@ -8,8 +8,7 @@ import (
 	"insightstream/repository/readfeed"
 	"insightstream/restorerss"
 	"log/slog"
-
-	"golang.org/x/exp/slices"
+	"sort"
 )
 
 type (
@@ -70,8 +69,8 @@ func (f *FeedCollectionImpl) FetchInfinite(page int, cl *ent.Client) ([]baseFeed
 
 func (f *FeedCollectionImpl) CompactFeeds(fds []baseFeeds.EachFeed) ([]baseFeeds.EachFeed, error) {
 
-	slices.SortStableFunc(fds, func(a, b baseFeeds.EachFeed) bool {
-		return a.FeedURL < b.FeedURL
+	sort.Slice(fds, func(i, j int) bool {
+		return fds[i].FeedURL < fds[j].FeedURL
 	})
 
 	uniqueFeeds, err := removeDuplicateFeeds(fds)
@@ -79,8 +78,8 @@ func (f *FeedCollectionImpl) CompactFeeds(fds []baseFeeds.EachFeed) ([]baseFeeds
 		return nil, fmt.Errorf("failed to remove duplicate feeds: %w", err)
 	}
 
-	slices.SortStableFunc(uniqueFeeds, func(a, b baseFeeds.EachFeed) bool {
-		return a.DtUpdated.After(b.DtUpdated)
+	sort.Slice(uniqueFeeds, func(i, j int) bool {
+		return uniqueFeeds[i].DtUpdated.After(uniqueFeeds[j].DtUpdated)
 	})
 
 	return uniqueFeeds, nil

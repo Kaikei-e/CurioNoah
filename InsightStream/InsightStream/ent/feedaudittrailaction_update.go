@@ -33,6 +33,14 @@ func (fatau *FeedAuditTrailActionUpdate) SetAction(s string) *FeedAuditTrailActi
 	return fatau
 }
 
+// SetNillableAction sets the "action" field if the given value is not nil.
+func (fatau *FeedAuditTrailActionUpdate) SetNillableAction(s *string) *FeedAuditTrailActionUpdate {
+	if s != nil {
+		fatau.SetAction(*s)
+	}
+	return fatau
+}
+
 // Mutation returns the FeedAuditTrailActionMutation object of the builder.
 func (fatau *FeedAuditTrailActionUpdate) Mutation() *FeedAuditTrailActionMutation {
 	return fatau.mutation
@@ -40,7 +48,7 @@ func (fatau *FeedAuditTrailActionUpdate) Mutation() *FeedAuditTrailActionMutatio
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (fatau *FeedAuditTrailActionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, FeedAuditTrailActionMutation](ctx, fatau.sqlSave, fatau.mutation, fatau.hooks)
+	return withHooks(ctx, fatau.sqlSave, fatau.mutation, fatau.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -79,16 +87,7 @@ func (fatau *FeedAuditTrailActionUpdate) sqlSave(ctx context.Context) (n int, er
 	if err := fatau.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedaudittrailaction.Table,
-			Columns: feedaudittrailaction.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittrailaction.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feedaudittrailaction.Table, feedaudittrailaction.Columns, sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt))
 	if ps := fatau.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -125,9 +124,23 @@ func (fatauo *FeedAuditTrailActionUpdateOne) SetAction(s string) *FeedAuditTrail
 	return fatauo
 }
 
+// SetNillableAction sets the "action" field if the given value is not nil.
+func (fatauo *FeedAuditTrailActionUpdateOne) SetNillableAction(s *string) *FeedAuditTrailActionUpdateOne {
+	if s != nil {
+		fatauo.SetAction(*s)
+	}
+	return fatauo
+}
+
 // Mutation returns the FeedAuditTrailActionMutation object of the builder.
 func (fatauo *FeedAuditTrailActionUpdateOne) Mutation() *FeedAuditTrailActionMutation {
 	return fatauo.mutation
+}
+
+// Where appends a list predicates to the FeedAuditTrailActionUpdate builder.
+func (fatauo *FeedAuditTrailActionUpdateOne) Where(ps ...predicate.FeedAuditTrailAction) *FeedAuditTrailActionUpdateOne {
+	fatauo.mutation.Where(ps...)
+	return fatauo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -139,7 +152,7 @@ func (fatauo *FeedAuditTrailActionUpdateOne) Select(field string, fields ...stri
 
 // Save executes the query and returns the updated FeedAuditTrailAction entity.
 func (fatauo *FeedAuditTrailActionUpdateOne) Save(ctx context.Context) (*FeedAuditTrailAction, error) {
-	return withHooks[*FeedAuditTrailAction, FeedAuditTrailActionMutation](ctx, fatauo.sqlSave, fatauo.mutation, fatauo.hooks)
+	return withHooks(ctx, fatauo.sqlSave, fatauo.mutation, fatauo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -178,16 +191,7 @@ func (fatauo *FeedAuditTrailActionUpdateOne) sqlSave(ctx context.Context) (_node
 	if err := fatauo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedaudittrailaction.Table,
-			Columns: feedaudittrailaction.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedaudittrailaction.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feedaudittrailaction.Table, feedaudittrailaction.Columns, sqlgraph.NewFieldSpec(feedaudittrailaction.FieldID, field.TypeInt))
 	id, ok := fatauo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedAuditTrailAction.id" for update`)}
