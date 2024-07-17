@@ -1,8 +1,8 @@
-FROM kotlin/kotlinlang.org:2.0.0
+FROM gradle:jdk21
 
 RUN apt-get update && apt-get install -y
 
-ADD ./newsGenerator /app
+ADD ./news-generator /app
 
 WORKDIR /app
 
