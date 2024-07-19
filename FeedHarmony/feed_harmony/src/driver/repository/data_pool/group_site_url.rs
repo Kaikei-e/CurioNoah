@@ -43,21 +43,6 @@ impl FetchSiteUrlGroup for WordNetworkRepository {
             });
 
         Ok(grouped_urls_result.expect("Failed to fetch all feeds"))
-
-        // if let Err(e) = rows {
-        //     println!("Failed to fetch all feeds: {}", e);
-        //     return Err(Error::RowNotFound);
-        // }
-        //
-        // let grouped_urls = rows
-        //     .unwrap()
-        //     .iter()
-        //     .map(|row| CooccurrenceNetworkPoolForRead {
-        //         site_url: row.site_url.clone(),
-        //         titles: json!(row.titles),
-        //         descriptions: json!(row.descriptions),
-        //     })
-        //     .collect();
     }
 
     async fn insert_site_url_group(
@@ -91,7 +76,9 @@ impl FetchSiteUrlGroup for WordNetworkRepository {
                 one_site.titles.to_string(),
                 one_site.descriptions.to_string(),
                 one_site.site_url
-            ).execute(&mut *tx).await;
+            )
+                .execute(&mut *tx)
+                .await;
 
             if let Err(e) = result {
                 println!("Failed to insert all feeds: {:?}", e);
