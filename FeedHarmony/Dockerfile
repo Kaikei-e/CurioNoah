@@ -1,4 +1,4 @@
-FROM rust:1.77-bullseye
+FROM rust:1.79-bookworm
 
 # Install dependencies
 ADD ./feed_harmony /usr/src/app
