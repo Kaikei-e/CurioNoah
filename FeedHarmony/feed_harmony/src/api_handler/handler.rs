@@ -2,6 +2,7 @@ use crate::api_handler;
 use axum::routing::post;
 use axum::Router;
 use sqlx::{MySql, Pool};
+use std::net::SocketAddr;
 
 #[derive(Clone)]
 pub struct DatabasePool {
@@ -37,8 +38,9 @@ pub async fn handler(pool: Pool<MySql>) {
         )
         .with_state(state.pool);
 
-    axum::Server::bind(&"0.0.0.0:5100".parse().unwrap())
-        .serve(app.into_make_service())
+    let addr = SocketAddr::from(([0, 0, 0, 0], 5100));
+
+    axum::serve(tokio::net::TcpListener::bind(addr).await.unwrap(), app)
         .await
-        .unwrap();
+        .expect("Failed to start the server");
 }

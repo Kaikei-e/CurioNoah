@@ -1,18 +1,18 @@
-use crate::api_handler::handler::DatabasePool;
-use crate::domain::audit_log_action::{AuditLog, AuditLogAction};
-use crate::domain::feed::{FollowList, OneFeed};
-use crate::domain::Feed;
+use std::fmt::Debug;
+use std::str::FromStr;
+
 use anyhow::Result;
 use axum::async_trait;
-
 use chrono::{DateTime, Utc};
-
 use serde_json::Value;
 use sqlx::mysql::MySqlPoolOptions;
 use sqlx::Error as SqlxError;
 use sqlx::{MySql, Pool, Row};
-use std::fmt::Debug;
-use std::str::FromStr;
+
+use crate::api_handler::handler::DatabasePool;
+use crate::domain::audit_log_action::{AuditLog, AuditLogAction};
+use crate::domain::feed::{FollowList, OneFeed};
+use crate::domain::Feed;
 
 #[derive(Debug, Clone)]
 pub struct FeedRepository {
@@ -49,16 +49,18 @@ pub trait FeedConnection {
 #[async_trait]
 impl FeedConnection for FeedRepository {
     async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError> {
-        let maybe_rows = sqlx::query("SELECT id, uuid, xml_version, \
+        let maybe_rows = sqlx::query(
+            "SELECT id, uuid, xml_version, \
         rss_version, url, title, \
         description, link, links, \
         item_description, language, dt_created, \
         dt_updated, dt_last_inserted, feed_category, \
         is_favorite, is_active, is_read, \
-        is_updated FROM follow_lists")
-            .fetch_all(&self.pool)
-            .await
-            .map_err(|e| anyhow::anyhow!(e));
+        is_updated FROM follow_lists",
+        )
+        .fetch_all(&self.pool)
+        .await
+        .map_err(|e| anyhow::anyhow!(e));
 
         if let Err(e) = maybe_rows {
             println!("Failed to fetch all feeds: {}", e);
@@ -102,8 +104,8 @@ impl FeedConnection for FeedRepository {
             "SELECT id, updated_at, action_id \
             FROM feed_audit_trail_logs ORDER BY updated_at DESC LIMIT 1",
         )
-            .fetch_optional(&self.pool)
-            .await?;
+        .fetch_optional(&self.pool)
+        .await?;
 
         let latest_updated_at: DateTime<Utc> = if let Some(row) = row {
             row.get("updated_at")
@@ -175,20 +177,20 @@ impl FeedConnection for FeedRepository {
             let _row = sqlx::query(
                 "INSERT INTO feeds (id, site_url, title, description, feed_url, language, favorites, dt_created, dt_updated)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ON DUPLICATE KEY UPDATE feed_url = ?;",   
+                    ON DUPLICATE KEY UPDATE feed_url = ?;",
             )
-            .bind(one_feed.id)
+                .bind(one_feed.id)
                 .bind(one_feed.site_url)
-            .bind(one_feed.title)
+                .bind(one_feed.title)
                 .bind(one_feed.description)
-            .bind(one_feed.feed_url)
+                .bind(one_feed.feed_url)
                 .bind(one_feed.language)
-            .bind(one_feed.favorites)
+                .bind(one_feed.favorites)
                 .bind(one_feed.created_at)
-            .bind(one_feed.updated_at)
+                .bind(one_feed.updated_at)
                 .bind(upserting_url)
-            .execute(&mut tx)
-            .await?;
+                .execute(&mut *tx)
+                .await?;
 
             result = tx.commit().await;
         }
@@ -218,15 +220,19 @@ impl FeedConnection for FeedRepository {
 
                 let row = sqlx::query("INSERT INTO feed_audit_trail_actions (action) VALUES (?)")
                     .bind(AuditLogAction::Upsert.convert_to_string())
-                    .execute(&mut tx)
+                    .execute(&mut *tx)
                     .await;
+
+                if let Err(e) = row {
+                    return Err(e.into());
+                }
 
                 match row {
                     Ok(_) => {
                         let row =
                             sqlx::query("SELECT id FROM feed_audit_trail_actions WHERE action = ?")
                                 .bind(AuditLogAction::Upsert.convert_to_string())
-                                .fetch_one(&mut tx)
+                                .fetch_one(&mut *tx)
                                 .await?;
 
                         tx.commit().await?;
@@ -264,7 +270,7 @@ impl FeedConnection for FeedRepository {
             )
             .bind(now)
             .bind(action_id)
-            .execute(&mut tx)
+            .execute(&mut *tx)
             .await?;
 
             for one_feed in feeds {
@@ -285,7 +291,7 @@ impl FeedConnection for FeedRepository {
                     .bind(one_feed.created_at)
                     .bind(one_feed.updated_at)
                     .bind(upserting_url)
-                    .execute(&mut tx)
+                    .execute(&mut *tx)
                     .await?;
             }
             result = tx.commit().await;
@@ -310,7 +316,7 @@ impl FeedConnection for FeedRepository {
                     .bind(one_feed.created_at)
                     .bind(one_feed.updated_at)
                     .bind(upserting_url)
-                    .execute(&mut tx)
+                    .execute(&mut *tx)
                     .await?;
             }
 
@@ -319,7 +325,7 @@ impl FeedConnection for FeedRepository {
             )
             .bind(now)
             .bind(action_id)
-            .execute(&mut tx)
+            .execute(&mut *tx)
             .await?;
             result = tx.commit().await;
         }
@@ -358,7 +364,7 @@ impl FeedConnection for FeedRepository {
             .bind(audit_log.action.convert_to_string()),
         };
 
-        let _row = row.execute(&mut tx).await?;
+        let _row = row.execute(&mut *tx).await?;
         let result = tx.commit().await;
         match result {
             Ok(_) => Ok(()),
@@ -379,7 +385,7 @@ impl FeedConnection for FeedRepository {
             match sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
                 .bind(now.clone())
                 .bind(follow_list.uuid.to_string())
-                .execute(&mut tx)
+                .execute(&mut *tx)
                 .await
             {
                 Ok(res) => {
@@ -423,7 +429,7 @@ impl FeedConnection for FeedRepository {
             match sqlx::query("UPDATE follow_lists SET dt_updated = ? WHERE uuid = ?")
                 .bind(now.clone())
                 .bind(follow_list.uuid.to_string())
-                .execute(&mut tx)
+                .execute(&mut *tx)
                 .await
             {
                 Ok(res) => {
