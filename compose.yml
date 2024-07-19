@@ -168,7 +168,7 @@ services:
     build:
       context: ./FeedHarmony
       dockerfile: Dockerfile
-    command: ["/bin/bash", "-c", "cd /usr/src/app && cargo build --release && ./target/release/feed_harmony"]
+    command: ["/bin/bash", "-c", "cd /usr/src/app && cargo install sqlx-cli && cargo sqlx prepare && cargo build --release && ./target/release/feed_harmony"]
     ports:
       - '5100:5100'
     environment:
@@ -187,7 +187,7 @@ services:
     build:
       context: ./FeedOracle
       dockerfile: Dockerfile
-    command: ["/bin/bash", "-c", "cd /usr/src/app && cargo build --release && ./target/release/feed_oracle"]
+    command: ["/bin/bash", "-c", "cd /usr/src/app && cargo install sqlx-cli && cargo sqlx prepare && cargo build --release && ./target/release/feed_oracle"]
     ports:
       - '5110:5110'
     environment:
