@@ -7,6 +7,7 @@ import (
 	"insightstream/collector/fetchFeedDomain"
 	"insightstream/ent"
 	"insightstream/models/apiexcahnge"
+	"net/url"
 )
 
 // TODO will implement unit tests
@@ -24,18 +25,24 @@ func RegisterHandler(g *echo.Group, cl *ent.Client) {
 				return c.JSON(400, errors.New("invalid request"))
 			}
 
-			c.Logger().Infof("single feed registering started: %v", sf)
-
-			feeds, err := fetchFeedDomain.MultiFeed([]string{sf.URL})
+			parsedURL, err := url.Parse(sf.URL)
 			if err != nil {
-				c.Logger().Errorf("error in fetch feed: %v", err)
-				return errors.New(fmt.Sprintf("fetch %s: %v", sf.URL, err))
+				c.Logger().Errorf("error in parse: %v", err)
+				return c.JSON(400, errors.New("invalid request"))
 			}
 
-			err = RegisterSingle(sf.URL, feeds[0], cl)
+			c.Logger().Infof("single feed registering started: %v", sf)
+
+			feeds, err := fetchFeedDomain.MultiFeed([]string{parsedURL.String()})
+			if err != nil {
+				c.Logger().Errorf("error in fetch feed: %v", err)
+				return errors.New(fmt.Sprintf("fetch %s: %v", parsedURL, err))
+			}
+
+			err = RegisterSingle(parsedURL.String(), feeds[0], cl)
 			if err != nil {
 				c.Logger().Errorf("error in register feed: %v", err)
-				return errors.New(fmt.Sprintf("register %s: %v", sf.URL, err))
+				return errors.New(fmt.Sprintf("register %s: %v", parsedURL, err))
 			}
 
 			c.Logger().Infof("single feed is registered: %v", sf)
@@ -45,7 +52,7 @@ func RegisterHandler(g *echo.Group, cl *ent.Client) {
 				TargetURL string `json:"target_url"`
 			}{
 				Message:   "success",
-				TargetURL: sf.URL,
+				TargetURL: parsedURL.String(),
 			}
 
 			return c.JSON(200, response)
