@@ -11,6 +11,8 @@ RUN ./gradlew build
 
 FROM openjdk:21-jdk-slim
 
+RUN apt-get update && apt-get install -y curl
+
 WORKDIR /app
 
 COPY --from=build /app/.env /app/.env
