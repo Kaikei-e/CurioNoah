@@ -27,13 +27,11 @@ export const AddFeed = () => {
             onChange={(e) => setFeedUrl(e.target.value)}
           />
           <Button
-            size={{ base: "lg", sm: "sm", md: "md", lg: "lg" }}
+            size={{ sm: "sm", md: "sm", lg: "sm" }}
             variant="outline"
             textColor={"#FFF"}
             _hover={{ color: "#000", bg: "#FFF" }}
-            rightIcon={
-              <CheckIcon boxSize={{ base: "xl", md: "2xl", lg: "20px" }} />
-            }
+            rightIcon={<CheckIcon boxSize={{ md: "1.5em", lg: "1.5em" }} />}
             bgColor={"#84a3ad"}
             onClick={async (e) => {
               e.preventDefault();
