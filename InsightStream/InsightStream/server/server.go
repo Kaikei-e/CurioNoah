@@ -137,6 +137,12 @@ func Server(cl *ent.Client) {
 				err := adaptor.InfiniteFetching(c, cl)
 				return err
 			})
+
+			//	infinite-scroll/summarize/today
+			infiniteScroll.GET("/summarize/today", func(c echo.Context) error {
+				err := adaptor.SummarizeEachFeedToday(c, cl)
+				return err
+			})
 		}
 
 		search := apiV1.Group("/search")
