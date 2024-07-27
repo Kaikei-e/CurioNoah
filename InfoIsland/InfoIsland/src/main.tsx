@@ -18,6 +18,7 @@ import { Login } from "./components/Login/Login";
 import { RequireAuth, AuthProvider } from "./components/Auth/RequireAuth";
 import { MobileHome } from "./components/mobile/MobileHome";
 import { AddFeedByMobile } from "./components/Islands/InsightStream/AddFeedByMobile";
+import {SummarizeIndexPage} from "./components/mobile/summarize/today";
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement!).render(
@@ -46,7 +47,7 @@ ReactDOM.createRoot(rootElement!).render(
             />
             <Route path="/mobile" element={<MobileHome />} />
             <Route path="/mobile/register" element={<AddFeedByMobile />} />
-            <Route path="mobile/summarizeToday" element={<AddFeedByMobile />} />
+            <Route path="mobile/summarizeToday" element={<SummarizeIndexPage />} />
           </Routes>
         </ChakraProvider>
       </BrowserRouter>
