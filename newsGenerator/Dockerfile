@@ -1,4 +1,4 @@
-FROM gradle:jdk21
+FROM gradle:jdk21 AS build
 
 RUN apt-get update && apt-get install -y
 
@@ -8,4 +8,12 @@ WORKDIR /app
 
 RUN ./gradlew build
 
-CMD ["java", "-jar", "/app/build/libs/newsGenerator.jar"]
+
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+COPY --from=build /app/.env /app/.env
+COPY --from=build /app/build/libs/*.jar /app/newsGenerator.jar
+
+CMD ["java", "-jar", "/app/newsGenerator.jar"]
