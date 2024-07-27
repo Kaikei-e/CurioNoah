@@ -46,6 +46,7 @@ ReactDOM.createRoot(rootElement!).render(
             />
             <Route path="/mobile" element={<MobileHome />} />
             <Route path="/mobile/register" element={<AddFeedByMobile />} />
+            <Route path="mobile/summarizeToday" element={<AddFeedByMobile />} />
           </Routes>
         </ChakraProvider>
       </BrowserRouter>
