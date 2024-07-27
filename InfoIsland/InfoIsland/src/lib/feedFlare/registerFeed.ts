@@ -4,6 +4,10 @@ export async function RegisterFeed(feedURL: string): Promise<registeredFeed> {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;
 
+  if (!checkUrlIsValid(feedURL)) {
+    throw new Error("Invalid URL");
+  }
+
   const response = await fetch(apiURL + "/register-feed/store/single", {
     method: "POST",
     headers: {
@@ -23,4 +27,9 @@ export async function RegisterFeed(feedURL: string): Promise<registeredFeed> {
 
   // TODO I have to change the API model tp return a boolean
   return await JSON.parse(JSON.stringify(data));
+}
+
+function checkUrlIsValid(url: string): boolean {
+  const parsedURL = new URL(url);
+  return parsedURL.protocol === "https:";
 }
