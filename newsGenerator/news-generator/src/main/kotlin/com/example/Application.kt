@@ -43,7 +43,7 @@ fun Application.configureRouting() {
 
     val client = HttpClient(CIO) {
         install(HttpTimeout) {
-            requestTimeoutMillis = 60_000 // 60 seconds
+            requestTimeoutMillis = 80_000 // 80 seconds
         }
         Charsets {
             // Allow using `UTF_8`.
@@ -75,15 +75,27 @@ fun Application.configureRouting() {
 
             runBlocking {
                 try {
-                    val testURL = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
-                    val res: HttpResponse = client.get(
-                        testURL
-                    )
+                    val testURL1 = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
 
-                    val contentType = res.headers[HttpHeaders.ContentType]
-                    val charset = contentType?.let { ContentType.parse(it).charset() } ?: Charsets.UTF_8
+                    val articleList = listOf(testURL1)
 
-                    val htmlContent = res.bodyAsText(charset)
+                    var combinedHtmlContent = ""
+                    for ((index, url) in articleList.withIndex()) {
+                        val res: HttpResponse = client.get(url)
+
+                        val contentType = res.headers[HttpHeaders.ContentType]
+                        val charset = contentType?.let { ContentType.parse(it).charset() } ?: Charsets.UTF_8
+
+                        val htmlContent = res.bodyAsText(charset)
+                        val parsedHtml = Jsoup.parse(htmlContent)
+                        val body = parsedHtml.body().text()
+
+                        combinedHtmlContent += "\n\narticle No.$index: \n-------------------------\n content\n$body"
+
+                        // sleep for 1 second
+                        Thread.sleep(1000)
+                    }
+
                     val apiUrl = URLBuilder().apply {
                         protocol = URLProtocol.HTTP
                         host = summarizerAPIEndpoint
@@ -91,28 +103,17 @@ fun Application.configureRouting() {
                         path("api", "generate")
                     }.build()
 
-                    val parsedHtml = Jsoup.parse(htmlContent)
-                    val body = parsedHtml.body().text()
-
                     val prompt = """
-                        以下のHTMLのbodyを詳細に解説してください。その際は、以下のガイドラインを厳守してください。
+                        Summarize bellow articles from multiple authors individually. 
+                        In doing so, respond in bullet points with key points and crucial information in Japanese.
                         
-                        1. 記事の内容を非常に詳細にまとめてください。重要なポイントや詳細な説明を含めてください。
-                        2. キートピックや核となるコンセプトを必ず含めてください。それらが読者に明確に伝わるようにしてください。
-                        3. 解説の文字数は最低でも2000字としてください。短すぎるものは受け入れられません。
-                        4. 解説は必ず丁寧で詳細に行ってください。簡略化しすぎないように注意してください。
-                        5. 指示に従わなかった場合、再度指示を送ることになりますので、指示通りに出力を生成してください。
-                        6. 説明は論理的に構成し、段階的に読者が理解を深められるように心がけてください。
-                        7. 技術的な詳細や具体的な設定例を含め、実践的で応用可能な情報を提供してください。単なる概要ではなく、実装に役立つ具体的なアドバイスを盛り込んでください。
-
+                        ---------------------------------------
                         """".trimMargin()
-                    val combinedPrompt = "$prompt\n\nBody Content:\n$body"
+                    val combinedPrompt = "$prompt\n\n$combinedHtmlContent"
 
                     val summarizerRequest = OllamaRequest(
-                        model = "llama-gemma2:latest", prompt = combinedPrompt, stream = false
+                        model = "gemma2-lite:latest", prompt = combinedPrompt, stream = false
                     )
-
-                    println(forSummarizerTuningJson.encodeToString(OllamaRequest.serializer(), summarizerRequest))
 
                     var summarizedResponse = ""
                     try {
@@ -125,8 +126,6 @@ fun Application.configureRouting() {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-
-//                    val escapedResponse = summarizedResponse.escapeSpecialCharacters()
 
                     try {
                         val response = forSummarizerTuningJson.decodeFromString<SummarizerResponse>(summarizedResponse)
@@ -158,7 +157,3 @@ fun loadEnv(filePath: String = ".env"): Map<String, String> {
     return File(filePath).readLines().filter { it.isNotEmpty() && !it.startsWith("#") }.map { it.split("=", limit = 2) }
         .filter { it.size == 2 }.associate { (key, value) -> key.trim() to value.trim() }
 }
-
-//fun String.escapeSpecialCharacters(): String {
-//    return this.replace("\\", "").replace("\b", "").replace("\n", "").replace("\r", "").replace("\t", "")
-//}
