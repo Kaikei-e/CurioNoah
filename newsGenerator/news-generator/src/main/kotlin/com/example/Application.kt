@@ -1,7 +1,6 @@
 package com.example
 
 import com.example.plugins.configureHTTP
-import com.example.plugins.configureMonitoring
 import com.example.plugins.configureSecurity
 import com.example.plugins.configureSerialization
 import com.example.rest.OllamaRequest
@@ -29,7 +28,6 @@ fun main() {
 fun Application.module() {
     configureSecurity()
     configureHTTP()
-    configureMonitoring()
     configureSerialization()
     configureRouting()
 }
@@ -75,6 +73,7 @@ fun Application.configureRouting() {
 
             runBlocking {
                 try {
+                    // will implement the logic to fetch articles from database
                     val testURL1 = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
 
                     val articleList = listOf(testURL1)
@@ -104,7 +103,9 @@ fun Application.configureRouting() {
                     }.build()
 
                     val prompt = """
-                        Summarize bellow articles from multiple authors individually. 
+                        Summarize bellow article. 
+                        First give the title of the article in Japanese.
+                        Then, summarize the article in Japanese.
                         In doing so, respond in bullet points with key points and crucial information in Japanese.
                         
                         ---------------------------------------
