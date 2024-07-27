@@ -16,7 +16,7 @@ import {
   MenuItem,
 } from "@chakra-ui/react";
 import { AddIcon, HamburgerIcon, EditIcon } from "@chakra-ui/icons";
-import { AddFeed } from "../Islands/InshitStream/AddFeed";
+import { AddFeed } from "../Islands/InsightStream/AddFeed";
 
 export const InsightStreamMain = () => {
   return (
