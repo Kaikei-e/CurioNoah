@@ -139,10 +139,10 @@ func Server(cl *ent.Client) {
 			})
 
 			//	infinite-scroll/summarize/today
-			infiniteScroll.GET("/summarize/today", func(c echo.Context) error {
-				err := adaptor.SummarizeEachFeedToday(c, cl)
-				return err
-			})
+			//infiniteScroll.GET("/summarize/today", func(c echo.Context) error {
+			//	err := adaptor.SummarizeEachFeedToday(c, cl)
+			//	return err
+			//})
 		}
 
 		search := apiV1.Group("/search")
