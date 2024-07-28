@@ -52,6 +52,12 @@ dependencies {
     implementation("io.ktor:ktor-client-json:$ktor_version")
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("org.postgresql:postgresql:42.7.3")
+    implementation("org.jetbrains.exposed:exposed-core:0.52.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.52.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.52.0")
+
+
     // modular monolith
 }
 
