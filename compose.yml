@@ -183,24 +183,24 @@ services:
       app-network:
         ipv4_address: 192.168.100.8
 
-  feed_oracle:
-    build:
-      context: ./FeedOracle
-      dockerfile: Dockerfile
-    command: ["/bin/bash", "-c", "cd /usr/src/app && cargo install sqlx-cli && cargo sqlx prepare && cargo build --release && ./target/release/feed_oracle"]
-    ports:
-      - '5110:5110'
-    environment:
-      timezone: 'Asia/Tokyo'
-    tty: true
-    volumes:
-      - './FeedOracle:/app'
-    depends_on:
-      core_database:
-        condition: service_healthy
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.9
+  # feed_oracle:
+  #   build:
+  #     context: ./FeedOracle
+  #     dockerfile: Dockerfile
+  #   command: ["/bin/bash", "-c", "cd /usr/src/app && cargo install sqlx-cli && cargo sqlx prepare && cargo build --release && ./target/release/feed_oracle"]
+  #   ports:
+  #     - '5110:5110'
+  #   environment:
+  #     timezone: 'Asia/Tokyo'
+  #   tty: true
+  #   volumes:
+  #     - './FeedOracle:/app'
+  #   depends_on:
+  #     core_database:
+  #       condition: service_healthy
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.9
 
   news_generator:
     # News Generator that's powered by LLM
@@ -220,7 +220,7 @@ services:
     tty: true
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5555/v1/systems/alive"]
+      test: ["CMD", "curl", "-f", "http://localhost:5555/api/v1/systems/alive"]
       interval: 10s
       timeout: 20s
       retries: 10
@@ -256,7 +256,34 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.10
-
+        
+  data_lake:
+    # Database
+    build:
+      context: ./DataLake
+      dockerfile: Dockerfile
+    container_name: data_lake
+    ports:
+      - '5433:5432'
+    tty: true
+    volumes:
+      - './DataLake/init:/docker-entrypoint-initdb.d'
+      - './DataLake/postgresql/data:/var/lib/postgresql/data'
+    environment:
+      timezone: 'Asia/Tokyo'
+      POSTGRES_PASSWORD: ${DATA_LAKE_DB_PASSWORD}
+      POSTGRES_USER: ${DATA_LAKE_DB_USER}
+      POSTGRES_DB: ${DATA_LAKE_DB}
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+    networks:
+      app-network:
+        ipv4_address: 192.168.100.70
+      
   oath_db:
     # Database
     build:
