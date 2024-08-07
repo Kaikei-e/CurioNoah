@@ -18,6 +18,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.Database
 import org.jsoup.Jsoup
 import java.io.File
 
@@ -26,10 +27,12 @@ fun main() {
 }
 
 fun Application.module() {
+    val env = loadEnv()
     configureSecurity()
     configureHTTP()
     configureSerialization()
     configureRouting()
+    configureDatabases(env)
 }
 
 
@@ -74,7 +77,8 @@ fun Application.configureRouting() {
             runBlocking {
                 try {
                     // will implement the logic to fetch articles from database
-                    val testURL1 = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
+//                  val testURL1 = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
+
 
                     val articleList = listOf(testURL1)
 
@@ -109,7 +113,7 @@ fun Application.configureRouting() {
                         In doing so, respond in bullet points with key points and crucial information in Japanese.
                         
                         ---------------------------------------
-                        """".trimMargin()
+                        """.trimMargin()
                     val combinedPrompt = "$prompt\n\n$combinedHtmlContent"
 
                     val summarizerRequest = OllamaRequest(
@@ -157,4 +161,19 @@ fun Application.configureRouting() {
 fun loadEnv(filePath: String = ".env"): Map<String, String> {
     return File(filePath).readLines().filter { it.isNotEmpty() && !it.startsWith("#") }.map { it.split("=", limit = 2) }
         .filter { it.size == 2 }.associate { (key, value) -> key.trim() to value.trim() }
+}
+
+fun Application.configureDatabases(env: Map<String, String>) {
+    val host = env["DATABASE_HOST"] ?: throw Exception("DATABASE_HOST is not set")
+    val port = env["DATABASE_PORT"] ?: throw Exception("DATABASE_PORT is not set")
+    val databaseName = env["DATABASE_NAME"] ?: throw Exception("DATABASE_NAME is not set")
+    val user = env["DATABASE_USER"] ?: throw Exception("DATABASE_USER is not set")
+    val password = env["DATABASE_PASSWORD"] ?: throw Exception("DATABASE_PASSWORD is not set")
+
+    Database.connect(
+        url = "jdbc:postgresql://$host:$port/$databaseName",
+        driver = "org.postgresql.Driver",
+        user = user,
+        password = password
+    )
 }
