@@ -77,7 +77,7 @@ fun Application.configureRouting() {
             runBlocking {
                 try {
                     // will implement the logic to fetch articles from database
-//                  val testURL1 = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
+                    val testURL1 = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
 
 
                     val articleList = listOf(testURL1)
