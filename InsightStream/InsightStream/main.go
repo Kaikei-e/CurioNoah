@@ -23,8 +23,8 @@ func init() {
 }
 
 func main() {
-	// 360 minute is not intentional value. Just for saving resources.
-	ticker := time.NewTicker(360 * time.Minute)
+	// 4 hours is not intentional value. Just for saving resources.
+	ticker := time.NewTicker(4 * time.Hour)
 	done := make(chan bool)
 
 	cl := repository.InitConnection()
