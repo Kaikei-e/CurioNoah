@@ -3,7 +3,7 @@ package com.example.port
 import com.example.domain.SummarizedFeed
 
 interface SummarizeTodayFeedPort {
-    fun summarizeTodayFeed()
+    fun summarizeTodayFeed() : List<SummarizedFeed>
 }
 
 interface FetchTodayFeedsPort {

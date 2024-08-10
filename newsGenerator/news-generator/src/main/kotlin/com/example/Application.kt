@@ -5,6 +5,7 @@ import com.example.plugins.configureSecurity
 import com.example.plugins.configureSerialization
 import com.example.rest.OllamaRequest
 import com.example.rest.SummarizerResponse
+import com.example.usecase.summarize_today.SummarizeTodayUseCase
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
@@ -21,6 +22,7 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jsoup.Jsoup
 import java.io.File
+
 
 fun main() {
     embeddedServer(Netty, port = 5555, host = "0.0.0.0", module = Application::module).start(wait = true)
@@ -79,6 +81,8 @@ fun Application.configureRouting() {
                     // will implement the logic to fetch articles from database
                     val testURL1 = "https://zenn.dev/e_kaikei/articles/tauri-rust-react-setup-plan-1"
 
+                    val summarizeTodayUseCase = SummarizeTodayUseCase()
+                    summarizeTodayUseCase.execute()
 
                     val articleList = listOf(testURL1)
 
