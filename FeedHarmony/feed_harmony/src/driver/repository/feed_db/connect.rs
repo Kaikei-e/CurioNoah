@@ -11,7 +11,7 @@ use sqlx::{MySql, Pool, Row};
 
 use crate::api_handler::handler::DatabasePool;
 use crate::domain::audit_log_action::{AuditLog, AuditLogAction};
-use crate::domain::feed::{FollowList, OneFeed};
+use crate::domain::feed::{FollowLists, OneFeed};
 use crate::domain::Feed;
 
 #[derive(Debug, Clone)]
@@ -27,8 +27,8 @@ impl FeedRepository {
 
 #[async_trait]
 pub trait FeedConnection {
-    async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError>;
-    async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError>;
+    async fn get_all_follow_list(&self) -> Result<Vec<FollowLists>, SqlxError>;
+    async fn get_follow_list_by_time(&self) -> Result<Vec<FollowLists>, SqlxError>;
     async fn insert_all_feeds(&self, feed: Vec<Feed>) -> Result<(), SqlxError>;
     async fn insert_latest_feeds(
         &self,
@@ -39,16 +39,16 @@ pub trait FeedConnection {
         &self,
         action: AuditLog,
     ) -> Result<(), SqlxError>;
-    async fn update_all_follow_list(&self, follow_lists: Vec<FollowList>) -> Result<(), SqlxError>;
+    async fn update_all_follow_list(&self, follow_lists: Vec<FollowLists>) -> Result<(), SqlxError>;
     async fn update_follow_list_by_using_uuid(
         &self,
-        follow_lists: Vec<FollowList>,
+        follow_lists: Vec<FollowLists>,
     ) -> Result<(), SqlxError>;
 }
 
 #[async_trait]
 impl FeedConnection for FeedRepository {
-    async fn get_all_follow_list(&self) -> Result<Vec<FollowList>, SqlxError> {
+    async fn get_all_follow_list(&self) -> Result<Vec<FollowLists>, SqlxError> {
         let maybe_rows = sqlx::query(
             "SELECT id, uuid, xml_version, \
         rss_version, url, title, \
@@ -70,7 +70,7 @@ impl FeedConnection for FeedRepository {
         let follow_lists = maybe_rows
             .unwrap()
             .iter()
-            .map(|row| FollowList {
+            .map(|row| FollowLists {
                 id: row.get("id"),
                 uuid: uuid::Uuid::from_str(&row.get::<String, _>("uuid")).unwrap(),
                 xml_version: row.get("xml_version"),
@@ -99,7 +99,7 @@ impl FeedConnection for FeedRepository {
         Ok(follow_lists)
     }
 
-    async fn get_follow_list_by_time(&self) -> Result<Vec<FollowList>, SqlxError> {
+    async fn get_follow_list_by_time(&self) -> Result<Vec<FollowLists>, SqlxError> {
         let row = sqlx::query(
             "SELECT id, updated_at, action_id \
             FROM feed_audit_trail_logs ORDER BY updated_at DESC LIMIT 1",
@@ -131,10 +131,10 @@ impl FeedConnection for FeedRepository {
             return Err(SqlxError::RowNotFound);
         }
 
-        let follow_list: Vec<FollowList> = maybe_rows
+        let follow_list: Vec<FollowLists> = maybe_rows
             .unwrap()
             .iter()
-            .map(|row| FollowList {
+            .map(|row| FollowLists {
                 id: row.get("id"),
                 uuid: uuid::Uuid::from_str(&row.get::<String, _>("uuid")).unwrap(),
                 xml_version: row.get("xml_version"),
@@ -373,7 +373,7 @@ impl FeedConnection for FeedRepository {
         }
     }
 
-    async fn update_all_follow_list(&self, follow_lists: Vec<FollowList>) -> Result<(), SqlxError> {
+    async fn update_all_follow_list(&self, follow_lists: Vec<FollowLists>) -> Result<(), SqlxError> {
         let mut tx = self.pool.begin().await?;
         let now = Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string();
 
@@ -416,7 +416,7 @@ impl FeedConnection for FeedRepository {
 
     async fn update_follow_list_by_using_uuid(
         &self,
-        follow_lists: Vec<FollowList>,
+        follow_lists: Vec<FollowLists>,
     ) -> Result<(), SqlxError> {
         let mut tx = self.pool.begin().await?;
         let now = Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string();

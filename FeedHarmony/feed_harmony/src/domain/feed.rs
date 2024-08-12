@@ -48,7 +48,7 @@ pub struct FeedLinks {
 
 // TODO: just copied from db schema, need to update and refactor
 #[derive(sqlx::FromRow, sqlx::Decode, Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
-pub struct FollowList {
+pub struct FollowLists {
     pub id: i32,
     pub uuid: Uuid,
     pub xml_version: i8,
