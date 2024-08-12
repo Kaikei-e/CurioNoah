@@ -9,6 +9,7 @@ import (
 	"insightstream/ent/predicate"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -60,7 +61,7 @@ func (flq *FollowListsQuery) Order(o ...followlists.OrderOption) *FollowListsQue
 // First returns the first FollowLists entity from the query.
 // Returns a *NotFoundError when no FollowLists was found.
 func (flq *FollowListsQuery) First(ctx context.Context) (*FollowLists, error) {
-	nodes, err := flq.Limit(1).All(setContextOp(ctx, flq.ctx, "First"))
+	nodes, err := flq.Limit(1).All(setContextOp(ctx, flq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (flq *FollowListsQuery) FirstX(ctx context.Context) *FollowLists {
 // Returns a *NotFoundError when no FollowLists ID was found.
 func (flq *FollowListsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = flq.Limit(1).IDs(setContextOp(ctx, flq.ctx, "FirstID")); err != nil {
+	if ids, err = flq.Limit(1).IDs(setContextOp(ctx, flq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -106,7 +107,7 @@ func (flq *FollowListsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FollowLists entity is found.
 // Returns a *NotFoundError when no FollowLists entities are found.
 func (flq *FollowListsQuery) Only(ctx context.Context) (*FollowLists, error) {
-	nodes, err := flq.Limit(2).All(setContextOp(ctx, flq.ctx, "Only"))
+	nodes, err := flq.Limit(2).All(setContextOp(ctx, flq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func (flq *FollowListsQuery) OnlyX(ctx context.Context) *FollowLists {
 // Returns a *NotFoundError when no entities are found.
 func (flq *FollowListsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = flq.Limit(2).IDs(setContextOp(ctx, flq.ctx, "OnlyID")); err != nil {
+	if ids, err = flq.Limit(2).IDs(setContextOp(ctx, flq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -159,7 +160,7 @@ func (flq *FollowListsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FollowListsSlice.
 func (flq *FollowListsQuery) All(ctx context.Context) ([]*FollowLists, error) {
-	ctx = setContextOp(ctx, flq.ctx, "All")
+	ctx = setContextOp(ctx, flq.ctx, ent.OpQueryAll)
 	if err := flq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (flq *FollowListsQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if flq.ctx.Unique == nil && flq.path != nil {
 		flq.Unique(true)
 	}
-	ctx = setContextOp(ctx, flq.ctx, "IDs")
+	ctx = setContextOp(ctx, flq.ctx, ent.OpQueryIDs)
 	if err = flq.Select(followlists.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -199,7 +200,7 @@ func (flq *FollowListsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (flq *FollowListsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, flq.ctx, "Count")
+	ctx = setContextOp(ctx, flq.ctx, ent.OpQueryCount)
 	if err := flq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -217,7 +218,7 @@ func (flq *FollowListsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (flq *FollowListsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, flq.ctx, "Exist")
+	ctx = setContextOp(ctx, flq.ctx, ent.OpQueryExist)
 	switch _, err := flq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -449,7 +450,7 @@ func (flgb *FollowListsGroupBy) Aggregate(fns ...AggregateFunc) *FollowListsGrou
 
 // Scan applies the selector query and scans the result into the given value.
 func (flgb *FollowListsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, flgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, flgb.build.ctx, ent.OpQueryGroupBy)
 	if err := flgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -497,7 +498,7 @@ func (fls *FollowListsSelect) Aggregate(fns ...AggregateFunc) *FollowListsSelect
 
 // Scan applies the selector query and scans the result into the given value.
 func (fls *FollowListsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fls.ctx, "Select")
+	ctx = setContextOp(ctx, fls.ctx, ent.OpQuerySelect)
 	if err := fls.prepareQuery(ctx); err != nil {
 		return err
 	}

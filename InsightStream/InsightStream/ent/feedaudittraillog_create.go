@@ -97,7 +97,7 @@ func (fatlc *FeedAuditTrailLogCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fatlc *FeedAuditTrailLogCreate) check() error {
-	if _, ok := fatlc.mutation.ActionID(); !ok {
+	if len(fatlc.mutation.ActionIDs()) == 0 {
 		return &ValidationError{Name: "action", err: errors.New(`ent: missing required edge "FeedAuditTrailLog.action"`)}
 	}
 	return nil

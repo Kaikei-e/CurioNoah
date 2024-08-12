@@ -10,6 +10,7 @@ import (
 	"insightstream/ent/predicate"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -85,7 +86,7 @@ func (fatlq *FeedAuditTrailLogQuery) QueryAction() *FeedAuditTrailActionQuery {
 // First returns the first FeedAuditTrailLog entity from the query.
 // Returns a *NotFoundError when no FeedAuditTrailLog was found.
 func (fatlq *FeedAuditTrailLogQuery) First(ctx context.Context) (*FeedAuditTrailLog, error) {
-	nodes, err := fatlq.Limit(1).All(setContextOp(ctx, fatlq.ctx, "First"))
+	nodes, err := fatlq.Limit(1).All(setContextOp(ctx, fatlq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +109,7 @@ func (fatlq *FeedAuditTrailLogQuery) FirstX(ctx context.Context) *FeedAuditTrail
 // Returns a *NotFoundError when no FeedAuditTrailLog ID was found.
 func (fatlq *FeedAuditTrailLogQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fatlq.Limit(1).IDs(setContextOp(ctx, fatlq.ctx, "FirstID")); err != nil {
+	if ids, err = fatlq.Limit(1).IDs(setContextOp(ctx, fatlq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -131,7 +132,7 @@ func (fatlq *FeedAuditTrailLogQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FeedAuditTrailLog entity is found.
 // Returns a *NotFoundError when no FeedAuditTrailLog entities are found.
 func (fatlq *FeedAuditTrailLogQuery) Only(ctx context.Context) (*FeedAuditTrailLog, error) {
-	nodes, err := fatlq.Limit(2).All(setContextOp(ctx, fatlq.ctx, "Only"))
+	nodes, err := fatlq.Limit(2).All(setContextOp(ctx, fatlq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +160,7 @@ func (fatlq *FeedAuditTrailLogQuery) OnlyX(ctx context.Context) *FeedAuditTrailL
 // Returns a *NotFoundError when no entities are found.
 func (fatlq *FeedAuditTrailLogQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fatlq.Limit(2).IDs(setContextOp(ctx, fatlq.ctx, "OnlyID")); err != nil {
+	if ids, err = fatlq.Limit(2).IDs(setContextOp(ctx, fatlq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -184,7 +185,7 @@ func (fatlq *FeedAuditTrailLogQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FeedAuditTrailLogs.
 func (fatlq *FeedAuditTrailLogQuery) All(ctx context.Context) ([]*FeedAuditTrailLog, error) {
-	ctx = setContextOp(ctx, fatlq.ctx, "All")
+	ctx = setContextOp(ctx, fatlq.ctx, ent.OpQueryAll)
 	if err := fatlq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -206,7 +207,7 @@ func (fatlq *FeedAuditTrailLogQuery) IDs(ctx context.Context) (ids []int, err er
 	if fatlq.ctx.Unique == nil && fatlq.path != nil {
 		fatlq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fatlq.ctx, "IDs")
+	ctx = setContextOp(ctx, fatlq.ctx, ent.OpQueryIDs)
 	if err = fatlq.Select(feedaudittraillog.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -224,7 +225,7 @@ func (fatlq *FeedAuditTrailLogQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fatlq *FeedAuditTrailLogQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fatlq.ctx, "Count")
+	ctx = setContextOp(ctx, fatlq.ctx, ent.OpQueryCount)
 	if err := fatlq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -242,7 +243,7 @@ func (fatlq *FeedAuditTrailLogQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fatlq *FeedAuditTrailLogQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fatlq.ctx, "Exist")
+	ctx = setContextOp(ctx, fatlq.ctx, ent.OpQueryExist)
 	switch _, err := fatlq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -536,7 +537,7 @@ func (fatlgb *FeedAuditTrailLogGroupBy) Aggregate(fns ...AggregateFunc) *FeedAud
 
 // Scan applies the selector query and scans the result into the given value.
 func (fatlgb *FeedAuditTrailLogGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fatlgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fatlgb.build.ctx, ent.OpQueryGroupBy)
 	if err := fatlgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -584,7 +585,7 @@ func (fatls *FeedAuditTrailLogSelect) Aggregate(fns ...AggregateFunc) *FeedAudit
 
 // Scan applies the selector query and scans the result into the given value.
 func (fatls *FeedAuditTrailLogSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fatls.ctx, "Select")
+	ctx = setContextOp(ctx, fatls.ctx, ent.OpQuerySelect)
 	if err := fatls.prepareQuery(ctx); err != nil {
 		return err
 	}

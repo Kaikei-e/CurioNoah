@@ -9,6 +9,7 @@ import (
 	"insightstream/ent/predicate"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -61,7 +62,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) Order(o ...cooccurrencenetworkpool.Ord
 // First returns the first CooccurrenceNetworkPool entity from the query.
 // Returns a *NotFoundError when no CooccurrenceNetworkPool was found.
 func (cnpq *CooccurrenceNetworkPoolQuery) First(ctx context.Context) (*CooccurrenceNetworkPool, error) {
-	nodes, err := cnpq.Limit(1).All(setContextOp(ctx, cnpq.ctx, "First"))
+	nodes, err := cnpq.Limit(1).All(setContextOp(ctx, cnpq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) FirstX(ctx context.Context) *Cooccurre
 // Returns a *NotFoundError when no CooccurrenceNetworkPool ID was found.
 func (cnpq *CooccurrenceNetworkPoolQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = cnpq.Limit(1).IDs(setContextOp(ctx, cnpq.ctx, "FirstID")); err != nil {
+	if ids, err = cnpq.Limit(1).IDs(setContextOp(ctx, cnpq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -107,7 +108,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) FirstIDX(ctx context.Context) uuid.UUI
 // Returns a *NotSingularError when more than one CooccurrenceNetworkPool entity is found.
 // Returns a *NotFoundError when no CooccurrenceNetworkPool entities are found.
 func (cnpq *CooccurrenceNetworkPoolQuery) Only(ctx context.Context) (*CooccurrenceNetworkPool, error) {
-	nodes, err := cnpq.Limit(2).All(setContextOp(ctx, cnpq.ctx, "Only"))
+	nodes, err := cnpq.Limit(2).All(setContextOp(ctx, cnpq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) OnlyX(ctx context.Context) *Cooccurren
 // Returns a *NotFoundError when no entities are found.
 func (cnpq *CooccurrenceNetworkPoolQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = cnpq.Limit(2).IDs(setContextOp(ctx, cnpq.ctx, "OnlyID")); err != nil {
+	if ids, err = cnpq.Limit(2).IDs(setContextOp(ctx, cnpq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -160,7 +161,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) OnlyIDX(ctx context.Context) uuid.UUID
 
 // All executes the query and returns a list of CooccurrenceNetworkPools.
 func (cnpq *CooccurrenceNetworkPoolQuery) All(ctx context.Context) ([]*CooccurrenceNetworkPool, error) {
-	ctx = setContextOp(ctx, cnpq.ctx, "All")
+	ctx = setContextOp(ctx, cnpq.ctx, ent.OpQueryAll)
 	if err := cnpq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -182,7 +183,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) IDs(ctx context.Context) (ids []uuid.U
 	if cnpq.ctx.Unique == nil && cnpq.path != nil {
 		cnpq.Unique(true)
 	}
-	ctx = setContextOp(ctx, cnpq.ctx, "IDs")
+	ctx = setContextOp(ctx, cnpq.ctx, ent.OpQueryIDs)
 	if err = cnpq.Select(cooccurrencenetworkpool.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -200,7 +201,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) IDsX(ctx context.Context) []uuid.UUID 
 
 // Count returns the count of the given query.
 func (cnpq *CooccurrenceNetworkPoolQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, cnpq.ctx, "Count")
+	ctx = setContextOp(ctx, cnpq.ctx, ent.OpQueryCount)
 	if err := cnpq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -218,7 +219,7 @@ func (cnpq *CooccurrenceNetworkPoolQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (cnpq *CooccurrenceNetworkPoolQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, cnpq.ctx, "Exist")
+	ctx = setContextOp(ctx, cnpq.ctx, ent.OpQueryExist)
 	switch _, err := cnpq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -450,7 +451,7 @@ func (cnpgb *CooccurrenceNetworkPoolGroupBy) Aggregate(fns ...AggregateFunc) *Co
 
 // Scan applies the selector query and scans the result into the given value.
 func (cnpgb *CooccurrenceNetworkPoolGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cnpgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, cnpgb.build.ctx, ent.OpQueryGroupBy)
 	if err := cnpgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -498,7 +499,7 @@ func (cnps *CooccurrenceNetworkPoolSelect) Aggregate(fns ...AggregateFunc) *Cooc
 
 // Scan applies the selector query and scans the result into the given value.
 func (cnps *CooccurrenceNetworkPoolSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cnps.ctx, "Select")
+	ctx = setContextOp(ctx, cnps.ctx, ent.OpQuerySelect)
 	if err := cnps.prepareQuery(ctx); err != nil {
 		return err
 	}

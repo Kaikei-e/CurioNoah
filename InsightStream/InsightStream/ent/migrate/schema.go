@@ -216,4 +216,7 @@ var (
 
 func init() {
 	FeedAuditTrailLogsTable.ForeignKeys[0].RefTable = FeedAuditTrailActionsTable
+	FollowListsTable.Annotation = &entsql.Annotation{
+		Table: "follow_lists",
+	}
 }

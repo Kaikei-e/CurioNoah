@@ -101,7 +101,7 @@ func (fatlu *FeedAuditTrailLogUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fatlu *FeedAuditTrailLogUpdate) check() error {
-	if _, ok := fatlu.mutation.ActionID(); fatlu.mutation.ActionCleared() && !ok {
+	if fatlu.mutation.ActionCleared() && len(fatlu.mutation.ActionIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedAuditTrailLog.action"`)
 	}
 	return nil
@@ -259,7 +259,7 @@ func (fatluo *FeedAuditTrailLogUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fatluo *FeedAuditTrailLogUpdateOne) check() error {
-	if _, ok := fatluo.mutation.ActionID(); fatluo.mutation.ActionCleared() && !ok {
+	if fatluo.mutation.ActionCleared() && len(fatluo.mutation.ActionIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedAuditTrailLog.action"`)
 	}
 	return nil

@@ -4,6 +4,7 @@ package enttest
 
 import (
 	"context"
+
 	"insightstream/ent"
 	// required by schema hooks.
 	_ "insightstream/ent/runtime"

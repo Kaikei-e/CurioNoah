@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/index"
 
 	"entgo.io/ent"
@@ -64,4 +66,10 @@ func (FollowLists) Indexes() []ent.Index {
 // Edges of the FollowLists.
 func (FollowLists) Edges() []ent.Edge {
 	return nil
+}
+
+func (FollowLists) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "follow_lists"},
+	}
 }

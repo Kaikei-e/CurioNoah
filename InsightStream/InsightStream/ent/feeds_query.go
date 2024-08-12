@@ -9,6 +9,7 @@ import (
 	"insightstream/ent/predicate"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -61,7 +62,7 @@ func (fq *FeedsQuery) Order(o ...feeds.OrderOption) *FeedsQuery {
 // First returns the first Feeds entity from the query.
 // Returns a *NotFoundError when no Feeds was found.
 func (fq *FeedsQuery) First(ctx context.Context) (*Feeds, error) {
-	nodes, err := fq.Limit(1).All(setContextOp(ctx, fq.ctx, "First"))
+	nodes, err := fq.Limit(1).All(setContextOp(ctx, fq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (fq *FeedsQuery) FirstX(ctx context.Context) *Feeds {
 // Returns a *NotFoundError when no Feeds ID was found.
 func (fq *FeedsQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = fq.Limit(1).IDs(setContextOp(ctx, fq.ctx, "FirstID")); err != nil {
+	if ids, err = fq.Limit(1).IDs(setContextOp(ctx, fq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -107,7 +108,7 @@ func (fq *FeedsQuery) FirstIDX(ctx context.Context) uuid.UUID {
 // Returns a *NotSingularError when more than one Feeds entity is found.
 // Returns a *NotFoundError when no Feeds entities are found.
 func (fq *FeedsQuery) Only(ctx context.Context) (*Feeds, error) {
-	nodes, err := fq.Limit(2).All(setContextOp(ctx, fq.ctx, "Only"))
+	nodes, err := fq.Limit(2).All(setContextOp(ctx, fq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (fq *FeedsQuery) OnlyX(ctx context.Context) *Feeds {
 // Returns a *NotFoundError when no entities are found.
 func (fq *FeedsQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = fq.Limit(2).IDs(setContextOp(ctx, fq.ctx, "OnlyID")); err != nil {
+	if ids, err = fq.Limit(2).IDs(setContextOp(ctx, fq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -160,7 +161,7 @@ func (fq *FeedsQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 
 // All executes the query and returns a list of FeedsSlice.
 func (fq *FeedsQuery) All(ctx context.Context) ([]*Feeds, error) {
-	ctx = setContextOp(ctx, fq.ctx, "All")
+	ctx = setContextOp(ctx, fq.ctx, ent.OpQueryAll)
 	if err := fq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -182,7 +183,7 @@ func (fq *FeedsQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
 	if fq.ctx.Unique == nil && fq.path != nil {
 		fq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fq.ctx, "IDs")
+	ctx = setContextOp(ctx, fq.ctx, ent.OpQueryIDs)
 	if err = fq.Select(feeds.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -200,7 +201,7 @@ func (fq *FeedsQuery) IDsX(ctx context.Context) []uuid.UUID {
 
 // Count returns the count of the given query.
 func (fq *FeedsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fq.ctx, "Count")
+	ctx = setContextOp(ctx, fq.ctx, ent.OpQueryCount)
 	if err := fq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -218,7 +219,7 @@ func (fq *FeedsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fq *FeedsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fq.ctx, "Exist")
+	ctx = setContextOp(ctx, fq.ctx, ent.OpQueryExist)
 	switch _, err := fq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -450,7 +451,7 @@ func (fgb *FeedsGroupBy) Aggregate(fns ...AggregateFunc) *FeedsGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fgb *FeedsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fgb.build.ctx, ent.OpQueryGroupBy)
 	if err := fgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -498,7 +499,7 @@ func (fs *FeedsSelect) Aggregate(fns ...AggregateFunc) *FeedsSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fs *FeedsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fs.ctx, "Select")
+	ctx = setContextOp(ctx, fs.ctx, ent.OpQuerySelect)
 	if err := fs.prepareQuery(ctx); err != nil {
 		return err
 	}
