@@ -7,46 +7,30 @@ import (
 	"net/url"
 )
 
-func Driver(host string, path string, method string, body io.ReadCloser) (http.Response, error) {
+func Driver(host string, path string, method string, body io.ReadCloser) (*http.Response, error) {
 	cl := http.Client{
 		Transport: &http.Transport{
 			MaxIdleConnsPerHost: 5,
 		},
 	}
 
-	targetURL, err := url.JoinPath(host, path)
+	fullURL := &url.URL{
+		Scheme: "http",
+		Host:   host,
+		Path:   path,
+	}
+
+	req, err := http.NewRequest(method, fullURL.String(), body)
 	if err != nil {
-		return http.Response{
-			StatusCode: 500,
-			Status:     "Internal Server Error",
-		}, err
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	ul, err := url.Parse(targetURL)
+	res, err := cl.Do(req)
 	if err != nil {
-		return http.Response{
-			StatusCode: 500,
-			Status:     "Internal Server Error",
-		}, err
+		return nil, fmt.Errorf("failed to execute request to %v: %w", fullURL, err)
 	}
 
-	req := http.Request{
-		Method: method,
-		URL: &url.URL{
-			Scheme: "http",
-			Host:   host,
-			Path:   path,
-		},
-		Body: body,
-	}
+	defer res.Body.Close()
 
-	res, err := cl.Do(&req)
-	if err != nil {
-		return http.Response{
-			StatusCode: 500,
-			Status:     fmt.Sprintf("Internal Server Error in %v: %v", ul, err.Error()),
-		}, err
-	}
-
-	return *res, nil
+	return res, nil
 }

@@ -8,7 +8,7 @@ import (
 
 func UpdateGroupDataPool() error {
 	const (
-		host   = "host.docker.internal:5100"
+		host   = "feed_harmony:5100"
 		path   = "/api/v1/group_and_store_by_url"
 		method = http.MethodPost
 	)

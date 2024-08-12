@@ -7,7 +7,7 @@ import (
 )
 
 func PingToSync() error {
-	driver, err := harmony.Driver("host.docker.internal:5100", "/api/v1/parse_and_store_feeds", http.MethodPost, nil)
+	driver, err := harmony.Driver("feed_harmony:5100", "/api/v1/parse_and_store_feeds", http.MethodPost, nil)
 	if err != nil {
 		return fmt.Errorf("baseFeeds sync failed: %w", err)
 	}
@@ -20,7 +20,7 @@ func PingToSync() error {
 }
 
 func PingToSyncOnlyLatestFeeds() error {
-	driver, err := harmony.Driver("host.docker.internal:5100", "/api/v1/parse_and_store_latest_feeds", http.MethodPost, nil)
+	driver, err := harmony.Driver("feed_harmony:5100", "/api/v1/parse_and_store_latest_feeds", http.MethodPost, nil)
 	if err != nil {
 		return fmt.Errorf("baseFeeds sync failed: %w", err)
 	}

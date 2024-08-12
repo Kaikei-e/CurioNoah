@@ -38,7 +38,7 @@ func (s *StoreManager) UpdateFeeds(feeds []*ent.FollowLists) error {
 		defer wg.Done()
 		err := register.Update(feeds, s.client)
 		if err != nil {
-			slog.Error("failed to update feeds: %v", err)
+			slog.Error("failed to update feeds:", "error", err)
 		}
 	}()
 
@@ -53,7 +53,7 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 
 	result, err := s.FetchFollowList()
 	if err != nil {
-		slog.Error("failed to query all baseFeeds: %v", err)
+		slog.Error("failed to query all baseFeeds:", "error", err)
 		return nil, fmt.Errorf("failed to query all baseFeeds: %w", err)
 	}
 
@@ -71,7 +71,7 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 
 	err = s.UpdateFeeds(addingList)
 	if err != nil {
-		slog.Error("failed to update baseFeeds: %v", err)
+		slog.Error("failed to update baseFeeds: ", "error", err)
 		return nil, fmt.Errorf("failed to update baseFeeds: %w", err)
 	}
 
@@ -90,7 +90,7 @@ func (s *StoreManager) Store() (*sync.WaitGroup, error) {
 		defer wg.Done()
 		err = PingToSync()
 		if err != nil {
-			slog.Error("failed to ping to sync all baseFeeds: %v", err)
+			slog.Error("failed to ping to sync all baseFeeds: ", "error", err)
 			return
 		}
 	}()
@@ -103,14 +103,14 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 	result, err := s.FetchFollowList()
 	if err != nil {
-		slog.Error("failed to query all baseFeeds: %v", err)
+		slog.Error("failed to query all baseFeeds: ", "error", err)
 		return nil, fmt.Errorf("failed to query all baseFeeds: %w", err)
 	}
 
 	// convert existing ent struct to gofeed struct
 	feedExchanged, err := restorerss.EntFollowListExchangeToGofeed(result)
 	if err != nil {
-		slog.Error("failed to exchange ent struct to gofeed struct: %v", err)
+		slog.Error("failed to exchange ent struct to gofeed struct: ", "error", err)
 		return nil, fmt.Errorf("failed to exchange ent struct to gofeed struct: %w", err)
 	}
 
@@ -122,7 +122,7 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 
 	fetchedFeeds, err := fetchFeedDomain.ParallelizeFetch(targetLinks)
 	if err != nil {
-		slog.Error("failed to fetch feeds: %v", err)
+		slog.Error("failed to fetch feeds: ", "error", err)
 		return nil, fmt.Errorf("failed to fetch feeds: %w", err)
 	}
 
@@ -179,7 +179,7 @@ func (s *StoreManager) StoreByDiff() (*sync.WaitGroup, error) {
 		defer wg.Done()
 		err = PingToSyncOnlyLatestFeeds()
 		if err != nil {
-			slog.Error("failed to ping to sync only latest baseFeeds: %v", err)
+			slog.Error("failed to ping to sync only latest baseFeeds: ", "error", err)
 			return
 		}
 	}()
