@@ -1,4 +1,4 @@
-FROM golang:1.22.2
+FROM golang:1.23.0
 
 ADD ./InsightStream /usr/src/app
 
