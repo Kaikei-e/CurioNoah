@@ -19,7 +19,7 @@ const (
 	// FieldDescriptions holds the string denoting the descriptions field in the database.
 	FieldDescriptions = "descriptions"
 	// Table holds the table name of the cooccurrencenetworkpool in the database.
-	Table = "cooccurrence_network_pools"
+	Table = "cooccurrence_network_pool"
 )
 
 // Columns holds all SQL columns for cooccurrencenetworkpool fields.

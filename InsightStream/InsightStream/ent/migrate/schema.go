@@ -9,28 +9,28 @@ import (
 )
 
 var (
-	// CooccurrenceNetworkPoolsColumns holds the columns for the "cooccurrence_network_pools" table.
-	CooccurrenceNetworkPoolsColumns = []*schema.Column{
+	// CooccurrenceNetworkPoolColumns holds the columns for the "cooccurrence_network_pool" table.
+	CooccurrenceNetworkPoolColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "site_url", Type: field.TypeString, Unique: true},
 		{Name: "titles", Type: field.TypeJSON},
 		{Name: "descriptions", Type: field.TypeJSON},
 	}
-	// CooccurrenceNetworkPoolsTable holds the schema information for the "cooccurrence_network_pools" table.
-	CooccurrenceNetworkPoolsTable = &schema.Table{
-		Name:       "cooccurrence_network_pools",
-		Columns:    CooccurrenceNetworkPoolsColumns,
-		PrimaryKey: []*schema.Column{CooccurrenceNetworkPoolsColumns[0]},
+	// CooccurrenceNetworkPoolTable holds the schema information for the "cooccurrence_network_pool" table.
+	CooccurrenceNetworkPoolTable = &schema.Table{
+		Name:       "cooccurrence_network_pool",
+		Columns:    CooccurrenceNetworkPoolColumns,
+		PrimaryKey: []*schema.Column{CooccurrenceNetworkPoolColumns[0]},
 		Indexes: []*schema.Index{
 			{
 				Name:    "cooccurrencenetworkpool_id",
 				Unique:  true,
-				Columns: []*schema.Column{CooccurrenceNetworkPoolsColumns[0]},
+				Columns: []*schema.Column{CooccurrenceNetworkPoolColumns[0]},
 			},
 			{
 				Name:    "cooccurrencenetworkpool_id_site_url",
 				Unique:  true,
-				Columns: []*schema.Column{CooccurrenceNetworkPoolsColumns[0], CooccurrenceNetworkPoolsColumns[1]},
+				Columns: []*schema.Column{CooccurrenceNetworkPoolColumns[0], CooccurrenceNetworkPoolColumns[1]},
 			},
 		},
 	}
@@ -205,7 +205,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		CooccurrenceNetworkPoolsTable,
+		CooccurrenceNetworkPoolTable,
 		FeedAuditTrailActionsTable,
 		FeedAuditTrailLogsTable,
 		FeedsTable,
@@ -215,7 +215,13 @@ var (
 )
 
 func init() {
+	CooccurrenceNetworkPoolTable.Annotation = &entsql.Annotation{
+		Table: "cooccurrence_network_pool",
+	}
 	FeedAuditTrailLogsTable.ForeignKeys[0].RefTable = FeedAuditTrailActionsTable
+	FeedsTable.Annotation = &entsql.Annotation{
+		Table: "feeds",
+	}
 	FollowListsTable.Annotation = &entsql.Annotation{
 		Table: "follow_lists",
 	}

@@ -1,11 +1,12 @@
 package convertToResponse
 
 import (
-	"github.com/google/uuid"
 	"insightstream/domain/searchedFeed"
-	"insightstream/ent"
+	"insightstream/ent" // Add the import for the ent.Feeds package
 	"reflect"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestToSearchWord(t *testing.T) {
