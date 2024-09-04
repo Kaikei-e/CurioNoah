@@ -6,12 +6,15 @@ import (
 	"insightstream/domain/baseFeeds"
 	"insightstream/ent"
 	"log"
+	"log/slog"
 	"time"
 )
 
 func Update(fds []*ent.FollowLists, cl *ent.Client) error {
 	ctx := context.Background()
 	n := time.Now()
+
+	tx, err := cl.Tx(ctx)
 
 	// TODO this updating method is weak. also update one by one is not good.
 	// need to consider how to update all at once.
@@ -40,11 +43,6 @@ func Update(fds []*ent.FollowLists, cl *ent.Client) error {
 		var linksJson baseFeeds.FeedLink
 		linksJson.Link = links
 
-		tx, err := cl.Tx(ctx)
-		if err != nil {
-			return fmt.Errorf("failed to create transaction: %v", err)
-		}
-
 		_, err = tx.FollowLists.UpdateOneID(fd.ID).
 			SetDtLastInserted(n). // is this necessary?
 			SetDtUpdated(n).
@@ -54,20 +52,16 @@ func Update(fds []*ent.FollowLists, cl *ent.Client) error {
 			SetItemDescription(feedItems).
 			Save(ctx)
 		if err != nil {
-			return fmt.Errorf("failed to update: %v, feed id is %v", err, fd.ID)
+			slog.Error("failed to update feed:", "error", err)
+			continue
 		}
+	}
 
-		commitErr := tx.Commit()
-		if commitErr != nil {
-			log.Printf("failed to commit transaction: %v", commitErr)
-			tx.Rollback()
-			return fmt.Errorf("failed to commit transaction: %v", commitErr)
-		}
-
-		if commitErr != nil {
-			return commitErr
-		}
-
+	commitErr := tx.Commit()
+	if commitErr != nil {
+		log.Printf("failed to commit transaction: %v", commitErr)
+		tx.Rollback()
+		return fmt.Errorf("failed to commit transaction: %v", commitErr)
 	}
 
 	return nil
