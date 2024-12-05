@@ -18,18 +18,18 @@ services:
       app-network:
         ipv4_address: 192.168.100.20
 
-  oathkeeper:
-    build:
-      context: ./oathkeeper
-      dockerfile: Dockerfile
-    tty: true
-    ports:
-      - '9800'
-    volumes:
-      - ./oathkeeper:/usr/src/app
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.30
+  # oathkeeper:
+  #   build:
+  #     context: ./oathkeeper
+  #     dockerfile: Dockerfile
+  #   tty: true
+  #   ports:
+  #     - '9800'
+  #   volumes:
+  #     - ./oathkeeper:/usr/src/app
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.30
 
   core_manager:
     # Curation Manager
@@ -69,24 +69,24 @@ services:
       app-network:
         ipv4_address: 192.168.100.2
 
-  feed_flare:
-    # Feed collector
-    build:
-      context: ./FeedFlare
-      dockerfile: Dockerfile
-    ports:
-      - '9100:9100'
-    environment:
-      timezone: 'Asia/Tokyo'
-    tty: true
-    volumes:
-      - './FeedFlare/FeedFlare:/usr/src/app'
-    depends_on:
-      core_database:
-        condition: service_healthy
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.3
+  # feed_flare:
+  #   # Feed collector
+  #   build:
+  #     context: ./FeedFlare
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '9100:9100'
+  #   environment:
+  #     timezone: 'Asia/Tokyo'
+  #   tty: true
+  #   volumes:
+  #     - './FeedFlare/FeedFlare:/usr/src/app'
+  #   depends_on:
+  #     core_database:
+  #       condition: service_healthy
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.3
 
   info_island:
     # Web Frontend
@@ -129,41 +129,41 @@ services:
       app-network:
         ipv4_address: 192.168.100.5
 
-  slate_flex:
-    # Note taking
-    build:
-      context: ./SlateFlex
-      dockerfile: Dockerfile
-    ports:
-      - '6000'
-    tty: true
-    volumes:
-      - ./slateFlex:/app
-    depends_on:
-      core_database:
-        condition: service_healthy
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.6
+  # slate_flex:
+  #   # Note taking
+  #   build:
+  #     context: ./SlateFlex
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '6000'
+  #   tty: true
+  #   volumes:
+  #     - ./slateFlex:/app
+  #   depends_on:
+  #     core_database:
+  #       condition: service_healthy
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.6
 
-  feed_spark:
-    # Curation Manager
-    build:
-      context: ./FeedSpark
-      dockerfile: Dockerfile
-    ports:
-      - '5010'
-    environment:
-      timezone: 'Asia/Tokyo'
-    tty: true
-    volumes:
-      - './FeedSpark:/app'
-    depends_on:
-      core_database:
-        condition: service_healthy
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.7
+  # feed_spark:
+  #   # Curation Manager
+  #   build:
+  #     context: ./FeedSpark
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '5010'
+  #   environment:
+  #     timezone: 'Asia/Tokyo'
+  #   tty: true
+  #   volumes:
+  #     - './FeedSpark:/app'
+  #   depends_on:
+  #     core_database:
+  #       condition: service_healthy
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.7
 
   feed_harmony:
     build:
@@ -204,31 +204,31 @@ services:
   #     app-network:
   #       ipv4_address: 192.168.100.9
 
-  news_generator:
-    # News Generator that's powered by LLM
-    build:
-      context: ./newsGenerator
-      dockerfile: Dockerfile
-    container_name: news_generator
-    ports:
-      - '5555:5555'
-    environment:
-      timezone: 'Asia/Tokyo'
-      LLM_TARGET_LINK: ${LLM_TARGET_LINK}
-      DATABASE_URL: ${DATA_LAKE_URL}
-      DATABASE_USER: ${DATA_LAKE_USER}
-      DATABASE_PASSWORD: ${DATA_LAKE_PASSWORD}
-      DATABASE_NAME: ${DATA_LAKE_DB}
-    tty: true
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5555/api/v1/systems/alive"]
-      interval: 10s
-      timeout: 20s
-      retries: 10
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.13
+  # news_generator:
+  #   # News Generator that's powered by LLM
+  #   build:
+  #     context: ./newsGenerator
+  #     dockerfile: Dockerfile
+  #   container_name: news_generator
+  #   ports:
+  #     - '5555:5555'
+  #   environment:
+  #     timezone: 'Asia/Tokyo'
+  #     LLM_TARGET_LINK: ${LLM_TARGET_LINK}
+  #     DATABASE_URL: ${DATA_LAKE_URL}
+  #     DATABASE_USER: ${DATA_LAKE_USER}
+  #     DATABASE_PASSWORD: ${DATA_LAKE_PASSWORD}
+  #     DATABASE_NAME: ${DATA_LAKE_DB}
+  #   tty: true
+  #   restart: always
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:5555/api/v1/systems/alive"]
+  #     interval: 10s
+  #     timeout: 20s
+  #     retries: 10
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.13
 
 
   core_database:
@@ -258,54 +258,54 @@ services:
     networks:
       app-network:
         ipv4_address: 192.168.100.10
-        
-  data_lake:
-    # Database
-    build:
-      context: ./DataLake
-      dockerfile: Dockerfile
-    container_name: data_lake
-    ports:
-      - '5433:5432'
-    tty: true
-    volumes:
-      - './DataLake/init:/docker-entrypoint-initdb.d'
-      - './DataLake/postgresql/data:/var/lib/postgresql/data'
-    environment:
-      timezone: 'Asia/Tokyo'
-      POSTGRES_PASSWORD: ${DATA_LAKE_DB_PASSWORD}
-      POSTGRES_USER: ${DATA_LAKE_DB_USER}
-      POSTGRES_DB: ${DATA_LAKE_DB}
-    restart: always
-    healthcheck:
-      test: ["CMD", "pg_isready", "-h", "localhost"]
-      interval: 10s
-      timeout: 20s
-      retries: 10
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.70
-      
-  oath_db:
-    # Database
-    build:
-      context: ./oath_db
-      dockerfile: Dockerfile
-    ports:
-      - '5432:5432'
-    tty: true
-    volumes:
-      - './oath_db/init/create_oath_db.sql:/docker-entrypoint-initdb.d/create_oath_db.sql'
-      - './oath_db/postgresql/data:/var/lib/postgresql/data'
-    environment:
-      timezone: 'Asia/Tokyo'
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    restart: always
-    networks:
-      app-network:
-        ipv4_address: 192.168.100.60
+
+  # data_lake:
+  #   # Database
+  #   build:
+  #     context: ./DataLake
+  #     dockerfile: Dockerfile
+  #   container_name: data_lake
+  #   ports:
+  #     - '5433:5432'
+  #   tty: true
+  #   volumes:
+  #     - './DataLake/init:/docker-entrypoint-initdb.d'
+  #     - './DataLake/postgresql/data:/var/lib/postgresql/data'
+  #   environment:
+  #     timezone: 'Asia/Tokyo'
+  #     POSTGRES_PASSWORD: ${DATA_LAKE_DB_PASSWORD}
+  #     POSTGRES_USER: ${DATA_LAKE_DB_USER}
+  #     POSTGRES_DB: ${DATA_LAKE_DB}
+  #   restart: always
+  #   healthcheck:
+  #     test: ["CMD", "pg_isready", "-h", "localhost"]
+  #     interval: 10s
+  #     timeout: 20s
+  #     retries: 10
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.70
+
+  # oath_db:
+  #   # Database
+  #   build:
+  #     context: ./oath_db
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '5432:5432'
+  #   tty: true
+  #   volumes:
+  #     - './oath_db/init/create_oath_db.sql:/docker-entrypoint-initdb.d/create_oath_db.sql'
+  #     - './oath_db/postgresql/data:/var/lib/postgresql/data'
+  #   environment:
+  #     timezone: 'Asia/Tokyo'
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #   restart: always
+  #   networks:
+  #     app-network:
+  #       ipv4_address: 192.168.100.60
 
 networks:
   app-network:
