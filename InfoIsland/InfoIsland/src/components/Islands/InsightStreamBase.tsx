@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Alert, AlertIcon, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/progress";
 import { Timeline } from "./timeline/Timeline";
-import {
+import type {
   FollowingSiteFeeds,
   FollowingSiteFeedsList,
 } from "../../lib/models/feedModel";
@@ -35,9 +36,8 @@ export const InsightStreamBase = () => {
 
       if (response.ok) {
         return await response.json();
-      } else {
-        throw new Error("Failed to fetch data");
       }
+        throw new Error("Failed to fetch data");
     } catch (error) {
       console.error(error);
       return null;

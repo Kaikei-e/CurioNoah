@@ -1,14 +1,14 @@
 import {
-  Alert,
-  AlertIcon,
   Button,
     Flex,
   Link,
   Text,
 } from "@chakra-ui/react";
+
+import { Alert, AlertIcon, AlertTitle } from "@chakra-ui/alert";
 import { CircularProgress } from "@chakra-ui/progress"; 
-import React from "react";
-import { FollowingSiteFeeds } from "../../../lib/models/feedModel";
+import type React from "react";
+import type { FollowingSiteFeeds } from "../../../lib/models/feedModel";
 import { EachFeed } from "./eachFeed";
 import InfiniteScroll from "react-infinite-scroller";
 import { Simulate } from "react-dom/test-utils";
