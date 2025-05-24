@@ -33,13 +33,7 @@ export const InsightStreamMain = () => {
           </Text>
         </Flex>
 
-        <Flex
-          flexDirection="column"
-          w="95%"
-          h="94%"
-          alignItems="center"
-          p="4%"
-        >
+        <Flex flexDirection="column" w="95%" h="94%" alignItems="center" p="4%">
           <Flex
             flexDirection="column"
             w="80%"
@@ -60,14 +54,13 @@ export const InsightStreamMain = () => {
 
             {/* テーブル: Chakra UI v3 実装 */}
             <Table.ScrollArea w="100%" h="auto">
-              <Table.Root 
-                variant="outline" 
-                size="md"
-              >
+              <Table.Root variant="outline" size="md">
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader>Topic</Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="end">Statistic</Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="end">
+                      Statistic
+                    </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>

@@ -1,12 +1,7 @@
-import {
-  Button,
-    Flex,
-  Link,
-  Text,
-} from "@chakra-ui/react";
+import { Button, Flex, Link, Text } from "@chakra-ui/react";
 
 import { Alert, AlertIcon, AlertTitle } from "@chakra-ui/alert";
-import { CircularProgress } from "@chakra-ui/progress"; 
+import { CircularProgress } from "@chakra-ui/progress";
 import type React from "react";
 import type { FollowingSiteFeeds } from "../../../lib/models/feedModel";
 import { EachFeed } from "./eachFeed";

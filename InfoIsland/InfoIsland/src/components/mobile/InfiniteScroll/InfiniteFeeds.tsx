@@ -1,12 +1,6 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import {
-  Box,
-  Button,
-  Flex,
-  Link,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Link, Text } from "@chakra-ui/react";
 import { CircularProgress } from "@chakra-ui/progress";
 import { EachFeed, Feeds } from "../../../lib/models/eachFeed";
 

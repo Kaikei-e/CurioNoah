@@ -37,7 +37,7 @@ export const InsightStreamBase = () => {
       if (response.ok) {
         return await response.json();
       }
-        throw new Error("Failed to fetch data");
+      throw new Error("Failed to fetch data");
     } catch (error) {
       console.error(error);
       return null;

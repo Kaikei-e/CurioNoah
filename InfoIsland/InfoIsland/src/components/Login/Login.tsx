@@ -1,12 +1,5 @@
 import type React from "react";
-import {
-  Box,
-  Button,
-  Flex,
-  Field,
-  Input,
-  Text,
-} from "@chakra-ui/react";          // ← FormControl は削除
+import { Box, Button, Flex, Field, Input, Text } from "@chakra-ui/react"; // ← FormControl は削除
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Auth/RequireAuth";
 import type { User } from "../../lib/models/user";
