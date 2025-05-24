@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, AlertIcon, CircularProgress, Flex } from "@chakra-ui/react";
+import { Alert, AlertIcon, Flex } from "@chakra-ui/react";
 import { Timeline } from "./timeline/Timeline";
 import {
   FollowingSiteFeeds,
@@ -18,7 +18,7 @@ export const InsightStreamBase = () => {
   const [hasMoreItems, setHasMoreItems] = React.useState(true);
 
   const fetchMoreFeeds = async (
-    page: number
+    page: number,
   ): Promise<FollowingSiteFeedsList | null> => {
     try {
       const response = await fetch(
@@ -30,7 +30,7 @@ export const InsightStreamBase = () => {
             Accept: "application/json",
             Origin: origin,
           },
-        }
+        },
       );
 
       if (response.ok) {

@@ -1,7 +1,5 @@
 import "./App.css";
-// /images/explore_with_ship.jpg
-import { Stack, Text, Box, Button, Spacer, Flex, Link } from "@chakra-ui/react";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { Box, Flex, VStack, Spacer, Text, Link, Button } from "@chakra-ui/react";
 
 export const App = () => (
   <Box
@@ -15,11 +13,10 @@ export const App = () => (
     p={10}
   >
     <Flex minWidth="max-content" h={"100%"} w={"100%"}>
-      <Stack
-        direction="column"
-        justify="flex-start"
+      <VStack
         align="flex-start"
-        spacing="10px"
+        spaceX={4}
+        spaceY={4}
       >
         <Text
           fontFamily="Jost"
@@ -47,14 +44,14 @@ export const App = () => (
             : by curiosity.
           </Box>
         </Text>
-      </Stack>
+      </VStack>
       <Spacer />
       <Flex flexDir={"column"} justifyContent={"flex-end"} p="4%">
         <Link href="/login">
           <Button
             size={{ base: "lg", sm: "sm", md: "md", lg: "lg" }}
             variant="outline"
-            textColor={"#FFF"}
+            color={"#FFFFFF"}
             _hover={{ color: "#000000", bg: "#FFFFFF" }}
             rightIcon={
               <ArrowForwardIcon

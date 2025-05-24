@@ -57,7 +57,7 @@ export const AuthProvider: React.VFC<Props> = (props) => {
       setUser({ username: "admin", password: "admin" });
       sessionStorage.setItem(
         "user",
-        JSON.stringify({ username: "admin", password: "admin" })
+        JSON.stringify({ username: "admin", password: "admin" }),
       );
       callback();
     }

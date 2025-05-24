@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import {SummarizeTodayFeeds} from "../InfiniteScroll/summarizeTodayFeeds";
+import { SummarizeTodayFeeds } from "../InfiniteScroll/summarizeTodayFeeds";
 
 export const Timeline = () => {
   return (

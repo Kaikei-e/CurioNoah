@@ -14,7 +14,7 @@ export const StreamLine = () => {
 
   const { data: item, error } = useSWR(
     apiURL + "/fetch-feed/stored-all",
-    fetcher
+    fetcher,
   );
 
   return (

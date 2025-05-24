@@ -1,5 +1,5 @@
 import { Button, Flex, Text, Input } from "@chakra-ui/react";
-import { CheckIcon } from "@chakra-ui/icons";
+import { CheckIcon }
 import { RegisterFeed } from "../../../lib/feedFlare/registerFeed";
 import { useState } from "react";
 import { registeredFeed } from "../../../lib/models/apiExchange/registeredFeed";

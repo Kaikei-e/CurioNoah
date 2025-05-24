@@ -1,14 +1,18 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import {
   insightStreamAPI,
   Method,
 } from "../../../lib/insightStream/InsightStreamAPI";
-import React, { useEffect } from "react";
-import { ByTitleOrDescription } from "../../../lib/models/searchFeeds/byTitleOrDescription";
-import { TitleOrDescription } from "../../../lib/models/searchFeeds/baseFeed";
-import { Button, CircularProgress, Flex } from "@chakra-ui/react";
+import React from "react";
+import type { ByTitleOrDescription } from "../../../lib/models/searchFeeds/byTitleOrDescription";
+import type { TitleOrDescription } from "../../../lib/models/searchFeeds/baseFeed";
+import { Flex } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/progress";
 
-type Props = {};
+type Props = {
+  title: string;
+  description: string;
+};
 
 type Input = {
   title: string;
@@ -77,9 +81,8 @@ export const FeedFlare = (props: Props) => {
           <CircularProgress
             isIndeterminate
             color="green.300"
-            trackColor="green.100"
             size="48px"
-            thickness="10px"
+            borderWidth="10px" // thickness→borderWidth
           />
         ) : (
           <Flex flexDirection={"column"}>
@@ -89,6 +92,7 @@ export const FeedFlare = (props: Props) => {
                   href={item.feed_url}
                   style={feedsTitleStyle}
                   target={"_blank"}
+                  rel="noopener noreferrer" // isExternal→target/rel
                 >
                   {item.title}
                 </a>
@@ -102,7 +106,7 @@ export const FeedFlare = (props: Props) => {
   );
 };
 
-const feedsTitleStyle: any = {
+const feedsTitleStyle: React.CSSProperties = {
   fontSize: "1.4rem",
   fontWeight: "bold",
   color: "#000",
@@ -111,7 +115,7 @@ const feedsTitleStyle: any = {
   margin: "0.5rem",
 };
 
-const feedsDescriptionStyle: any = {
+const feedsDescriptionStyle: React.CSSProperties = {
   fontSize: "1rem",
   fontWeight: "regular",
   color: "#000",

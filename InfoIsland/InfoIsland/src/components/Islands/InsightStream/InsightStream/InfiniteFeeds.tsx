@@ -3,11 +3,11 @@ import InfiniteScroll from "react-infinite-scroller";
 import {
   Box,
   Button,
-  CircularProgress,
-  Flex,
+    Flex,
   Link,
   Text,
 } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/progress";
 import { EachFeed, Feeds } from "../../../../lib/models/eachFeed";
 
 type Props = {};
@@ -30,7 +30,7 @@ export const InfiniteFeeds: React.FC<Props> = () => {
             Accept: "application/json",
             Origin: origin,
           },
-        }
+        },
       );
 
       if (response.ok) {

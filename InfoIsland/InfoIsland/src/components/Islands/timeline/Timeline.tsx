@@ -2,11 +2,11 @@ import {
   Alert,
   AlertIcon,
   Button,
-  CircularProgress,
-  Flex,
+    Flex,
   Link,
   Text,
 } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/progress"; 
 import React from "react";
 import { FollowingSiteFeeds } from "../../../lib/models/feedModel";
 import { EachFeed } from "./eachFeed";

@@ -8,7 +8,7 @@ import {
   Flex,
   Button,
 } from "@chakra-ui/react";
-import { StarIcon, CopyIcon, CheckIcon } from "@chakra-ui/icons";
+import { StarIcon, CopyIcon, CheckIcon }
 
 export const FeedCard = ({ feed }: { feed: Item }) => {
   return (

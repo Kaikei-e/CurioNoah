@@ -1,9 +1,9 @@
-import {Timeline} from "../Timeline";
+import { Timeline } from "../Timeline";
 
 export const SummarizeIndexPage: React.FC = () => {
-    return (
-        <div>
-        <Timeline />
-        </div>
-    )
-}
+  return (
+    <div>
+      <Timeline />
+    </div>
+  );
+};

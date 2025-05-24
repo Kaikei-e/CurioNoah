@@ -3,7 +3,8 @@ import {
   SummarizedFeed,
   SummarizedFeeds,
 } from "../../../lib/models/summarizedFeeds";
-import { CircularProgress, Flex, Link, Text } from "@chakra-ui/react";
+import { Flex, Link, Text } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/progress";
 import InfiniteScroll from "react-infinite-scroller";
 
 export const SummarizeTodayFeeds: React.FC = () => {
@@ -25,7 +26,7 @@ export const SummarizeTodayFeeds: React.FC = () => {
             Accept: "application/json",
             Origin: origin,
           },
-        }
+        },
       );
       if (response.ok) {
         data = await response.json();

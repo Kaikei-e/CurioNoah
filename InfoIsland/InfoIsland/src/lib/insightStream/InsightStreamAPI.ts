@@ -23,7 +23,7 @@ const action = (inputMethod: Method) => {
 export const insightStreamAPI = async (
   method: Method,
   url: string,
-  body?: { [key: string]: string }
+  body?: { [key: string]: string },
 ) => {
   const apiURL = import.meta.env.VITE_INSIGHT_STREAM;
   const origin = import.meta.env.VITE_ORIGIN;

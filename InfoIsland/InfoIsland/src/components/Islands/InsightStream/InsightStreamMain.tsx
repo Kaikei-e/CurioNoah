@@ -11,7 +11,6 @@ import {
   TableContainer,
   Button,
 } from "@chakra-ui/react";
-import React from "react";
 import { AddFeed } from "./AddFeed";
 import { InfiniteFeeds } from "./InsightStream/InfiniteFeeds";
 import { collectAllNewFeeds } from "../../../lib/fetcher/collectAllNewFeeds";

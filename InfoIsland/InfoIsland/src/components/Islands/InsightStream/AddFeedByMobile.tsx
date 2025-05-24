@@ -1,5 +1,5 @@
-import { Button, CircularProgress, Flex, Input, Text } from "@chakra-ui/react";
-import { CheckIcon } from "@chakra-ui/icons";
+import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/progress";
 import { registeredFeed } from "../../../lib/models/apiExchange/registeredFeed";
 import { RegisterFeed } from "../../../lib/feedFlare/registerFeed";
 import { useState } from "react";
