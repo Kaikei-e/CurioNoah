@@ -6,22 +6,22 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = "0.7.5"
-anyhow = "1.0.71"
-chrono = {version="0.4.38", features=["serde"]}
-serde = {version="1.0.199", features=["derive"]}
-serde_json = "1.0.116"
-tokio = {version="1.37.0", features=["full"]}
+axum = "0.7.9"
+anyhow = "1.0.98"
+chrono = {version="0.4.41", features=["serde"]}
+serde = {version="1.0.219", features=["derive"]}
+serde_json = "1.0.140"
+tokio = {version="1.45.0", features=["full"]}
 sqlx = { version = "0.7.4", features = [ "runtime-tokio-rustls", "mysql", "uuid", "chrono", "json"] }
 dotenvy = "0.15.7"
-mockall = "0.12.1"
-async-trait = "0.1.73"
-rss = "2.0.6"
-url = "2.4.1"
-reqwest = { version = "0.12.4", features = ["blocking", "json"] }
+mockall = "0.13.1"
+async-trait = "0.1.88"
+rss = "2.0.12"
+url = "2.5.4"
+reqwest = { version = "0.12.15", features = ["blocking", "json"] }
 
 [dependencies.uuid]
-version = "1.3.3"
+version = "1.17.0"
 features = [
     "v4",                # Lets you generate random UUIDs
     "fast-rng",          # Use a faster (but still sufficiently random) RNG
