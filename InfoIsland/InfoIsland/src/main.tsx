@@ -2,7 +2,7 @@ import React, { JSX } from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./App";
 import "./index.css";
-import { ChakraProvider } from "@chakra-ui/react";
+import { Provider } from "@/components/ui/provider";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -20,12 +20,12 @@ import { MobileHome } from "./components/mobile/MobileHome";
 import { AddFeedByMobile } from "./components/Islands/InsightStream/AddFeedByMobile";
 import { SummarizeIndexPage } from "./components/mobile/summarize/today";
 
-const rootElement = document.getElementById("root");
-ReactDOM.createRoot(rootElement!).render(
+const rootElement = document.getElementById("root") as HTMLElement;
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <AuthProvider>
       <BrowserRouter>
-        <ChakraProvider>
+        <Provider>
           <Routes>
             <Route path="/" element={<App />} />
             <Route path="/login" element={<Login />} />
@@ -52,7 +52,7 @@ ReactDOM.createRoot(rootElement!).render(
               element={<SummarizeIndexPage />}
             />
           </Routes>
-        </ChakraProvider>
+        </Provider>
       </BrowserRouter>
     </AuthProvider>
   </React.StrictMode>,
