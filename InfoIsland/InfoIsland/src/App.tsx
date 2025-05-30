@@ -13,8 +13,18 @@ export const App = () => (
     backgroundRepeat="no-repeat"
     p={10}
   >
+<<<<<<< HEAD
     <Flex minWidth="max-content" h="100%" w="100%">
       <VStack align="flex-start" gap={4}>
+=======
+    <Flex minWidth="max-content" h={"100%"} w={"100%"}>
+      <Stack
+        direction="column"
+        justify="flex-start"
+        align="flex-start"
+        gap="10px"
+      >
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
         <Text
           fontFamily="Jost"
           fontWeight="regular"
@@ -40,6 +50,7 @@ export const App = () => (
           <Button
             size={{ base: "lg", sm: "sm", md: "md", lg: "lg" }}
             variant="outline"
+<<<<<<< HEAD
             color="#FFFFFF"
             _hover={{ color: "#000000", bg: "#FFFFFF" }}
           >
@@ -48,6 +59,18 @@ export const App = () => (
               color="#000000"
               boxSize={{ base: "1.5em", md: "1.5em", lg: "2em" }}
             />
+=======
+            colorScheme="white"
+            _hover={{ color: "#000000", bg: "#FFFFFF" }}
+          >
+            <ArrowForwardIcon boxSize={{ base: "xl", md: "2xl", lg: "20px" }} />
+            <Text
+              fontFamily="Jost"
+              fontSize={{ base: "md", md: "2md", lg: "2xl" }}
+            >
+              Explore
+            </Text>
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
           </Button>
         </Link>
       </Flex>

@@ -16,7 +16,11 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       showArrow,
       children,
       disabled,
+<<<<<<< HEAD
       portalled = true,
+=======
+      portalled,
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
       content,
       contentProps,
       portalRef,

@@ -1,7 +1,12 @@
 "use client";
 
+<<<<<<< HEAD
 import type { IconButtonProps, SpanProps } from "@chakra-ui/react";
 import { ClientOnly, IconButton, Skeleton, Span } from "@chakra-ui/react";
+=======
+import type { IconButtonProps } from "@chakra-ui/react";
+import { ClientOnly, IconButton, Skeleton } from "@chakra-ui/react";
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
 import { ThemeProvider, useTheme } from "next-themes";
 import type { ThemeProviderProps } from "next-themes";
 import * as React from "react";
@@ -15,6 +20,7 @@ export function ColorModeProvider(props: ColorModeProviderProps) {
   );
 }
 
+<<<<<<< HEAD
 export type ColorMode = "light" | "dark";
 
 export interface UseColorModeReturn {
@@ -31,6 +37,15 @@ export function useColorMode(): UseColorModeReturn {
   };
   return {
     colorMode: colorMode as ColorMode,
+=======
+export function useColorMode() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const toggleColorMode = () => {
+    setTheme(resolvedTheme === "light" ? "dark" : "light");
+  };
+  return {
+    colorMode: resolvedTheme,
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
     setColorMode: setTheme,
     toggleColorMode,
   };
@@ -38,12 +53,20 @@ export function useColorMode(): UseColorModeReturn {
 
 export function useColorModeValue<T>(light: T, dark: T) {
   const { colorMode } = useColorMode();
+<<<<<<< HEAD
   return colorMode === "dark" ? dark : light;
+=======
+  return colorMode === "light" ? light : dark;
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
 }
 
 export function ColorModeIcon() {
   const { colorMode } = useColorMode();
+<<<<<<< HEAD
   return colorMode === "dark" ? <LuMoon /> : <LuSun />;
+=======
+  return colorMode === "light" ? <LuSun /> : <LuMoon />;
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
 }
 
 interface ColorModeButtonProps extends Omit<IconButtonProps, "aria-label"> {}
@@ -74,6 +97,7 @@ export const ColorModeButton = React.forwardRef<
     </ClientOnly>
   );
 });
+<<<<<<< HEAD
 
 export const LightMode = React.forwardRef<HTMLSpanElement, SpanProps>(
   function LightMode(props, ref) {
@@ -106,3 +130,5 @@ export const DarkMode = React.forwardRef<HTMLSpanElement, SpanProps>(
     );
   },
 );
+=======
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)

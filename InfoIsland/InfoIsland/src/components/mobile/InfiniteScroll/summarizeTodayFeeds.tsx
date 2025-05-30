@@ -3,8 +3,12 @@ import {
   SummarizedFeed,
   SummarizedFeeds,
 } from "../../../lib/models/summarizedFeeds";
+<<<<<<< HEAD
 import { Flex, Link, Text } from "@chakra-ui/react";
 import { CircularProgress } from "@chakra-ui/progress";
+=======
+import { Flex, Link as ChakraLink, Text } from "@chakra-ui/react";
+>>>>>>> dca0000 (refactor: update component styles and structure, add new UI components, and improve API function signatures)
 import InfiniteScroll from "react-infinite-scroller";
 
 export const SummarizeTodayFeeds: React.FC = () => {
@@ -92,14 +96,13 @@ export const SummarizeTodayFeeds: React.FC = () => {
                 justifyContent={"space-between"}
                 width={"100%"}
               >
-                <Link
+                <ChakraLink
                   href={item.feed_url}
-                  isExternal
                   fontSize="sm"
                   fontWeight="bold"
                 >
                   {item.title}
-                </Link>
+                </ChakraLink>
                 <Text>{item.description}</Text>
               </Flex>
             </Flex>
